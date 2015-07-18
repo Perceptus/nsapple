@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="7701"/>
+    </dependencies>
+    <scenes>
+        <!--Interface Controller-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="nsapple_WatchKit_App" customModuleProvider="target">
+                    <items>
+                        <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
+                            <items>
+                                <label alignment="center" text="N/A" textAlignment="center" id="vGM-hd-W1b">
+                                    <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
+                                </label>
+                                <label alignment="center" text="-" id="YV0-Ga-4dz">
+                                    <fontDescription key="font" type="system" pointSize="30"/>
+                                </label>
+                            </items>
+                        </group>
+                        <label alignment="center" text="- 5.0 mg/dl" id="drV-DZ-SeX">
+                            <fontDescription key="font" type="system" pointSize="10"/>
+                        </label>
+                        <group width="1" alignment="left" id="D2S-gh-qaj">
+                            <items>
+                                <label alignment="left" text="N/A" id="piM-ym-Ukt">
+                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
+                                </label>
+                                <label alignment="center" verticalAlignment="center" text="min ago" textAlignment="center" id="IwJ-4k-L7w">
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                </label>
+                                <label alignment="right" text="N/A" textAlignment="center" numberOfLines="2" id="Ehr-1Q-tJ0">
+                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="all-5Y-wf2">
+                            <items>
+                                <label alignment="left" text=" Raw" id="sUx-e6-wQe">
+                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
+                                </label>
+                                <label alignment="center" text="3 Hour Graph" id="oz4-fb-Ktb">
+                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
+                                </label>
+                                <label alignment="right" text="Battery" id="Izd-lg-G55">
+                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
+                                </label>
+                            </items>
+                        </group>
+                        <imageView alignment="center" id="v8P-Xw-gHJ"/>
+                        <slider width="1" alignment="left" value="4" minimum="1" maximum="4" steps="3" id="t7h-De-bBi">
+                            <connections>
+                                <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
+                            </connections>
+                        </slider>
+                    </items>
+                    <connections>
+                        <outlet property="battery" destination="Ehr-1Q-tJ0" id="9QT-Q7-w05"/>
+                        <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
+                        <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
+                        <outlet property="currentbg" destination="vGM-hd-W1b" id="UJ1-W0-2Pn"/>
+                        <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
+                        <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
+                        <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
+                        <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
+                        <outlet property="rawbg" destination="piM-ym-Ukt" id="kbq-8B-jqR"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="413" y="213.5"/>
+        </scene>
+        <!--Static Notification Interface Controller-->
+        <scene sceneID="1Px-nn-dlv">
+            <objects>
+                <notificationController id="8WY-QB-WNU">
+                    <items>
+                        <label alignment="left" text="Alert Label" id="cdq-IX-JgV"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" id="34I-Y4-Zns"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="cdq-IX-JgV" id="YN2-7e-NpL"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="712.5" y="267"/>
+        </scene>
+    </scenes>
+</document>

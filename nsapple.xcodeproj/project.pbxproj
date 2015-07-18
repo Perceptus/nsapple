@@ -14,6 +14,14 @@
 		1119B9FD1B4F046E00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119B9FC1B4F046E00046ABF /* Images.xcassets */; };
 		1119BA001B4F046E00046ABF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1119B9FE1B4F046E00046ABF /* LaunchScreen.xib */; };
 		1119BA0C1B4F046E00046ABF /* nsappleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA0B1B4F046E00046ABF /* nsappleTests.swift */; };
+		1119BA1F1B4F04FC00046ABF /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */; };
+		1119BA211B4F04FC00046ABF /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA201B4F04FC00046ABF /* NotificationController.swift */; };
+		1119BA231B4F04FC00046ABF /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA221B4F04FC00046ABF /* GlanceController.swift */; };
+		1119BA251B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA241B4F04FC00046ABF /* Images.xcassets */; };
+		1119BA291B4F04FC00046ABF /* nsapple WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */; };
+		1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA321B4F04FC00046ABF /* Images.xcassets */; };
+		1119BA361B4F04FC00046ABF /* nsapple WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA3E1B4F05A000046ABF /* Interface.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,7 +32,35 @@
 			remoteGlobalIDString = 1119B9ED1B4F046E00046ABF;
 			remoteInfo = nsapple;
 		};
+		1119BA2A1B4F04FC00046ABF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1119B9E61B4F046E00046ABF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1119BA271B4F04FC00046ABF;
+			remoteInfo = "nsapple WatchKit App";
+		};
+		1119BA341B4F04FC00046ABF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1119B9E61B4F046E00046ABF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1119BA181B4F04FC00046ABF;
+			remoteInfo = "nsapple WatchKit Extension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1119BA3D1B4F04FC00046ABF /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1119BA361B4F04FC00046ABF /* nsapple WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1119B9EE1B4F046E00046ABF /* nsapple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nsapple.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,6 +74,17 @@
 		1119BA051B4F046E00046ABF /* nsappleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nsappleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1119BA0A1B4F046E00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1119BA0B1B4F046E00046ABF /* nsappleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nsappleTests.swift; sourceTree = "<group>"; };
+		1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "nsapple WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1119BA1C1B4F04FC00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1119BA1D1B4F04FC00046ABF /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		1119BA201B4F04FC00046ABF /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		1119BA221B4F04FC00046ABF /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
+		1119BA241B4F04FC00046ABF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nsapple WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1119BA2E1B4F04FC00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1119BA321B4F04FC00046ABF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1119BA3E1B4F05A000046ABF /* Interface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Interface.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +102,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1119BA161B4F04FC00046ABF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -63,6 +117,8 @@
 			children = (
 				1119B9F01B4F046E00046ABF /* nsapple */,
 				1119BA081B4F046E00046ABF /* nsappleTests */,
+				1119BA1A1B4F04FC00046ABF /* nsapple WatchKit Extension */,
+				1119BA2C1B4F04FC00046ABF /* nsapple WatchKit App */,
 				1119B9EF1B4F046E00046ABF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,6 +128,8 @@
 			children = (
 				1119B9EE1B4F046E00046ABF /* nsapple.app */,
 				1119BA051B4F046E00046ABF /* nsappleTests.xctest */,
+				1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */,
+				1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,6 +173,45 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		1119BA1A1B4F04FC00046ABF /* nsapple WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */,
+				1119BA201B4F04FC00046ABF /* NotificationController.swift */,
+				1119BA221B4F04FC00046ABF /* GlanceController.swift */,
+				1119BA241B4F04FC00046ABF /* Images.xcassets */,
+				1119BA1B1B4F04FC00046ABF /* Supporting Files */,
+			);
+			path = "nsapple WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		1119BA1B1B4F04FC00046ABF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1119BA1C1B4F04FC00046ABF /* Info.plist */,
+				1119BA1D1B4F04FC00046ABF /* PushNotificationPayload.apns */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1119BA2C1B4F04FC00046ABF /* nsapple WatchKit App */ = {
+			isa = PBXGroup;
+			children = (
+				1119BA3E1B4F05A000046ABF /* Interface.storyboard */,
+				1119BA321B4F04FC00046ABF /* Images.xcassets */,
+				1119BA2D1B4F04FC00046ABF /* Supporting Files */,
+			);
+			path = "nsapple WatchKit App";
+			sourceTree = "<group>";
+		};
+		1119BA2D1B4F04FC00046ABF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1119BA2E1B4F04FC00046ABF /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -125,10 +222,12 @@
 				1119B9EA1B4F046E00046ABF /* Sources */,
 				1119B9EB1B4F046E00046ABF /* Frameworks */,
 				1119B9EC1B4F046E00046ABF /* Resources */,
+				1119BA3D1B4F04FC00046ABF /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1119BA351B4F04FC00046ABF /* PBXTargetDependency */,
 			);
 			name = nsapple;
 			productName = nsapple;
@@ -153,6 +252,39 @@
 			productReference = 1119BA051B4F046E00046ABF /* nsappleTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1119BA181B4F04FC00046ABF /* nsapple WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1119BA3A1B4F04FC00046ABF /* Build configuration list for PBXNativeTarget "nsapple WatchKit Extension" */;
+			buildPhases = (
+				1119BA151B4F04FC00046ABF /* Sources */,
+				1119BA161B4F04FC00046ABF /* Frameworks */,
+				1119BA171B4F04FC00046ABF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1119BA2B1B4F04FC00046ABF /* PBXTargetDependency */,
+			);
+			name = "nsapple WatchKit Extension";
+			productName = "nsapple WatchKit Extension";
+			productReference = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit-extension";
+		};
+		1119BA271B4F04FC00046ABF /* nsapple WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1119BA371B4F04FC00046ABF /* Build configuration list for PBXNativeTarget "nsapple WatchKit App" */;
+			buildPhases = (
+				1119BA261B4F04FC00046ABF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "nsapple WatchKit App";
+			productName = "nsapple WatchKit App";
+			productReference = 1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -168,6 +300,12 @@
 					1119BA041B4F046E00046ABF = {
 						CreatedOnToolsVersion = 6.3.2;
 						TestTargetID = 1119B9ED1B4F046E00046ABF;
+					};
+					1119BA181B4F04FC00046ABF = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					1119BA271B4F04FC00046ABF = {
+						CreatedOnToolsVersion = 6.3.2;
 					};
 				};
 			};
@@ -186,6 +324,8 @@
 			targets = (
 				1119B9ED1B4F046E00046ABF /* nsapple */,
 				1119BA041B4F046E00046ABF /* nsappleTests */,
+				1119BA181B4F04FC00046ABF /* nsapple WatchKit Extension */,
+				1119BA271B4F04FC00046ABF /* nsapple WatchKit App */,
 			);
 		};
 /* End PBXProject section */
@@ -205,6 +345,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1119BA171B4F04FC00046ABF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1119BA291B4F04FC00046ABF /* nsapple WatchKit App.app in Resources */,
+				1119BA251B4F04FC00046ABF /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1119BA261B4F04FC00046ABF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */,
+				1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +387,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1119BA151B4F04FC00046ABF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1119BA211B4F04FC00046ABF /* NotificationController.swift in Sources */,
+				1119BA1F1B4F04FC00046ABF /* InterfaceController.swift in Sources */,
+				1119BA231B4F04FC00046ABF /* GlanceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -236,6 +404,16 @@
 			isa = PBXTargetDependency;
 			target = 1119B9ED1B4F046E00046ABF /* nsapple */;
 			targetProxy = 1119BA061B4F046E00046ABF /* PBXContainerItemProxy */;
+		};
+		1119BA2B1B4F04FC00046ABF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1119BA271B4F04FC00046ABF /* nsapple WatchKit App */;
+			targetProxy = 1119BA2A1B4F04FC00046ABF /* PBXContainerItemProxy */;
+		};
+		1119BA351B4F04FC00046ABF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1119BA181B4F04FC00046ABF /* nsapple WatchKit Extension */;
+			targetProxy = 1119BA341B4F04FC00046ABF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -396,6 +574,62 @@
 			};
 			name = Release;
 		};
+		1119BA381B4F04FC00046ABF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IBSC_MODULE = nsapple_WatchKit_Extension;
+				INFOPLIST_FILE = "nsapple WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Debug;
+		};
+		1119BA391B4F04FC00046ABF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				IBSC_MODULE = nsapple_WatchKit_Extension;
+				INFOPLIST_FILE = "nsapple WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Release;
+		};
+		1119BA3B1B4F04FC00046ABF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "nsapple WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		1119BA3C1B4F04FC00046ABF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "nsapple WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -415,6 +649,7 @@
 				1119BA111B4F046E00046ABF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1119BA121B4F046E00046ABF /* Build configuration list for PBXNativeTarget "nsappleTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +658,25 @@
 				1119BA141B4F046E00046ABF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1119BA371B4F04FC00046ABF /* Build configuration list for PBXNativeTarget "nsapple WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1119BA381B4F04FC00046ABF /* Debug */,
+				1119BA391B4F04FC00046ABF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1119BA3A1B4F04FC00046ABF /* Build configuration list for PBXNativeTarget "nsapple WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1119BA3B1B4F04FC00046ABF /* Debug */,
+				1119BA3C1B4F04FC00046ABF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
