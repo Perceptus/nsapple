@@ -48,6 +48,7 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var hourslider: WKInterfaceSlider!
     
     var graphlength:Int=3
+    var bghistread=true as Bool
     
     @IBAction func hourslidervalue(value: Float) {
         let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3]
@@ -69,9 +70,14 @@ class InterfaceController: WKInterfaceController {
         super.willActivate()
         updatecore()
        
-         graphhours.setText("Last "+String(graphlength)+" Hours")
-      
-     //   bgimage.setImageWithUrl(bggraph(graphlength)!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!)
+        graphhours.setText("Last "+String(graphlength)+" Hours")
+        
+        if (bghistread==true) {
+            bgimage.setImageWithUrl(bggraph(graphlength)!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        else {
+            //need to create no data image
+        }
         
         
     }
@@ -103,8 +109,6 @@ class InterfaceController: WKInterfaceController {
             if let data = NSData(contentsOfURL: url, options: .allZeros, error: nil) {
                 
                responseDict  = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)!
-                
-            
             }
         }
         
@@ -212,6 +216,7 @@ class InterfaceController: WKInterfaceController {
         // display pebble data to watch
         let dirgraphics:[String:String]=["Flat":"\u{2192}","DoubleUp":"\u{21C8}","SingleUp":"\u{2191}","FortyFiveUp":"\u{2197}\u{FE0E}","FortyFiveDown":"\u{2198}\u{FE0E}","SingleDown":"\u{2193}","DoubleDown":"\u{21CA}","None":"-","NOT COMPUTABLE":"-","RATE OUT OF RANGE":"-"]
         currentbg.setText(cbg)
+            deltabg.setTextColor(UIColor.whiteColor())
         if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
         bgdirection.setText(dirgraphics[direction])
 
@@ -242,19 +247,37 @@ class InterfaceController: WKInterfaceController {
         //get bghistory
         //grabbing double the data in case of gap sync issues
         let numbg=2*hours*60/5+1
-        let urlPath2: String = "https://t1daarsaws.azurewebsites.net/api/v1/entries.json?count="+String(numbg)
-        println(numbg)
-        var url2: NSURL = NSURL(string: urlPath2)!
-        var request2: NSURLRequest = NSURLRequest(URL: url2)
-        var response2: AutoreleasingUnsafeMutablePointer<NSURLResponse?
-        >=nil
-        var dataVal2: NSData =  NSURLConnection.sendSynchronousRequest(request2, returningResponse: response2, error:nil)!
-        var err2: NSError?
-        let responseDict2 : AnyObject! = NSJSONSerialization.JSONObjectWithData(dataVal2, options: nil, error: nil)
-        let bghist:NSArray=responseDict2 as! NSArray
+        let urlPath: String = "https://t1daarsaws.azurewebsites.net/api/v1/entries.json?count="+String(numbg)
+        var responseDict:AnyObject=""
+        if let url = NSURL(string: urlPath) {
+            if let data = NSData(contentsOfURL: url, options: .allZeros, error: nil) {
+                
+                responseDict  = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)!
+            }
+        }
+         var google="" as String
+        if let bghist:NSArray=responseDict as? NSArray {
+        bghistread=true
+            println(bghistread)
+        
+        
+//        let urlPath2: String = "https://t1daarsaws.azurewebsites.net/api/v1/entries.json?count="+String(numbg)
+//        println(numbg)
+            
+//        var url2: NSURL = NSURL(string: urlPath2)!
+//        var request2: NSURLRequest = NSURLRequest(URL: url2)
+//        var response2: AutoreleasingUnsafeMutablePointer<NSURLResponse?
+//        >=nil
+//        var dataVal2: NSData =  NSURLConnection.sendSynchronousRequest(request2, returningResponse: response2, error:nil)!
+//        var err2: NSError?
+//        let responseDict2 : AnyObject! = NSJSONSerialization.JSONObjectWithData(dataVal2, options: nil, error: nil)
+//        let bghist:NSArray=responseDict2 as! NSArray
+        
+        
+        
+        
         var ct2=NSInteger(NSDate().timeIntervalSince1970)
-        var google="" as String
-        var xg="" as String
+                var xg="" as String
         var yg="" as String
         var pc="&chco=" as String
         var maxy=0
@@ -327,6 +350,8 @@ class InterfaceController: WKInterfaceController {
         println(google)
 
        // graphhours.setText("Last "+String(slidervalue)+" Hours")
+        } //endifbghist>0
+        
             return google
         
         
