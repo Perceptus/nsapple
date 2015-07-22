@@ -12,7 +12,7 @@
                     <items>
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
-                                <label alignment="center" text="N/A" textAlignment="center" id="vGM-hd-W1b">
+                                <label alignment="center" text="N/A" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
                                 </label>
                                 <label alignment="center" text="-" id="YV0-Ga-4dz">
@@ -56,11 +56,17 @@
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
                         </slider>
+                        <switch width="1" alignment="center" value="YES" title="Chart Raw" id="mh8-ja-2bc">
+                            <connections>
+                                <action selector="chartraw:" destination="AgC-eL-Hgc" id="PEs-MP-MW0"/>
+                            </connections>
+                        </switch>
                     </items>
                     <connections>
                         <outlet property="battery" destination="Ehr-1Q-tJ0" id="9QT-Q7-w05"/>
                         <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
+                        <outlet property="chartraw" destination="mh8-ja-2bc" id="uFY-FI-cXC"/>
                         <outlet property="currentbg" destination="vGM-hd-W1b" id="UJ1-W0-2Pn"/>
                         <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>

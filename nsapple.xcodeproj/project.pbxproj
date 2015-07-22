@@ -22,6 +22,7 @@
 		1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA321B4F04FC00046ABF /* Images.xcassets */; };
 		1119BA361B4F04FC00046ABF /* nsapple WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA3E1B4F05A000046ABF /* Interface.storyboard */; };
+		11832FFE1B5F4794005E3536 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11832FFD1B5F4794005E3536 /* ViewController2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,9 @@
 		1119BA2E1B4F04FC00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1119BA321B4F04FC00046ABF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1119BA3E1B4F05A000046ABF /* Interface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Interface.storyboard; sourceTree = "<group>"; };
+		11832FFD1B5F4794005E3536 /* ViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
+		11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "nsapple WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+		11C9660B1B5FDA87007C5B1E /* nsapple.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = nsapple.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,10 +141,12 @@
 		1119B9F01B4F046E00046ABF /* nsapple */ = {
 			isa = PBXGroup;
 			children = (
+				11C9660B1B5FDA87007C5B1E /* nsapple.entitlements */,
 				1119B9F31B4F046E00046ABF /* AppDelegate.swift */,
 				1119B9F51B4F046E00046ABF /* MasterViewController.swift */,
 				1119B9F71B4F046E00046ABF /* DetailViewController.swift */,
 				1119B9F91B4F046E00046ABF /* Main.storyboard */,
+				11832FFD1B5F4794005E3536 /* ViewController2.swift */,
 				1119B9FC1B4F046E00046ABF /* Images.xcassets */,
 				1119B9FE1B4F046E00046ABF /* LaunchScreen.xib */,
 				1119B9F11B4F046E00046ABF /* Supporting Files */,
@@ -176,6 +182,7 @@
 		1119BA1A1B4F04FC00046ABF /* nsapple WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
+				11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */,
 				1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */,
 				1119BA201B4F04FC00046ABF /* NotificationController.swift */,
 				1119BA221B4F04FC00046ABF /* GlanceController.swift */,
@@ -296,6 +303,12 @@
 				TargetAttributes = {
 					1119B9ED1B4F046E00046ABF = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 6Q7ZC8Q56M;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					1119BA041B4F046E00046ABF = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -303,6 +316,12 @@
 					};
 					1119BA181B4F04FC00046ABF = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 6Q7ZC8Q56M;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					1119BA271B4F04FC00046ABF = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -374,6 +393,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1119B9F81B4F046E00046ABF /* DetailViewController.swift in Sources */,
+				11832FFE1B5F4794005E3536 /* ViewController2.swift in Sources */,
 				1119B9F61B4F046E00046ABF /* MasterViewController.swift in Sources */,
 				1119B9F41B4F046E00046ABF /* AppDelegate.swift in Sources */,
 			);
@@ -524,9 +544,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = nsapple/nsapple.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = nsapple/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -534,9 +558,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = nsapple/nsapple.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = nsapple/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -609,6 +637,9 @@
 		1119BA3B1B4F04FC00046ABF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "nsapple WatchKit Extension/nsapple WatchKit Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -616,6 +647,7 @@
 				INFOPLIST_FILE = "nsapple WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -623,9 +655,13 @@
 		1119BA3C1B4F04FC00046ABF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "nsapple WatchKit Extension/nsapple WatchKit Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "nsapple WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
