@@ -54,7 +54,7 @@ class InterfaceController: WKInterfaceController {
     
     
     @IBAction func hourslidervalue(value: Float) {
-        let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3]
+        let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let slidervalue=Int(round(value*1000)/1000)
         graphlength=slidermap[slidervalue]!
         willActivate()
@@ -78,15 +78,17 @@ class InterfaceController: WKInterfaceController {
         super.willActivate()
         updatecore()
         let google=bggraph(graphlength)!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
-        if (bghistread==true)&&(google != "No Data") {
+        if (bghistread==true)&&(google != "NoData") {
             graphhours.setTextColor(UIColor.whiteColor())
             graphhours.setText("Last "+String(graphlength)+" Hours")
+            bgimage.setHidden(false)
             bgimage.setImageWithUrl(google)
         }
         else {
             //need to create no data image
             graphhours.setTextColor(UIColor.redColor())
             graphhours.setText("No Chart Data")
+            bgimage.setHidden(true)
         }
         
         
@@ -287,7 +289,7 @@ class InterfaceController: WKInterfaceController {
         var rawv=[Int](count:numbg+1, repeatedValue: 0)
         let minutes=hours*60
         var inc:Int=1
-        if hours==3 {inc=1} else
+        if (hours==3||hours==1) {inc=1} else
             if hours==6 {inc=2} else
             if hours==12 {inc=3} else
                 {inc=5}
@@ -319,7 +321,7 @@ class InterfaceController: WKInterfaceController {
                 }
             }
         }
-        if gpoints < 1 {return "No Data"}
+        if gpoints < 1 {return "NoData"}
         if maxy<bgth {maxy=bgth}
         if miny>bgtl {miny=bgtl}
 
@@ -340,7 +342,7 @@ class InterfaceController: WKInterfaceController {
                 //add raw points on the fly if cal available
                 if cals.count>0 && craw==true {
                     let rawscaled=(rawv[i]-miny)*100/(maxy-miny)
-                    xg=xg+String(bgtimes[i]*100/minutes)+".2,"
+                    xg=xg+String(bgtimes[i]*100/minutes)+".05,"
                     yg=yg+String(rawscaled)+","
                     pc=pc+"FFFFFF|"
                 }

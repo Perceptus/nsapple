@@ -51,7 +51,7 @@
                             </items>
                         </group>
                         <imageView alignment="center" id="v8P-Xw-gHJ"/>
-                        <slider width="1" alignment="left" value="4" minimum="1" maximum="4" steps="3" id="t7h-De-bBi">
+                        <slider width="1" alignment="left" value="4" minimum="1" maximum="5" steps="4" id="t7h-De-bBi">
                             <connections>
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
