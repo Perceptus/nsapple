@@ -1,6 +1,12 @@
 # nsapple
 apple watch app for nightscout users
 
+![img_2267](https://cloud.githubusercontent.com/assets/8536751/8884324/dc92b102-3223-11e5-831f-70b5045fef79.PNG)
+
+![img_2268](https://cloud.githubusercontent.com/assets/8536751/8884323/d919fd00-3223-11e5-879d-b04931907159.PNG)
+
+![img_2271](https://cloud.githubusercontent.com/assets/8536751/8884361/2d739f46-3224-11e5-8417-f5642f2f9984.PNG)
+
 # Requirements
 * Apple Watch (tested with 42mm)
 * XCode 6.3.2 (add watchkit)
