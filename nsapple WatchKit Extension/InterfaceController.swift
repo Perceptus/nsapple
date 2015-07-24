@@ -51,7 +51,7 @@ class InterfaceController: WKInterfaceController {
     var bghist=[] as NSArray
     var cals=[] as NSArray
     var craw=true as Bool
-    
+    //
     
     @IBAction func hourslidervalue(value: Float) {
         let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
