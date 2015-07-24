@@ -82,6 +82,7 @@ class InterfaceController: WKInterfaceController {
             graphhours.setTextColor(UIColor.whiteColor())
             graphhours.setText("Last "+String(graphlength)+" Hours")
             bgimage.setHidden(false)
+            chartraw.setHidden(false)
             bgimage.setImageWithUrl(google)
         }
         else {
@@ -89,6 +90,7 @@ class InterfaceController: WKInterfaceController {
             graphhours.setTextColor(UIColor.redColor())
             graphhours.setText("No Chart Data")
             bgimage.setHidden(true)
+            chartraw.setHidden(true)
         }
         
         

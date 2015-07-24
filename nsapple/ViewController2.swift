@@ -18,12 +18,24 @@ class ViewController2: UIViewController {
         let url=pebbleurl.text
         defaults.setObject(url, forKey: "pebbleurl")
         defaults.synchronize()
+        let alertController = UIAlertController(title: "URL Has Been Saved", message: "If WatchApp Says No Connection Please Check URL", preferredStyle: .Alert)
+        let cancelAction = UIAlertAction(title: "OK", style: .Cancel) { (action) in
+            println(action)
+        }
+        alertController.addAction(cancelAction)
+        self.presentViewController(alertController, animated: true) {
+            // ...
+        }
+        
     }
     @IBAction func urlchanged(sender: AnyObject) {
      
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+         var defaults: NSUserDefaults = NSUserDefaults(suiteName: "group.perceptus.nsapple")!
+        let url=defaults.objectForKey("pebbleurl") as! String
+        pebbleurl.text=url
 
         // Do any additional setup after loading the view.
     }

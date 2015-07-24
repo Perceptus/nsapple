@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple/ViewController2.swift"
-            timestampString = "459267006.732143"
+            timestampString = "459366541.031947"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
             landmarkName = "urlchanged(_:)"
             landmarkType = "5">
          </BreakpointContent>
