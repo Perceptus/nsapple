@@ -28,6 +28,7 @@ apple watch app for nightscout users
 # To Do
 * Testing (38mm Watch, Connection Issues)
 * Add MMOL Support
+* Add Glance 
 * Local Creation of Chart (iPhone) versus Current Web Created Chart
 
 # Notes
