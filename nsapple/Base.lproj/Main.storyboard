@@ -73,6 +73,22 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Primary Display" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xD0-yv-5f7">
+                                <rect key="frame" x="257" y="262" width="136" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIf-9T-zOJ">
+                                <rect key="frame" x="253" y="303" width="123" height="29"/>
+                                <segments>
+                                    <segment title="Dexcom"/>
+                                    <segment title="Raw"/>
+                                </segments>
+                                <connections>
+                                    <action selector="primarydisplay:" destination="cNu-Jg-hmD" eventType="valueChanged" id="Q8a-kp-z9N"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -83,11 +99,14 @@
                             <constraint firstAttribute="centerX" secondItem="eUg-YU-tTT" secondAttribute="centerX" id="Hnh-Pv-Y43"/>
                             <constraint firstItem="aYb-IZ-USl" firstAttribute="centerY" secondItem="ZJR-55-TB1" secondAttribute="centerY" constant="-38" id="Ilf-WK-Bbg"/>
                             <constraint firstAttribute="centerX" secondItem="ZJR-55-TB1" secondAttribute="centerX" id="YXA-Q6-BP2"/>
+                            <constraint firstAttribute="centerX" secondItem="xD0-yv-5f7" secondAttribute="centerX" id="grj-yh-OOY"/>
+                            <constraint firstAttribute="centerX" secondItem="CIf-9T-zOJ" secondAttribute="centerX" id="pYA-CB-gho"/>
                             <constraint firstAttribute="centerX" secondItem="aYb-IZ-USl" secondAttribute="centerX" id="sXt-3v-9BR"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="pebbleurl" destination="aYb-IZ-USl" id="jib-kP-IhH"/>
+                        <outlet property="primarydisplay" destination="CIf-9T-zOJ" id="M99-za-Quz"/>
                         <outlet property="urlbutton" destination="ZJR-55-TB1" id="eLX-Qs-UvA"/>
                     </connections>
                 </viewController>
