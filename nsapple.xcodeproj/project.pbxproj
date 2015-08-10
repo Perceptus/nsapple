@@ -298,6 +298,7 @@
 		1119B9E61B4F046E00046ABF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = Perceptus.org;
 				TargetAttributes = {

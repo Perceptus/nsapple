@@ -67,12 +67,13 @@
                         <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
                         <outlet property="chartraw" destination="mh8-ja-2bc" id="uFY-FI-cXC"/>
-                        <outlet property="currentbg" destination="vGM-hd-W1b" id="UJ1-W0-2Pn"/>
                         <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
                         <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
-                        <outlet property="rawbg" destination="piM-ym-Ukt" id="kbq-8B-jqR"/>
+                        <outlet property="primarybg" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
+                        <outlet property="secondarybg" destination="piM-ym-Ukt" id="NQ9-D7-oTk"/>
+                        <outlet property="secondarybgname" destination="sUx-e6-wQe" id="KOf-B7-ShR"/>
                     </connections>
                 </controller>
             </objects>
