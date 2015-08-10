@@ -19,6 +19,8 @@ apple watch app for nightscout users
 * User Can Toggle Raw On or Off on Charting
 * Basic Error Trapping But Likely Missed Something :)
 * mg/dl Support ONLY At Current Time
+* Added Ability to use Raw Data as Primary Display - Toggle in iOS Companion App - Includes Raw BG, Raw Delta and Raw Direction Arrow
+* Limited Testing on Support for Both 0.6.4 and 0.7.0 Pebble EndPoints
 
 # Usage
 * iOS Companion App Allows User to Input Their Nightscout URL - Do That First!
