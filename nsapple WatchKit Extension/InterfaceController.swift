@@ -124,8 +124,33 @@ class InterfaceController: WKInterfaceController {
         var responseDict:AnyObject=""
         if let url = NSURL(string: urlPath) {
             if let data = NSData(contentsOfURL: url, options: .allZeros, error: nil) {
+                println(data)
                 
-               responseDict  = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)!
+                //from Nightscouter - fix for apple json issues
+                var dataConvertedToString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                // Apple's JSON Serializer has a problem with + notation for large numbers. I've observed this happening in intercepts.
+                dataConvertedToString = dataConvertedToString?.stringByReplacingOccurrencesOfString("+", withString: "")
+                
+                // Converting string back into data so it can be processed into JSON.
+                if let newData: NSData = dataConvertedToString?.dataUsingEncoding(NSUTF8StringEncoding) {
+                    var jsonErrorOptional: NSError?
+                    responseDict = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)!
+                    
+                    // if there was an error parsing the JSON send it back
+             
+                
+                
+                
+                
+                
+                
+                }
+                
+            
+            
+                
+                
+             //  responseDict  = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)!
             }
         }
         
@@ -162,11 +187,11 @@ class InterfaceController: WKInterfaceController {
             
 
 //check to see if cal data is available - if so we can calc raw
-   
+
         
-            if let slopet=cals[0]["slope"] as? Double {
+            if (cals.count>0) {
                 rawavailable=true
-                slope=slopet
+                slope=cals[0]["slope"] as! Double
            scale=cals[0]["scale"] as! Double
              intercept=cals[0]["intercept"] as! Double
             
@@ -214,9 +239,11 @@ class InterfaceController: WKInterfaceController {
             {
         //display dex as primary
         primarybg.setText(cbg)
+        primarybg.setTextColor(bgcolor(cbg.toInt()!))
         deltabg.setTextColor(UIColor.whiteColor())
         if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
         bgdirection.setText(dirgraphics(direction))
+                bgdirection.setTextColor(bgcolor(cbg.toInt()!))
                 if (rawavailable==true) {
                     secondarybg.setText(String(rawv))
                     secondarybg.setTextColor(bgcolor(rawv))
