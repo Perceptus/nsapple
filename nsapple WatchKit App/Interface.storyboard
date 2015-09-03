@@ -12,12 +12,14 @@
                     <items>
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
+                                <label alignment="left" text="Label" id="1cw-2v-v8O"/>
                                 <label alignment="center" text="N/A" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
                                 </label>
                                 <label alignment="center" text="-" id="YV0-Ga-4dz">
                                     <fontDescription key="font" type="system" pointSize="30"/>
                                 </label>
+                                <label alignment="right" text="Label" id="oEG-1v-IuD"/>
                             </items>
                         </group>
                         <label alignment="center" text="- 5.0 mg/dl" id="drV-DZ-SeX">
@@ -71,13 +73,15 @@
                         <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
                         <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
+                        <outlet property="plabel" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
                         <outlet property="primarybg" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
                         <outlet property="secondarybg" destination="piM-ym-Ukt" id="NQ9-D7-oTk"/>
                         <outlet property="secondarybgname" destination="sUx-e6-wQe" id="KOf-B7-ShR"/>
+                        <outlet property="vlabel" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="413" y="213.5"/>
+            <point key="canvasLocation" x="413" y="212.75"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="1Px-nn-dlv">

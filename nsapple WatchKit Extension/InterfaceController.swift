@@ -47,7 +47,9 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var chartraw: WKInterfaceSwitch!
    //@IBOutlet weak var primarybg: WKInterfaceLabel!
    //@IBOutlet weak var secondarybg: WKInterfaceLabel!
-    
+
+    @IBOutlet weak var plabel: WKInterfaceLabel!
+    @IBOutlet weak var vlabel: WKInterfaceLabel!
     @IBOutlet weak var secondarybgname: WKInterfaceLabel!
     var graphlength:Int=3
     var bghistread=true as Bool
@@ -270,10 +272,30 @@ class InterfaceController: WKInterfaceController {
                     deltabg.setTextColor(UIColor.whiteColor())
                     if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
                     //calculate raw direction
-                   let bgtimeo=bgs[1]["datetime"] as! NSTimeInterval
+                   
+                    //
+                    
+                    //
+                    
+                    let bgtimeo=bgs[1]["datetime"] as! NSTimeInterval
                     let dt=round((bgtime-bgtimeo)/60000.0) as Double
                     println(dt)
-                    let velocity=Double(dbg)/dt
+                    
+                    
+                    
+                    
+                  //  let velocity=Double(dbg)/dt
+                   
+                    
+                    let velocity=velocity_cf(bgs,filto: filto,unfilto: unfilto,slope: slope,intercept: intercept,scale: scale) as Double
+                    let prediction=velocity*20.0
+                    println("vel")
+                    println(velocity)
+                    vlabel.setText(String(format:"%.1f", velocity))
+                    plabel.setText(String(format:"%.1f", prediction))
+                    
+                    
+                    
                     bgdirection.setTextColor(bgcolor(rawv))
                     bgdirection.setText(dirgraphics(rawdir(velocity,dt: dt)))
                     
@@ -297,6 +319,78 @@ class InterfaceController: WKInterfaceController {
         }
 
     }
+    
+    func velocity_cf(bgs:NSArray,filto:Double,unfilto:Double,slope:Double,intercept:Double,scale:Double)->Double {
+    //linear fit to 3 data points get slope (ie velocity)
+    var v=0 as Double
+    var n=0 as Int
+    var i=0 as Int
+    let ONE_MINUTE=60000.0 as Double
+    var bgsgv = [Double](count: 4, repeatedValue: 0.0)
+        var date = [Double](count: 4, repeatedValue: 0.0)
+        var bgsraw=[Double](count: 4, repeatedValue: 0.0)
+        
+      
+        
+        for (i=0;i<4;i++) {
+         date[i]=(bgs[i]["datetime"] as? Double)!
+         bgsgv[i]=(bgs[i]["sgv"] as? NSString)!.doubleValue
+         
+          bgsraw[i]=Double(calcraw(bgsgv[i],filt:filto,unfilt:unfilto,slope: slope,intercept: intercept,scale: scale) as Int)
+            bgsgv[i]=bgsraw[i]
+          
+        }
+        
+        
+    if ((date[0]-date[3])/ONE_MINUTE < 15.1) {n=4}
+        
+        else
+        
+    if ((date[0]-date[2])/ONE_MINUTE < 10.1) {n=3}
+    else
+        
+    if ((date[0]-date[1])/ONE_MINUTE<10.1) {n=2}
+    else {n=0}
+        
+    var xm=0.0 as Double
+    var ym=0.0 as Double
+    var j=0 as Int
+    if (n>0) {
+ 
+    for (j=0;j<n;j++) {
+				
+				xm = xm + date[j]/ONE_MINUTE
+				ym = ym + bgsgv[j]
+    }
+    xm=xm/Double(n)
+    ym=ym/Double(n)
+    var c1=0.0 as Double
+    var c2=0.0 as Double
+    var t=0.0 as Double
+        
+    for (j=0;j<n;j++) {
+				
+				t=date[j]/ONE_MINUTE
+				c1=c1+(t-xm)*(bgsgv[j]-ym)
+				c2=c2+(t-xm)*(t-xm)
+
+    }
+    v=c1/c2
+        println(v)
+    //	console.log(v)
+    }
+    //need to decide what to return if there isnt enough data
+    
+    else {v=0}
+    
+    return v
+    }
+    
+    
+    
+    
+    
+    
     
     
     func noconnection() {
