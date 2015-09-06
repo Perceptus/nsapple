@@ -287,7 +287,7 @@ class InterfaceController: WKInterfaceController {
                   //  let velocity=Double(dbg)/dt
                    
                     
-                    let velocity=velocity_cf(bgs,filto: filto,unfilto: unfilto,slope: slope,intercept: intercept,scale: scale) as Double
+                    let velocity=velocity_cf(bgs,slope: slope,intercept: intercept,scale: scale) as Double
                     let prediction=velocity*20.0
                     println("vel")
                     println(velocity)
@@ -320,7 +320,7 @@ class InterfaceController: WKInterfaceController {
 
     }
     
-    func velocity_cf(bgs:NSArray,filto:Double,unfilto:Double,slope:Double,intercept:Double,scale:Double)->Double {
+    func velocity_cf(bgs:NSArray,slope:Double,intercept:Double,scale:Double)->Double {
     //linear fit to 3 data points get slope (ie velocity)
     var v=0 as Double
     var n=0 as Int
@@ -505,6 +505,14 @@ class InterfaceController: WKInterfaceController {
             scale=cals[0]["scale"] as! Double
             intercept=cals[0]["intercept"] as! Double
         }
+        var descriptor: NSSortDescriptor = NSSortDescriptor(key: "datetime", ascending: false)
+        var sortedbgs: NSArray = bghist.sortedArrayUsingDescriptors([descriptor])
+
+        
+        
+//        var test=bghist.sort{
+//            (($0 as! Dictionary<String, AnyObject>)["datetime"] as? Int) < (($1 as! Dictionary<String, AnyObject>)["datetime"] as? Int)
+//        }
         
   
         //find max time, min and max bg
@@ -528,7 +536,17 @@ class InterfaceController: WKInterfaceController {
                 }
             }
         }
-        if gpoints < 1 {return "NoData"}
+        
+       
+        
+        
+        if gpoints < 2 {return "NoData"}
+        
+        //make sure there are 2 points minimum for prediction
+               let velocity=velocity_cf(sortedbgs,filt: filt,unfilt: unfilt,slope: slope,intercept: intercept,scale: scale) as Double
+        
+        
+         //insert prediction points into
         if maxy<bgth {maxy=bgth}
         if miny>bgtl {miny=bgtl}
 
