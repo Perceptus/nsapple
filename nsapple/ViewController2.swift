@@ -15,42 +15,42 @@ class ViewController2: UIViewController {
     
     @IBOutlet weak var primarydisplay: UISegmentedControl!
     
-    @IBAction func primarydisplay(sender: AnyObject) {
-          var defaults: NSUserDefaults = NSUserDefaults(suiteName: "group.perceptus.nsapple")!
-        if primarydisplay.selectedSegmentIndex==0 {defaults.setObject("dex", forKey: "primarydisplay")} else
-        {defaults.setObject("raw", forKey: "primarydisplay")}
+    @IBAction func primarydisplay(_ sender: AnyObject) {
+          var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
+        if primarydisplay.selectedSegmentIndex==0 {defaults.set("dex", forKey: "primarydisplay")} else
+        {defaults.set("raw", forKey: "primarydisplay")}
         
         defaults.synchronize()
     }
-    @IBAction func urlbuttontouch(sender: AnyObject) {
-        var defaults: NSUserDefaults = NSUserDefaults(suiteName: "group.perceptus.nsapple")!
+    @IBAction func urlbuttontouch(_ sender: AnyObject) {
+        var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
         let url=pebbleurl.text
-        defaults.setObject(url, forKey: "pebbleurl")
+        defaults.set(url, forKey: "pebbleurl")
         defaults.synchronize()
-        let alertController = UIAlertController(title: "URL Has Been Saved", message: "If WatchApp Says No Connection Please Check URL", preferredStyle: .Alert)
-        let cancelAction = UIAlertAction(title: "OK", style: .Cancel) { (action) in
-            println(action)
+        let alertController = UIAlertController(title: "URL Has Been Saved", message: "If WatchApp Says No Connection Please Check URL", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
+            print(action)
         }
         alertController.addAction(cancelAction)
-        self.presentViewController(alertController, animated: true) {
+        self.present(alertController, animated: true) {
             // ...
         }
         
     }
-    @IBAction func urlchanged(sender: AnyObject) {
+    @IBAction func urlchanged(_ sender: AnyObject) {
      
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-         var defaults: NSUserDefaults = NSUserDefaults(suiteName: "group.perceptus.nsapple")!
-        if let url=defaults.objectForKey("pebbleurl") as? String {
+         var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
+        if let url=defaults.object(forKey: "pebbleurl") as? String {
             pebbleurl.text=url}
         //will write dex to defaults first time thru
-        if let primarydisplay=defaults.objectForKey("primarydisplay") as? String {
+        if let primarydisplay=defaults.object(forKey: "primarydisplay") as? String {
             if primarydisplay=="dex" {self.primarydisplay.selectedSegmentIndex=0} else {self.primarydisplay.selectedSegmentIndex=1}
         }
-        if primarydisplay.selectedSegmentIndex==0 {defaults.setObject("dex", forKey: "primarydisplay")} else
-        {defaults.setObject("raw", forKey: "primarydisplay")}
+        if primarydisplay.selectedSegmentIndex==0 {defaults.set("dex", forKey: "primarydisplay")} else
+        {defaults.set("raw", forKey: "primarydisplay")}
         defaults.synchronize()
 
 
