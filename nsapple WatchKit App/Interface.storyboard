@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="12117" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
-    <device id="watch38" orientation="portrait">
+    <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -14,6 +14,16 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="nsapple_WatchKit_App" customModuleProvider="target">
                     <items>
+                        <group width="154" alignment="left" id="0XS-Xb-x7m">
+                            <items>
+                                <label alignment="left" text="mg/dl.min" id="1qW-8W-XE3">
+                                    <fontDescription key="font" type="system" pointSize="8"/>
+                                </label>
+                                <label alignment="right" text="20m Min Pred" id="wWp-A4-E1K">
+                                    <fontDescription key="font" type="system" pointSize="8"/>
+                                </label>
+                            </items>
+                        </group>
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
                                 <label alignment="left" text="Label" id="1cw-2v-v8O"/>
@@ -26,20 +36,14 @@
                                 <label alignment="right" text="Label" id="oEG-1v-IuD"/>
                             </items>
                         </group>
-                        <label alignment="center" text="- 5.0 mg/dl" id="drV-DZ-SeX">
-                            <fontDescription key="font" type="system" pointSize="10"/>
-                        </label>
-                        <group width="1" alignment="left" id="D2S-gh-qaj">
+                        <group width="1" alignment="left" id="nJH-yY-zdH">
                             <items>
-                                <label alignment="left" text="N/A" id="piM-ym-Ukt">
-                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
+                                <label alignment="left" text="- 5.0 mg/dl" id="drV-DZ-SeX">
+                                    <fontDescription key="font" type="system" pointSize="10"/>
                                 </label>
-                                <label alignment="center" verticalAlignment="center" text="min ago" textAlignment="center" id="IwJ-4k-L7w">
+                                <label alignment="right" verticalAlignment="center" text="min ago" textAlignment="center" id="IwJ-4k-L7w">
                                     <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" type="system" pointSize="11"/>
-                                </label>
-                                <label alignment="right" text="N/A" textAlignment="center" numberOfLines="2" id="Ehr-1Q-tJ0">
-                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
                                 </label>
                             </items>
                         </group>
@@ -67,6 +71,16 @@
                                 <action selector="chartraw:" destination="AgC-eL-Hgc" id="PEs-MP-MW0"/>
                             </connections>
                         </switch>
+                        <group width="1" alignment="left" id="D2S-gh-qaj">
+                            <items>
+                                <label alignment="left" text="N/A" id="piM-ym-Ukt">
+                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
+                                </label>
+                                <label alignment="right" text="N/A" textAlignment="center" numberOfLines="2" id="Ehr-1Q-tJ0">
+                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
+                                </label>
+                            </items>
+                        </group>
                     </items>
                     <connections>
                         <outlet property="battery" destination="Ehr-1Q-tJ0" id="9QT-Q7-w05"/>
@@ -85,7 +99,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="413" y="212.75"/>
+            <point key="canvasLocation" x="412.35897435897436" y="212.2820512820513"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="1Px-nn-dlv">

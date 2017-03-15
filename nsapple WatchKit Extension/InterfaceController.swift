@@ -107,21 +107,21 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         updatecore()
-        let google=bggraph(graphlength)!.addingPercentEscapes(using: String.Encoding.utf8)!
-        if (bghistread==true)&&(google != "NoData") {
-            graphhours.setTextColor(UIColor.white)
-            graphhours.setText("Last "+String(graphlength)+" Hours")
-            bgimage.setHidden(false)
-            chartraw.setHidden(false)
-            bgimage.setImageWithUrl(google)
-        }
-        else {
-            //need to create no data image
-            graphhours.setTextColor(UIColor.red)
-            graphhours.setText("No Chart Data")
-            bgimage.setHidden(true)
-            chartraw.setHidden(true)
-        }
+//        let google=bggraph(graphlength)!.addingPercentEscapes(using: String.Encoding.utf8)!
+//        if (bghistread==true)&&(google != "NoData") {
+//            graphhours.setTextColor(UIColor.white)
+//            graphhours.setText("Last "+String(graphlength)+" Hours")
+//            bgimage.setHidden(false)
+//            chartraw.setHidden(false)
+//            bgimage.setImageWithUrl(google)
+//        }
+//        else {
+//            //need to create no data image
+//            graphhours.setTextColor(UIColor.red)
+//            graphhours.setText("No Chart Data")
+//            bgimage.setHidden(true)
+//            chartraw.setHidden(true)
+//        }
         
         
     }
@@ -138,32 +138,260 @@ class InterfaceController: WKInterfaceController {
      //get pebble data
   //    var dexprimary=false as Bool
         //add retrieve urlfrom user storage
-        var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
-        let url=defaults.object(forKey: "pebbleurl") as! String
+       // var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
+        //var url=defaults.object(forKey: "pebbleurl") as! String
         var dexprimary=true as Bool
-        if defaults.object(forKey: "primarydisplay") as! String == "dex" {dexprimary=true} else {dexprimary=false}
-      
-       
-        
+       // if defaults.object(forKey: "primarydisplay") as! String == "dex" {dexprimary=true} else {dexprimary=false}
+      print("in updarte core")
+       //hard code for now
+        var url="t1daarshk.herokuapp.com"
         let urlPath: String = "https://"+url+"/pebble?count=576"
         print("in watchkit")
     
         print(urlPath)
-        //var responseDict:AnyObject="" as AnyObject
-        if let url = URL(string: urlPath) {
-            do {
-                var contents = try String(contentsOf: url)
-                contents=contents.replacingOccurrences(of:"+", with: "")
-                let data=contents.data(using: .utf8)!
-                responseDict = try! JSONSerialization.jsonObject(with: data,options: []) as! [String:AnyObject]
-                
-            } catch {
-                // contents could not be loaded
+        
+        let url2 = URL(string: urlPath)
+        
+        let task = URLSession.shared.dataTask(with: url2!) { data, response, error in
+            //let task = URLSession.synchronousDataTaskWithURL(urlPath2) { data, response, error in
+            guard error == nil else {
+                print(error!)
+                return
             }
-        } else {
-            // the URL was bad!
+            guard let data = data else {
+                print("Data is empty")
+                return
+            }
+            
+            let responseDict = try! JSONSerialization.jsonObject(with: data, options: []) as! [String:AnyObject]
+            print ("read resp")
+            
+            
+            
+            
+            
+ // new main
+            
+            print("before main")
+            // print(responseDict["bgs"])
+            //successfully received pebble end point data
+            if let bgs=responseDict["bgs"] as? [[String:AnyObject]] {
+                print("after main")
+                print(bgs[0])
+                // if let bgs=responseDict["bgs"] as? NSArray {
+                self.bghistread=true
+                var rawavailable=false as Bool
+                var slope=0.0 as Double
+                var intercept=0.0 as Double
+                var scale=0.0 as Double
+                let cbg=bgs[0]["sgv"] as! String
+                let direction=bgs[0]["direction"] as! String
+                // let unfilt=bgs[0]["unfiltered"] as! Double
+                // let filt=bgs[0]["filtered"] as! Double
+                // let bat=bgs[0]["battery"] as! String
+                let dbg=bgs[0]["bgdelta"] as! Int
+                let bgtime=bgs[0]["datetime"] as! TimeInterval
+                var red=UIColor.red as UIColor
+                var green=UIColor.green as UIColor
+                var yellow=UIColor.yellow as UIColor
+                var rawcolor="green" as String
+                //save as global variables
+                self.cals=responseDict["cals"] as? [[String:AnyObject]]
+                self.bghist=bgs
+                //calculate text colors for sgv,direction
+                var lmh=2
+                var rawv=0 as Int
+                let sgvi=Int(cbg)
+                let sgv=Double(sgvi!)
+                // let sgvcolor=bgcolor(sgvi!) as String
+                
+                
+                //check to see if cal data is available - if so we can calc raw
+                
+                
+                //            if (cals?.count>0) {
+                //                rawavailable=true
+                //                slope=cals?[0]["slope"] as! Double
+                //           scale=cals?[0]["scale"] as! Double
+                //             intercept=cals?[0]["intercept"] as! Double
+                //
+                //           // rawv=calcraw(sgv,slope: slope,intercept: intercept,scale: scale)
+                //
+                //                }
+                //        else
+                //        {rawbg.setTextColor(rawcolor)
+                //            rawbg.setText("N/A")
+                //        }
+                // display pebble data to watch
+                
+                //color for battery
+                //        if Int(bat)<20 {battery.setTextColor(UIColor.red)} else
+                //            if Int(bat)<40 {battery.setTextColor(UIColor.yellow)} else
+                //            {battery.setTextColor(UIColor.green)}
+                //         battery.setText(bat+"%")
+                //set time
+                let ct=TimeInterval(Date().timeIntervalSince1970)
+                let deltat=(ct-bgtime/1000)/60
+                if deltat<10 {self.minago.setTextColor(UIColor.green)} else
+                    if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
+                self.minago.setText(String(Int(deltat))+" min ago")
+                self.secondarybgname.setText("Raw")
+                if (sgvi<40) {
+                    //display error code as primary and raw as secondary
+                    // currentbg.setAttributedText(size)
+                    self.primarybg.setTextColor(red)
+                    self.primarybg.setText(self.errorcode(sgvi!))
+                    self.bgdirection.setText("")
+                    self.deltabg.setText("")
+                    //                if (rawavailable==true) {
+                    //                    secondarybg.setText(String(rawv))
+                    //                    secondarybg.setTextColor(bgcolor(rawv))
+                    //                }
+                    //                else
+                    //                {
+                    //                    secondarybg.setText("N/A")
+                    //                    secondarybg.setTextColor(red)
+                    //                }
+                }
+                    //if raw doesnt exist or dex is primary.0
+                else
+                    if (dexprimary==true || rawavailable==false)
+                    {
+                        //display dex as primary
+                        self.primarybg.setText(cbg)
+                        self.primarybg.setTextColor(self.bgcolor(Int(cbg)!))
+                        self.bgdirection.setText(self.dirgraphics(direction))
+                        self.bgdirection.setTextColor(self.bgcolor(Int(cbg)!))
+                        let velocity=self.velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
+                        let prediction=velocity*20.0+Double(cbg)!
+                        print("vel")
+                        print(velocity)
+                        self.deltabg.setTextColor(UIColor.white)
+                        //        if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl : "+String(format:"%.1f", velocity)+" mg/dl.min")} else {deltabg.setText("+"+String(dbg)+" mg/dl : "+String(format:"%.1f", velocity)+" mg/dl.min")}
+                        if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl")}
+                        
+                        self.vlabel.setText(String(format:"%.1f", velocity))
+                        self.plabel.setText(String(format:"%.0f", prediction))
+                        
+                        
+                        
+                        
+                        //                if (rawavailable==true) {
+                        //                    secondarybg.setText(String(rawv))
+                        //                    secondarybg.setTextColor(bgcolor(rawv))
+                        //                }
+                        //                else
+                        //                {
+                        //                    secondarybg.setText("N/A")
+                        //                    secondarybg.setTextColor(red)
+                        //                }
+                }
+                //      else
+                //raw must be primary and available
+                
+                //                {
+                //                    primarybg.setText(String(rawv))
+                //                    primarybg.setTextColor(bgcolor(rawv))
+                //                //calculate raw delta
+                //                    let cbgo=bgs[1]["sgv"] as! String
+                //                    let unfilto=bgs[1]["unfiltered"] as! Double
+                //                    let filto=bgs[1]["filtered"] as! Double
+                //                    //let t2=test(filto,b:unfilto)
+                //                    let rawvo=calcraw(Double(Int(cbgo)!),filt:filto,unfilt:unfilto,slope: slope,intercept: intercept,scale: scale) as Int
+                //                    let dbg=(rawv-rawvo) as Int
+                //                    deltabg.setTextColor(UIColor.white)
+                //                    if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
+                //                    //calculate raw direction
+                //                   
+                //                    //
+                //                    
+                //                    //
+                //                    
+                //                    let bgtimeo=bgs[1]["datetime"] as! TimeInterval
+                //                    let dt=round((bgtime-bgtimeo)/60000.0) as Double
+                //                    print(dt)
+                //                    
+                //                    
+                //                    
+                //                    
+                //                  //  let velocity=Double(dbg)/dt
+                //                   
+                //                    
+                //                    let velocity=velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
+                //                    let prediction=velocity*20.0
+                //                    print("vel")
+                //                    print(velocity)
+                //                    vlabel.setText(String(format:"%.1f", velocity))
+                //                    plabel.setText(String(format:"%.1f", prediction))
+                //                    
+                //                    
+                //                    
+                //                    bgdirection.setTextColor(bgcolor(rawv))
+                //                    bgdirection.setText(dirgraphics(rawdir(velocity,dt: dt)))
+                //                    
+                //
+                //
+                //                    //display raw direction and delta
+                //                    secondarybg.setText(cbg)
+                //                    secondarybg.setTextColor(bgcolor(sgvi!))
+                //                    secondarybgname.setText("Dex")
+                //                    
+                //                    
+                //            }
+                
+            } //end bgs !=nil
+                
+                //did not get pebble endpoint data
+            else
+            {
+                self.bghistread=false
+                self.noconnection()
+            }
+
+            //add graph 
+                    let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
+                    if (self.bghistread==true)&&(google != "NoData") {
+                        self.graphhours.setTextColor(UIColor.white)
+                        self.graphhours.setText("Last "+String(self.graphlength)+" Hours")
+                        self.bgimage.setHidden(false)
+                        self.chartraw.setHidden(false)
+                        self.bgimage.setImageWithUrl(google)
+                    }
+                    else {
+                        //need to create no data image
+                        self.graphhours.setTextColor(UIColor.red)
+                        self.graphhours.setText("No Chart Data")
+                        self.bgimage.setHidden(true)
+                        self.chartraw.setHidden(true)
+                    }
+            
+//            let bg=responseDict["bgs"] as! NSArray
+//            print(bg[0])
+            
         }
         
+        task.resume()
+        
+        
+        
+        
+        
+        
+        //var responseDict:AnyObject="" as AnyObject
+//        if let url = URL(string: urlPath) {
+//            do {
+//                var contents = try String(contentsOf: url)
+//                contents=contents.replacingOccurrences(of:"+", with: "")
+//                let data=contents.data(using: .utf8)!
+//                responseDict = try! JSONSerialization.jsonObject(with: data,options: []) as! [String:AnyObject]
+//                
+//            } catch {
+//                // contents could not be loaded
+//            }
+//        } else {
+//            // the URL was bad!
+//        }
+//        
         
         //        if let url = URL(string: urlPath) {
 //            let data = try String(contentsOf: url) {
@@ -199,180 +427,7 @@ class InterfaceController: WKInterfaceController {
         
  
         
-       print("before main")
-       // print(responseDict["bgs"])
-  //successfully received pebble end point data
-        if let bgs=responseDict["bgs"] as? [[String:AnyObject]] {
-            print("after main")
-            print(bgs[0])
-       // if let bgs=responseDict["bgs"] as? NSArray {
-        bghistread=true
-        var rawavailable=false as Bool
-        var slope=0.0 as Double
-        var intercept=0.0 as Double
-        var scale=0.0 as Double
-        let cbg=bgs[0]["sgv"] as! String
-        let direction=bgs[0]["direction"] as! String
-       // let unfilt=bgs[0]["unfiltered"] as! Double
-        // let filt=bgs[0]["filtered"] as! Double
-       // let bat=bgs[0]["battery"] as! String
-        let dbg=bgs[0]["bgdelta"] as! Int
-        let bgtime=bgs[0]["datetime"] as! TimeInterval
-        var red=UIColor.red as UIColor
-        var green=UIColor.green as UIColor
-        var yellow=UIColor.yellow as UIColor
-        var rawcolor="green" as String
-        //save as global variables
-            cals=responseDict["cals"] as? [[String:AnyObject]]
-            bghist=bgs
-        //calculate text colors for sgv,direction
-        var lmh=2
-        var rawv=0 as Int
-        let sgvi=Int(cbg)
-        let sgv=Double(sgvi!)
-       // let sgvcolor=bgcolor(sgvi!) as String
-            
-
-//check to see if cal data is available - if so we can calc raw
-
-        
-//            if (cals?.count>0) {
-//                rawavailable=true
-//                slope=cals?[0]["slope"] as! Double
-//           scale=cals?[0]["scale"] as! Double
-//             intercept=cals?[0]["intercept"] as! Double
-//            
-//           // rawv=calcraw(sgv,slope: slope,intercept: intercept,scale: scale)
-//            
-//                }
-//        else
-//        {rawbg.setTextColor(rawcolor)
-//            rawbg.setText("N/A")
-//        }
-        // display pebble data to watch
-            
-        //color for battery
-//        if Int(bat)<20 {battery.setTextColor(UIColor.red)} else
-//            if Int(bat)<40 {battery.setTextColor(UIColor.yellow)} else
-//            {battery.setTextColor(UIColor.green)}
-//         battery.setText(bat+"%")
-        //set time
-            let ct=TimeInterval(Date().timeIntervalSince1970)
-            let deltat=(ct-bgtime/1000)/60
-            if deltat<10 {minago.setTextColor(UIColor.green)} else
-                if deltat<20 {minago.setTextColor(UIColor.yellow)} else {minago.setTextColor(UIColor.red)}
-            minago.setText(String(Int(deltat))+" min ago")
-            secondarybgname.setText("Raw")
-            if (sgvi<40) {
-//display error code as primary and raw as secondary
-               // currentbg.setAttributedText(size)
-                primarybg.setTextColor(red)
-                primarybg.setText(errorcode(sgvi!))
-                bgdirection.setText("")
-                deltabg.setText("")
-//                if (rawavailable==true) {
-//                    secondarybg.setText(String(rawv))
-//                    secondarybg.setTextColor(bgcolor(rawv))
-//                }
-//                else
-//                {
-//                    secondarybg.setText("N/A")
-//                    secondarybg.setTextColor(red)
-//                }
-            }
- //if raw doesnt exist or dex is primary.0
-            else
-                if (dexprimary==true || rawavailable==false)
-            {
-        //display dex as primary
-        primarybg.setText(cbg)
-        primarybg.setTextColor(bgcolor(Int(cbg)!))
-        deltabg.setTextColor(UIColor.white)
-        if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
-        bgdirection.setText(dirgraphics(direction))
-        bgdirection.setTextColor(bgcolor(Int(cbg)!))
-        let velocity=velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
-        let prediction=velocity*20.0+Double(cbg)!
-        print("vel")
-        print(velocity)
-         vlabel.setText(String(format:"%.1f", velocity))
-         plabel.setText(String(format:"%.0f", prediction))
-                
-                
-                
-                
-//                if (rawavailable==true) {
-//                    secondarybg.setText(String(rawv))
-//                    secondarybg.setTextColor(bgcolor(rawv))
-//                }
-//                else
-//                {
-//                    secondarybg.setText("N/A")
-//                    secondarybg.setTextColor(red)
-//                }
-            }
-      //      else
-    //raw must be primary and available
-                    
-//                {
-//                    primarybg.setText(String(rawv))
-//                    primarybg.setTextColor(bgcolor(rawv))
-//                //calculate raw delta
-//                    let cbgo=bgs[1]["sgv"] as! String
-//                    let unfilto=bgs[1]["unfiltered"] as! Double
-//                    let filto=bgs[1]["filtered"] as! Double
-//                    //let t2=test(filto,b:unfilto)
-//                    let rawvo=calcraw(Double(Int(cbgo)!),filt:filto,unfilt:unfilto,slope: slope,intercept: intercept,scale: scale) as Int
-//                    let dbg=(rawv-rawvo) as Int
-//                    deltabg.setTextColor(UIColor.white)
-//                    if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
-//                    //calculate raw direction
-//                   
-//                    //
-//                    
-//                    //
-//                    
-//                    let bgtimeo=bgs[1]["datetime"] as! TimeInterval
-//                    let dt=round((bgtime-bgtimeo)/60000.0) as Double
-//                    print(dt)
-//                    
-//                    
-//                    
-//                    
-//                  //  let velocity=Double(dbg)/dt
-//                   
-//                    
-//                    let velocity=velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
-//                    let prediction=velocity*20.0
-//                    print("vel")
-//                    print(velocity)
-//                    vlabel.setText(String(format:"%.1f", velocity))
-//                    plabel.setText(String(format:"%.1f", prediction))
-//                    
-//                    
-//                    
-//                    bgdirection.setTextColor(bgcolor(rawv))
-//                    bgdirection.setText(dirgraphics(rawdir(velocity,dt: dt)))
-//                    
-//
-//
-//                    //display raw direction and delta
-//                    secondarybg.setText(cbg)
-//                    secondarybg.setTextColor(bgcolor(sgvi!))
-//                    secondarybgname.setText("Dex")
-//                    
-//                    
-//            }
-
-         } //end bgs !=nil
-            
-        //did not get pebble endpoint data
-        else
-        {
-            bghistread=false
-            noconnection()
-        }
-
+   
     }
     
     func velocity_cf(_ bgs:[[String:AnyObject]],slope:Double,intercept:Double,scale:Double)->Double {
@@ -527,7 +582,8 @@ class InterfaceController: WKInterfaceController {
         return rawv
     }
     
-    func bggraph(_ hours:Int)-> String? {
+    func bggraph(_ hours:Int,bghist:[[String:AnyObject]])-> String? {
+        
         
         
         //get bghistory
@@ -575,19 +631,24 @@ class InterfaceController: WKInterfaceController {
         //find max time, min and max bg
         var i=0 as Int;
       //  for var i=0; i<bghist.count; i=i+1 {
-        while (i<bghist?.count) {
-            bgtimes[i]=minutes-(((ct2*1000-(bghist?[i]["datetime"] as! Int))/1000)/(60) as Int)
+        while (i<bghist.count) {
+            let curdate: Double = (bghist[0]["datetime"] as! Double)/1000
+            print (curdate)
+            print(Double(minutes))
+            print(Double(ct2))
+           
+            bgtimes[i]=(Double(minutes)-(Double(ct2)-curdate)/(60.0)) as! Int
             print(bgtimes[i])
             if (bgtimes[i]>=0) {
                 gpoints += 1
             if (bgtimes[i]>maxx) { maxx=bgtimes[i]}
-            if (Int((bghist?[i]["sgv"] as! String))>maxy) {maxy=Int(bghist?[i]["sgv"] as! String)!}
-            if (Int(bghist?[i]["sgv"] as! String)<miny) {miny=Int(bghist?[i]["sgv"] as! String)!}
+            if (Int((bghist[i]["sgv"] as! String))>maxy) {maxy=Int(bghist[i]["sgv"] as! String)!}
+            if (Int(bghist[i]["sgv"] as! String)<miny) {miny=Int(bghist[i]["sgv"] as! String)!}
                 //calculate raw values, include in min max calc
                 if cals?.count>0 && craw==true {
-                    let sgvd=Double(Int(bghist?[i]["sgv"] as! String)!)
-                    let unfilt=bghist?[i]["unfiltered"] as! Double
-                    let filt=bghist?[i]["filtered"] as! Double
+                    let sgvd=Double(Int(bghist[i]["sgv"] as! String)!)
+                    let unfilt=bghist[i]["unfiltered"] as! Double
+                    let filt=bghist[i]["filtered"] as! Double
                     rawv[i]=calcraw(sgvd,filt: filt,unfilt: unfilt,slope: slope,intercept: intercept,scale: scale)
                     if rawv[i]>maxy {maxy=rawv[i]}
                     if rawv[i]<miny {miny=rawv[i]}
@@ -602,7 +663,7 @@ class InterfaceController: WKInterfaceController {
         if gpoints < 2 {return "NoData"}
         
         //make sure there are 2 points minimum for prediction
-               let velocity=velocity_cf(sortedbgs!,slope: slope,intercept: intercept,scale: scale) as Double
+               let velocity=velocity_cf(sortedbgs,slope: slope,intercept: intercept,scale: scale) as Double
         
         
          //insert prediction points into
@@ -611,11 +672,11 @@ class InterfaceController: WKInterfaceController {
 
         //create strings of data points xg (time) and yg (bg) and string of colors pc
          i=0;
-        while i<bghist?.count  {
+        while i<bghist.count  {
             if (bgtimes[i]>=0) {
                 //scale time values
                 xg=xg+String(bgtimes[i]*100/minutes)+","
-                var sgv:Int=(Int(bghist![i]["sgv"] as! String)!)
+                var sgv:Int=(Int(bghist[i]["sgv"] as! String)!)
                 if sgv<60 {pc=pc+"FF0000|"} else
                     if sgv<80 {pc=pc+"FFFF00|"} else
                         if sgv<180 {pc=pc+"00FF00|"} else
@@ -634,9 +695,13 @@ class InterfaceController: WKInterfaceController {
             }
         i=i+inc}
         
- //       xg=(dropLast(xg))
- //       yg=(dropLast(yg))
- //       pc=(dropLast(pc))
+//        xg=(dropLast(xg))
+//        yg=(dropLast(yg))
+//        pc=(dropLast(pc))
+        xg=String(xg.characters.dropLast())
+        yg=String(yg.characters.dropLast())
+        pc=String(pc.characters.dropLast())
+        
         var low:Double=Double(bgtl-miny)/Double(maxy-miny)
         var high:Double=Double(bgth-miny)/Double(maxy-miny)
         //create string for google chart api
