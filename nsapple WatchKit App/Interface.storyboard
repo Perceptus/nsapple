@@ -10,13 +10,35 @@
     </dependencies>
     <scenes>
         <!--Interface Controller-->
+        <scene sceneID="XOP-Lt-He7">
+            <objects>
+                <controller id="nYH-eb-Cjn">
+                    <items>
+                        <table alignment="left" id="tkc-Z1-uRt">
+                            <items>
+                                <tableRow identifier="Pump Data" id="3yE-iN-AqU">
+                                    <group key="rootItem" width="1" alignment="left" id="azh-Gj-KL5"/>
+                                </tableRow>
+                                <tableRow id="t8a-OE-Blk">
+                                    <group key="rootItem" width="1" alignment="left" id="mkq-vg-1ZM"/>
+                                </tableRow>
+                                <tableRow id="tbx-Ec-zpd">
+                                    <group key="rootItem" width="1" alignment="left" id="vVK-61-TsW"/>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                </controller>
+            </objects>
+        </scene>
+        <!--Interface Controller-->
         <scene sceneID="aou-V4-d1y">
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="nsapple_WatchKit_App" customModuleProvider="target">
                     <items>
                         <group width="154" alignment="left" id="0XS-Xb-x7m">
                             <items>
-                                <label alignment="left" text="mg/dl.min" id="1qW-8W-XE3">
+                                <label alignment="left" text=" V mg/dl.min" id="1qW-8W-XE3">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
                                 <label alignment="right" text="20m Min Pred" id="wWp-A4-E1K">
@@ -38,39 +60,49 @@
                         </group>
                         <group width="1" alignment="left" id="nJH-yY-zdH">
                             <items>
-                                <label alignment="left" text="- 5.0 mg/dl" id="drV-DZ-SeX">
-                                    <fontDescription key="font" type="system" pointSize="10"/>
-                                </label>
-                                <label alignment="right" verticalAlignment="center" text="min ago" textAlignment="center" id="IwJ-4k-L7w">
+                                <label alignment="left" text="0 min ago" textAlignment="center" id="IwJ-4k-L7w">
                                     <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" type="system" pointSize="11"/>
+                                </label>
+                                <label alignment="right" text="- 5.0 mg/dl" id="drV-DZ-SeX">
+                                    <fontDescription key="font" type="system" pointSize="10"/>
                                 </label>
                             </items>
                         </group>
                         <group width="1" alignment="left" id="all-5Y-wf2">
                             <items>
-                                <label alignment="left" text=" Raw" id="sUx-e6-wQe">
-                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
-                                </label>
                                 <label alignment="center" text="3 Hour Graph" id="oz4-fb-Ktb">
-                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
-                                </label>
-                                <label alignment="right" text="Battery" id="Izd-lg-G55">
                                     <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
                                 </label>
                             </items>
                         </group>
-                        <imageView alignment="center" id="v8P-Xw-gHJ"/>
+                        <imageView width="1" height="70" alignment="center" id="v8P-Xw-gHJ"/>
+                        <group width="1" alignment="left" id="LxB-Yd-NVT">
+                            <items>
+                                <label alignment="center" text="IOB 16.2 10 min ago Res 300" id="Vcl-QY-KNQ">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="center" id="kTC-wL-SQ9">
+                            <items>
+                                <label alignment="center" text="BGI 100 : Normal : EBat 99" id="8Qo-he-BQ1">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="NRW-oT-jdu">
+                            <items>
+                                <label alignment="center" text="System Status" id="LnC-ig-q4J">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                </label>
+                            </items>
+                        </group>
                         <slider width="1" alignment="left" value="4" minimum="1" maximum="5" steps="4" id="t7h-De-bBi">
                             <connections>
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
                         </slider>
-                        <switch width="1" alignment="center" title="Chart Raw" id="mh8-ja-2bc">
-                            <connections>
-                                <action selector="chartraw:" destination="AgC-eL-Hgc" id="PEs-MP-MW0"/>
-                            </connections>
-                        </switch>
                         <group width="1" alignment="left" id="D2S-gh-qaj">
                             <items>
                                 <label alignment="left" text="N/A" id="piM-ym-Ukt">
@@ -86,20 +118,21 @@
                         <outlet property="battery" destination="Ehr-1Q-tJ0" id="9QT-Q7-w05"/>
                         <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
-                        <outlet property="chartraw" destination="mh8-ja-2bc" id="uFY-FI-cXC"/>
                         <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
                         <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
                         <outlet property="plabel" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
                         <outlet property="primarybg" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
+                        <outlet property="pumpstatus" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
+                        <outlet property="pumpstatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
+                        <outlet property="pumpstatus3" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
                         <outlet property="secondarybg" destination="piM-ym-Ukt" id="NQ9-D7-oTk"/>
-                        <outlet property="secondarybgname" destination="sUx-e6-wQe" id="KOf-B7-ShR"/>
                         <outlet property="vlabel" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="412.35897435897436" y="212.2820512820513"/>
+            <point key="canvasLocation" x="412.35897435897436" y="206.17948717948718"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="1Px-nn-dlv">

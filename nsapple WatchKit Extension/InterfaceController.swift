@@ -35,6 +35,9 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 //
 
+
+
+
 public extension WKInterfaceImage {
     
     public func setImageWithUrl(_ url:String) -> WKInterfaceImage? {
@@ -65,13 +68,16 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var deltabg: WKInterfaceLabel!
     @IBOutlet weak var battery: WKInterfaceLabel!
     @IBOutlet weak var minago: WKInterfaceLabel!
-    @IBOutlet weak var secondarybg: WKInterfaceLabel!
+   // @IBOutlet weak var secondarybg: WKInterfaceLabel!
     @IBOutlet weak var graphhours: WKInterfaceLabel!
     @IBOutlet weak var hourslider: WKInterfaceSlider!
-    @IBOutlet weak var chartraw: WKInterfaceSwitch!
+    //@IBOutlet weak var chartraw: WKInterfaceSwitch!
    //@IBOutlet weak var primarybg: WKInterfaceLabel!
    //@IBOutlet weak var secondarybg: WKInterfaceLabel!
 
+    @IBOutlet var pumpstatus3: WKInterfaceLabel!
+    @IBOutlet var pumpstatus2: WKInterfaceLabel!
+    @IBOutlet var pumpstatus: WKInterfaceLabel!
     @IBOutlet weak var plabel: WKInterfaceLabel!
     @IBOutlet weak var vlabel: WKInterfaceLabel!
     @IBOutlet weak var secondarybgname: WKInterfaceLabel!
@@ -107,6 +113,7 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         updatecore()
+        updatepumpstats()
 //        let google=bggraph(graphlength)!.addingPercentEscapes(using: String.Encoding.utf8)!
 //        if (bghistread==true)&&(google != "NoData") {
 //            graphhours.setTextColor(UIColor.white)
@@ -131,7 +138,65 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
     
-
+    func updatepumpstats() {
+        
+   // var key="J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
+   // var url3s="https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4" as String
+        let urlPath2: String = "https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?s={\"date\":-1}&l=1&apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
+        var escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        //url3s=url3s.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        
+        var url3 = URL(string: escapedAddress!)
+        
+        let task3 = URLSession.shared.dataTask(with: url3!) { data, response, error in
+            //let task = URLSession.synchronousDataTaskWithURL(urlPath2) { data, response, error in
+            guard error == nil else {
+                print(error!)
+                return
+            }
+            guard let data = data else {
+                print("Data is empty")
+                return
+            }
+           // print (response)
+            let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
+            print(json?[0]["iob"] as! Double)
+            let pumptime=json?[0]["date"] as! TimeInterval
+            let ct=TimeInterval(Date().timeIntervalSince1970)
+            let deltat=(ct-pumptime/1000)/60
+            if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
+                if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
+            var pstatus:String = "IOB "
+            var pstatus2 : String = "BGI "
+            if (json?[0]["iob"] as! Double) > -1.0
+            {pstatus=pstatus + String(format:"%.1f", json?[0]["iob"] as! Double )
+            pstatus2=pstatus2+String(format:"%.0f", json?[0]["predictedbgiob"] as! Double )
+            }
+            else
+            {pstatus=pstatus+"N/A"
+            pstatus2=pstatus2+"N/A"
+            }
+            if (json?[0]["pumpstate"] as! String)=="normal" {pstatus2=pstatus2+" : Normal : EBat "} else
+                if (json?[0]["pumpstate"] as! String)=="zerobasal" {pstatus2=pstatus2+" : ZeroBas : Ebat "}
+                else {pstatus2=pstatus2+" : BasError : Ebat "}
+            let batjson = json?[0]["edison_bat"] as! [String:AnyObject]
+            
+            pstatus2=pstatus2+String(format:"%.0f",batjson["percentage"] as! Double)
+                pstatus=pstatus+"  "+String(Int(deltat))+" min ago  Res "+String(format:"%.0f", json?[0]["reslevel"] as! Double )
+            var pstatus3:String="Status "
+            if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
+                {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
+                else
+                {pstatus3=pstatus3+"Fail Check BG Data"}
+            
+            self.pumpstatus.setText(pstatus)
+            self.pumpstatus2.setText(pstatus2)
+            self.pumpstatus3.setText(pstatus3)
+            
+            
+        }
+        task3.resume()
+    }
     
     func updatecore() {
  
@@ -235,7 +300,7 @@ class InterfaceController: WKInterfaceController {
                 if deltat<10 {self.minago.setTextColor(UIColor.green)} else
                     if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
                 self.minago.setText(String(Int(deltat))+" min ago")
-                self.secondarybgname.setText("Raw")
+         //       self.secondarybgname.setText("Raw")
                 if (sgvi<40) {
                     //display error code as primary and raw as secondary
                     // currentbg.setAttributedText(size)
@@ -267,7 +332,7 @@ class InterfaceController: WKInterfaceController {
                         print("vel")
                         print(velocity)
                         self.deltabg.setTextColor(UIColor.white)
-                        //        if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl : "+String(format:"%.1f", velocity)+" mg/dl.min")} else {deltabg.setText("+"+String(dbg)+" mg/dl : "+String(format:"%.1f", velocity)+" mg/dl.min")}
+                        //        if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl : "+String(format:"%.1f", velocity)+" mg/dl.min")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl : "+String(format:"%.1f", velocity)+" mg/dl.min")}
                         if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl")}
                         
                         self.vlabel.setText(String(format:"%.1f", velocity))
@@ -354,15 +419,33 @@ class InterfaceController: WKInterfaceController {
                         self.graphhours.setTextColor(UIColor.white)
                         self.graphhours.setText("Last "+String(self.graphlength)+" Hours")
                         self.bgimage.setHidden(false)
-                        self.chartraw.setHidden(false)
-                        self.bgimage.setImageWithUrl(google)
+//                        self.chartraw.setHidden(false)
+                        var imgURL: URL = URL(string: google)! as URL
+                        let task2 = URLSession.shared.dataTask(with: imgURL) { data, response, error in
+                            //let task = URLSession.synchronousDataTaskWithURL(urlPath2) { data, response, error in
+                            guard error == nil else {
+                                print(error!)
+                                return
+                            }
+                            guard let data = data else {
+                                print("Data is empty")
+                                return
+                            }
+                            
+                           // let responseDict = try! JSONSerialization.jsonObject(with: data, options: []) as! [String:AnyObject]
+                           // print ("read resp")
+                      //  self.bgimage.setImageWithUrl(google)
+                            print("setting image")
+                            self.bgimage.setImageData(data)
+                        }
+                        task2.resume()
                     }
                     else {
                         //need to create no data image
                         self.graphhours.setTextColor(UIColor.red)
                         self.graphhours.setText("No Chart Data")
                         self.bgimage.setHidden(true)
-                        self.chartraw.setHidden(true)
+     //                   self.chartraw.setHidden(true)
                     }
             
 //            let bg=responseDict["bgs"] as! NSArray
@@ -632,12 +715,13 @@ class InterfaceController: WKInterfaceController {
         var i=0 as Int;
       //  for var i=0; i<bghist.count; i=i+1 {
         while (i<bghist.count) {
-            let curdate: Double = (bghist[0]["datetime"] as! Double)/1000
-            print (curdate)
-            print(Double(minutes))
-            print(Double(ct2))
-           
-            bgtimes[i]=(Double(minutes)-(Double(ct2)-curdate)/(60.0)) as! Int
+            let curdate: Double = (bghist[i]["datetime"] as! Double)/1000
+//            print (curdate)
+//            print(Double(minutes))
+//            print(Double(ct2))
+            // bgtimes[i]=minutes-(((ct2*1000-(bghist[i]["datetime"] as! Int))/1000)/(60) as Int)
+
+            bgtimes[i]=Int((Double(minutes)-(Double(ct2)-curdate)/(60.0)))
             print(bgtimes[i])
             if (bgtimes[i]>=0) {
                 gpoints += 1
