@@ -160,7 +160,8 @@ class InterfaceController: WKInterfaceController {
             }
            // print (response)
             let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
-            print(json?[0]["iob"] as! Double)
+            let keylist:[String]=["iob","predictedbgiob","pumpstate","bgstale","reslevel","bgreaderror"]
+            //print(json?[0]["iob"] as! Double)
             let pumptime=json?[0]["date"] as! TimeInterval
             let ct=TimeInterval(Date().timeIntervalSince1970)
             let deltat=(ct-pumptime/1000)/60
@@ -168,27 +169,53 @@ class InterfaceController: WKInterfaceController {
                 if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
             var pstatus:String = "IOB "
             var pstatus2 : String = "BGI "
-            if (json?[0]["iob"] as! Double) > -1.0
-            {pstatus=pstatus + String(format:"%.1f", json?[0]["iob"] as! Double )
-            pstatus2=pstatus2+String(format:"%.0f", json?[0]["predictedbgiob"] as! Double )
+            if let iob=(json?[0]["iob"]) {if iob as! Double > -1.0
+            {pstatus=pstatus + String(format:"%.1f", iob as! Double )
+                pstatus2=pstatus2+String(format:"%.0f", json?[0]["predictedbgiob"] as! Double )
             }
             else
             {pstatus=pstatus+"N/A"
-            pstatus2=pstatus2+"N/A"
-            }
-            if (json?[0]["pumpstate"] as! String)=="normal" {pstatus2=pstatus2+" : Normal : EBat "} else
+                pstatus2=pstatus2+"N/A"
+                }
+            } else {pstatus=pstatus+"N/A"
+                pstatus2=pstatus2+"N/A"}
+            
+            
+            if let pumpstate=json?[0]["pumpstate"] {
+                if (json?[0]["pumpstate"] as! String)=="normal" {pstatus2=pstatus2+" : Normal : EBat "} else
                 if (json?[0]["pumpstate"] as! String)=="zerobasal" {pstatus2=pstatus2+" : ZeroBas : Ebat "}
                 else {pstatus2=pstatus2+" : BasError : Ebat "}
-            let batjson = json?[0]["edison_bat"] as! [String:AnyObject]
+            }
+            else {pstatus2=pstatus2+" : BasError : Ebat "}
             
-            pstatus2=pstatus2+String(format:"%.0f",batjson["percentage"] as! Double)
-                pstatus=pstatus+"  "+String(Int(deltat))+" min ago  Res "+String(format:"%.0f", json?[0]["reslevel"] as! Double )
-            var pstatus3:String="Status "
-            if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
-                {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
-                else
-                {pstatus3=pstatus3+"Fail Check BG Data"}
             
+            if let reslevel=json?[0]["reslevel"] {
+            
+                pstatus=pstatus+"  "+String(Int(deltat))+" min ago  Res "+String(format:"%.0f", json?[0]["reslevel"] as! Double )} else {
+                
+                pstatus=pstatus+"  "+String(Int(deltat))+" min ago  Res N/A"
+            }
+            
+            if let batjson = json?[0]["edison_bat"] {pstatus2=pstatus2+String(format:"%.0f",(batjson as! [String:AnyObject])["percentage"] as! Double)+"%"}
+            else
+            {pstatus2=pstatus2+"N/A?"}
+            
+            
+          //  let batjson = json?[0]["edison_bat"] as! [String:AnyObject]
+            
+            //pstatus2=pstatus2+String(format:"%.0f",batjson["percentage"] as! Double)+"%"
+           
+            var pstatus3:String="BG Status "
+            if let bgstale=json?[0]["bgstale"] {if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
+            {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
+            else
+            {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}} else {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
+            
+//            if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
+//                {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
+//                else
+//                {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
+        
             self.pumpstatus.setText(pstatus)
             self.pumpstatus2.setText(pstatus2)
             self.pumpstatus3.setText(pstatus3)
@@ -328,7 +355,7 @@ class InterfaceController: WKInterfaceController {
                         self.bgdirection.setText(self.dirgraphics(direction))
                         self.bgdirection.setTextColor(self.bgcolor(Int(cbg)!))
                         let velocity=self.velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
-                        let prediction=velocity*20.0+Double(cbg)!
+                        let prediction=velocity*30.0+Double(cbg)!
                         print("vel")
                         print(velocity)
                         self.deltabg.setTextColor(UIColor.white)

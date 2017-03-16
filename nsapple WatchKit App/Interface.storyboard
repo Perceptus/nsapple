@@ -41,7 +41,7 @@
                                 <label alignment="left" text=" V mg/dl.min" id="1qW-8W-XE3">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
-                                <label alignment="right" text="20m Min Pred" id="wWp-A4-E1K">
+                                <label alignment="right" text="30m Min Pred" id="wWp-A4-E1K">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
                             </items>
@@ -69,13 +69,6 @@
                                 </label>
                             </items>
                         </group>
-                        <group width="1" alignment="left" id="all-5Y-wf2">
-                            <items>
-                                <label alignment="center" text="3 Hour Graph" id="oz4-fb-Ktb">
-                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
-                                </label>
-                            </items>
-                        </group>
                         <imageView width="1" height="70" alignment="center" id="v8P-Xw-gHJ"/>
                         <group width="1" alignment="left" id="LxB-Yd-NVT">
                             <items>
@@ -86,7 +79,7 @@
                         </group>
                         <group width="1" alignment="center" id="kTC-wL-SQ9">
                             <items>
-                                <label alignment="center" text="BGI 100 : Normal : EBat 99" id="8Qo-he-BQ1">
+                                <label alignment="center" text="BGI 100 : Normal : EBat 99%" id="8Qo-he-BQ1">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                 </label>
                             </items>
@@ -95,6 +88,13 @@
                             <items>
                                 <label alignment="center" text="System Status" id="LnC-ig-q4J">
                                     <fontDescription key="font" type="system" pointSize="11"/>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="all-5Y-wf2">
+                            <items>
+                                <label alignment="center" text="3 Hour Graph" id="oz4-fb-Ktb">
+                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
                                 </label>
                             </items>
                         </group>
