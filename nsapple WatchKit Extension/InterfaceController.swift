@@ -75,6 +75,9 @@ class InterfaceController: WKInterfaceController {
    //@IBOutlet weak var primarybg: WKInterfaceLabel!
    //@IBOutlet weak var secondarybg: WKInterfaceLabel!
 
+  
+  
+    @IBOutlet var loadingicon: WKInterfaceImage!
     @IBOutlet var pumpstatus3: WKInterfaceLabel!
     @IBOutlet var pumpstatus2: WKInterfaceLabel!
     @IBOutlet var pumpstatus: WKInterfaceLabel!
@@ -105,15 +108,21 @@ class InterfaceController: WKInterfaceController {
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
+      //  let theImage = UIImage(named: "nsblue")
+        //  var img: UIImage = UIImage(named: "nsblue")! // grabs the image from extension's bundle
+        // WKInterfaceDevice().addCachedImage(img,"nsblue") // adds to the Watch cache
         
-        // Configure interface objects here.
+       // self.loadingicon.setImage(theImage)         // Configure interface objects here.
     }
     
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
+   
         super.willActivate()
         updatecore()
         updatepumpstats()
+        //updatecore()
+       
 //        let google=bggraph(graphlength)!.addingPercentEscapes(using: String.Encoding.utf8)!
 //        if (bghistread==true)&&(google != "NoData") {
 //            graphhours.setTextColor(UIColor.white)
@@ -135,6 +144,17 @@ class InterfaceController: WKInterfaceController {
 
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
+        var gray=UIColor.gray as UIColor
+    
+        self.primarybg.setTextColor(gray)
+        self.bgdirection.setTextColor(gray)
+        self.plabel.setTextColor(gray)
+        self.vlabel.setTextColor(gray)
+        self.minago.setTextColor(gray)
+        self.deltabg.setTextColor(gray)
+        self.pumpstatus.setTextColor(gray)
+        self.pumpstatus2.setTextColor(gray)
+        self.pumpstatus3.setTextColor(gray)
         super.didDeactivate()
     }
     
@@ -235,7 +255,28 @@ class InterfaceController: WKInterfaceController {
         var dexprimary=true as Bool
        // if defaults.object(forKey: "primarydisplay") as! String == "dex" {dexprimary=true} else {dexprimary=false}
       print("in updarte core")
-       //hard code for now
+        //set bg color to something old so we know if its not really updating
+        var gray=UIColor.gray as UIColor
+        var white=UIColor.white as UIColor
+        self.primarybg.setTextColor(gray)
+        self.bgdirection.setTextColor(gray)
+        self.plabel.setTextColor(gray)
+        self.vlabel.setTextColor(gray)
+        self.minago.setTextColor(gray)
+        self.deltabg.setTextColor(gray)
+        //self.primarybg.setText("N/A")
+        //self.bgdirection.setText("")
+//        self.primarybg.setHidden(true)
+//        self.bgdirection.setHidden(true)
+//        self.deltabg.setHidden(true)
+//        self.minago.setHidden(true);
+//        self.plabel.setHidden(true);
+//        self.vlabel.setHidden(true);
+// grabs the image from the Watch cache
+        //self.loadingicon.setHidden(false)
+        
+        //self.loadingicon.setImageNamed("nsblue")
+           //hard code for now
         var url="t1daarshk.herokuapp.com"
         let urlPath: String = "https://"+url+"/pebble?count=576"
         print("in watchkit")
@@ -254,6 +295,9 @@ class InterfaceController: WKInterfaceController {
                 print("Data is empty")
                 return
             }
+            
+            
+            DispatchQueue.main.async() {
             
             let responseDict = try! JSONSerialization.jsonObject(with: data, options: []) as! [String:AnyObject]
             print ("read resp")
@@ -296,8 +340,7 @@ class InterfaceController: WKInterfaceController {
                 let sgvi=Int(cbg)
                 let sgv=Double(sgvi!)
                 // let sgvcolor=bgcolor(sgvi!) as String
-                
-                
+              
                 //check to see if cal data is available - if so we can calc raw
                 
                 
@@ -322,6 +365,15 @@ class InterfaceController: WKInterfaceController {
                 //            {battery.setTextColor(UIColor.green)}
                 //         battery.setText(bat+"%")
                 //set time
+//                self.primarybg.setHidden(false)
+//                self.bgdirection.setHidden(false)
+//                self.deltabg.setHidden(false)
+//                self.minago.setHidden(false);
+//                self.plabel.setHidden(false);
+//                self.vlabel.setHidden(false);
+                self.plabel.setTextColor(white)
+                self.vlabel.setTextColor(white)
+                self.deltabg.setTextColor(white)
                 let ct=TimeInterval(Date().timeIntervalSince1970)
                 let deltat=(ct-bgtime/1000)/60
                 if deltat<10 {self.minago.setTextColor(UIColor.green)} else
@@ -350,6 +402,7 @@ class InterfaceController: WKInterfaceController {
                     if (dexprimary==true || rawavailable==false)
                     {
                         //display dex as primary
+                       // self.loadingicon.setHidden(true)
                         self.primarybg.setText(cbg)
                         self.primarybg.setTextColor(self.bgcolor(Int(cbg)!))
                         self.bgdirection.setText(self.dirgraphics(direction))
@@ -439,8 +492,7 @@ class InterfaceController: WKInterfaceController {
                 self.bghistread=false
                 self.noconnection()
             }
-
-            //add graph 
+                  //add graph
                     let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
                     if (self.bghistread==true)&&(google != "NoData") {
                         self.graphhours.setTextColor(UIColor.white)
@@ -478,8 +530,8 @@ class InterfaceController: WKInterfaceController {
 //            let bg=responseDict["bgs"] as! NSArray
 //            print(bg[0])
             
-        }
-        
+        }//end dispatch
+        } //end urlsession
         task.resume()
         
         
