@@ -48,7 +48,6 @@
                         </group>
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
-                                <imageView height="100" alignment="left" id="70Y-C2-wKI"/>
                                 <label alignment="left" text="Label" id="1cw-2v-v8O"/>
                                 <label alignment="center" text="N/A" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
@@ -80,7 +79,7 @@
                         </group>
                         <group width="1" alignment="center" id="kTC-wL-SQ9">
                             <items>
-                                <label alignment="center" text="BGI 100 : Normal : EBat 99%" id="8Qo-he-BQ1">
+                                <label alignment="center" text="BGI 100 : 1.25 U/hr : EBat99%" id="8Qo-he-BQ1">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                 </label>
                             </items>
@@ -104,32 +103,19 @@
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
                         </slider>
-                        <group width="1" alignment="left" id="D2S-gh-qaj">
-                            <items>
-                                <label alignment="left" text="N/A" id="piM-ym-Ukt">
-                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
-                                </label>
-                                <label alignment="right" text="N/A" textAlignment="center" numberOfLines="2" id="Ehr-1Q-tJ0">
-                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
-                                </label>
-                            </items>
-                        </group>
                     </items>
                     <connections>
-                        <outlet property="battery" destination="Ehr-1Q-tJ0" id="9QT-Q7-w05"/>
                         <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
                         <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
-                        <outlet property="loadingicon" destination="70Y-C2-wKI" id="Yoy-Zs-5yx"/>
                         <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
                         <outlet property="plabel" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
                         <outlet property="primarybg" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
                         <outlet property="pumpstatus" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
                         <outlet property="pumpstatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
                         <outlet property="pumpstatus3" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
-                        <outlet property="secondarybg" destination="piM-ym-Ukt" id="NQ9-D7-oTk"/>
                         <outlet property="vlabel" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>
                 </controller>
