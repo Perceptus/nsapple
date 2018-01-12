@@ -158,11 +158,20 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
     
+//    struct loop : Codable {
+//        let created_at : String
+//        let loop : [String:AnyObject]
+//        let failureReason : String?
+//        let cob : [String:Double]?
+//        let iob : [String:Double]?
+//    }
+    
     func updatepumpstats() {
         
    // var key="J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
    // var url3s="https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4" as String
-        let urlPath2: String = "https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?s={\"date\":-1}&l=1&apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
+        //let urlPath2: String = "https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?s={\"date\":-1}&l=1&apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
+        let urlPath2="https://t1daarsloop.herokuapp.com/api/v1/devicestatus.json?count=50"
         var escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         //url3s=url3s.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
         
@@ -180,66 +189,154 @@ class InterfaceController: WKInterfaceController {
             }
            // print (response)
             let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
+            if #available(watchOSApplicationExtension 3.0, *) {
+                let formatter = ISO8601DateFormatter()
+                formatter.formatOptions = [.withFullDate,
+                                           .withTime,
+                                           .withDashSeparatorInDate,
+                                           .withColonSeparatorInTime]
+           
+           
+            
+            // pump, uploader, device, loop
+            if json?.count == 0 {return}
+            //var pump : [String : AnyObject] = [:]
+            var pump = [[String : AnyObject]] ()
+//            var uploader = [[String : AnyObject]] ()
+//            var device = [[String : AnyObject]] ()
+            var loop = [[String : AnyObject]] ()
+            for item in json! {
+                if item["pump"] != nil {pump.append(item)} else
+//                    if item["uploader"] != nil {uploader.append(item)} else
+//                        if item["device"] != nil {device.append(item)} else
+                            if item["loop"] != nil {loop.append(item)}
+            }
+            
+            //find the index of the most recent items
+            var cdatepump = [Date]()
+            for item in pump {
+                cdatepump.append(formatter.date(from: (item["created_at"] as! String))!)
+            }
+                ////// add check to see if no elements
+                
+                
+            let lastpump = pump[cdatepump.index(of:cdatepump.max()!) as! Int]
+            var cdateloop = [Date]()
+            for item in loop {
+                cdateloop.append(formatter.date(from: (item["created_at"] as! String))!)
+            }
+            let lastloop = loop[cdateloop.index(of:cdateloop.max()!) as! Int]
+            
             let keylist:[String]=["iob","predictedbgiob","pumpstate","bgstale","reslevel","bgreaderror"]
             //print(json?[0]["iob"] as! Double)
-            let pumptime=json?[0]["date"] as! TimeInterval
-            let ct=TimeInterval(Date().timeIntervalSince1970)
-            let deltat=(ct-pumptime/1000)/60
-            if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
-                if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
-            var pstatus:String = "IOB "
-            var pstatus2 : String = "BGI "
-            if let iob=(json?[0]["iob"]) {if iob as! Double > -1.0
-            {pstatus=pstatus + String(format:"%.1f", iob as! Double )
-                pstatus2=pstatus2+String(format:"%.0f", json?[0]["predictedbgiob"] as! Double )
-            }
-            else
-            {pstatus=pstatus+"N/A"
-                pstatus2=pstatus2+"N/A"
+                if let pumpdata = lastpump["pump"] as? [String:AnyObject] {
+                    if let pumptime = formatter.date(from: (pumpdata["clock"] as! String))?.timeIntervalSince1970  {
+                        let ct=TimeInterval(Date().timeIntervalSince1970)
+                        let deltat=(ct-pumptime)/60
+                        if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
+                            if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
+                        
+                        
+                        var pstatus:String = "Res "
+                        let res = pumpdata["reservoir"] as! Double
+                        pstatus = pstatus + String(format:"%.0f", res)
+                        if let uploader = lastpump["uploader"] as? [String:AnyObject] {
+                            let upbat = uploader["battery"] as! Double
+                            pstatus = pstatus + "  PBat " + String(format:"%.0f", upbat)
+                        }
+                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
+                            let rrssi = riley["RSSI"] as! Int
+                            pstatus = pstatus + "%  RdB " + String(rrssi)
+                        }
+                        self.pumpstatus.setText(pstatus)
+                                       }
+                    
+                    
                 }
-            } else {pstatus=pstatus+"N/A"
-                pstatus2=pstatus2+"N/A"}
-            
-            
-            if let pumpstate=json?[0]["pumpstate"] {
-                if (json?[0]["pumpstate"] as! String)=="normal" {pstatus2=pstatus2+" : Normal : EBat "} else
-                if (json?[0]["pumpstate"] as! String)=="zerobasal" {pstatus2=pstatus2+" : ZeroBas : Ebat "}
-                else {pstatus2=pstatus2+" : BasError : Ebat "}
-            }
-            else {pstatus2=pstatus2+" : BasError : Ebat "}
-            
-            
-            if let reslevel=json?[0]["reslevel"] {
-            
-                pstatus=pstatus+"  "+String(Int(deltat))+" min ago  Res "+String(format:"%.0f", json?[0]["reslevel"] as! Double )} else {
                 
-                pstatus=pstatus+"  "+String(Int(deltat))+" min ago  Res N/A"
-            }
+                
+                if let loopdata = lastloop["loop"] as? [String:AnyObject] {
+                    if let looptime = formatter.date(from: (loopdata["timestamp"] as! String))?.timeIntervalSince1970  {
+                        let ct=TimeInterval(Date().timeIntervalSince1970)
+                        let deltat=(ct-looptime)/60
+                        if deltat<10 {self.pumpstatus2.setTextColor(UIColor.green)} else
+                            if deltat<20 {self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus2.setTextColor(UIColor.red)}
+                         var pstatus2:String = " IOB "
+                        if let failure = loopdata["failureReason"] {
+                            pstatus2 = "Loop Failure " + (failure as! String)
+                        }
+                        else
+                        {
+                       
+                        let iobdata = loopdata["iob"] as? [String:AnyObject]
+                        let iob = iobdata!["iob"] as! Double
+                        pstatus2 = pstatus2 + String(format:"%.1f", iob)
+                        if let cobdata = loopdata["cob"] as? [String:AnyObject] {
+                            let cob = cobdata["cob"] as! Double
+                            pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cob)
+                        }
+                        if let predictdata = loopdata["predicted"] as? [String:AnyObject] {
+                            let prediction = predictdata["values"] as! [Int]
+                            let plast = prediction.last as! Int
+                            pstatus2 = pstatus2 + "  EBG " + String(plast)
+                            
+                        }
+                        }
+                        
+                        self.pumpstatus2.setText(pstatus2)
+                    }
+                    
+                    
+                }
+                
+                
             
-            if let batjson = json?[0]["edison_bat"] {pstatus2=pstatus2+String(format:"%.0f",(batjson as! [String:AnyObject])["percentage"] as! Double)+"%"}
-            else
-            {pstatus2=pstatus2+"N/A?"}
-            
-            
+         
+//
+//            var pstatus2 : String = "BGI "
+//            if let iob=(json?[0]["iob"]) {if iob as! Double > -1.0
+//            {pstatus=pstatus + String(format:"%.1f", iob as! Double )
+//                pstatus2=pstatus2+String(format:"%.0f", json?[0]["predictedbgiob"] as! Double )
+//            }
+//            else
+//            {pstatus=pstatus+"N/A"
+//                pstatus2=pstatus2+"N/A"
+//                }
+//            } else {pstatus=pstatus+"N/A"
+//                pstatus2=pstatus2+"N/A"}
+//
+//
+//            if let pumpstate=json?[0]["pumpstate"] {
+//                if (json?[0]["pumpstate"] as! String)=="normal" {pstatus2=pstatus2+" : Normal : EBat "} else
+//                if (json?[0]["pumpstate"] as! String)=="zerobasal" {pstatus2=pstatus2+" : ZeroBas : Ebat "}
+//                else {pstatus2=pstatus2+" : BasError : Ebat "}
+//            }
+//            else {pstatus2=pstatus2+" : BasError : Ebat "}
+//
+//
+//
+//
           //  let batjson = json?[0]["edison_bat"] as! [String:AnyObject]
             
             //pstatus2=pstatus2+String(format:"%.0f",batjson["percentage"] as! Double)+"%"
            
-            var pstatus3:String="BG Status "
-            if let bgstale=json?[0]["bgstale"] {if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
-            {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
-            else
-            {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}} else {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
-            
-//            if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
-//                {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
-//                else
-//                {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
-        
-            self.pumpstatus.setText(pstatus)
-            self.pumpstatus2.setText(pstatus2)
-            self.pumpstatus3.setText(pstatus3)
-            
+//            var pstatus3:String="BG Status "
+//            if let bgstale=json?[0]["bgstale"] {if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
+//            {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
+//            else
+//            {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}} else {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
+//            
+////            if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
+////                {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
+////                else
+////                {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
+//        
+//            
+//           // self.pumpstatus2.setText(pstatus2)
+//            self.pumpstatus3.setText(pstatus3)
+            } else {
+                // Fallback on earlier versions watch
+            }
             
         }
         task3.resume()
@@ -277,7 +374,7 @@ class InterfaceController: WKInterfaceController {
         
         //self.loadingicon.setImageNamed("nsblue")
            //hard code for now
-        var url="t1daarshk.herokuapp.com"
+        var url="t1daarsloop.herokuapp.com"
         let urlPath: String = "https://"+url+"/pebble?count=576"
         print("in watchkit")
     
