@@ -19,36 +19,36 @@ class ViewController2: UIViewController {
     
     @IBAction func buttonAction() {
         
-        let sharedDefaults = UserDefaults.init(suiteName: "perceptus.nsapple")
-        let name_preference = String(describing: sharedDefaults?.object(forKey: "name_preference"))
-        self.label.setText(name_preference)
+      //  let sharedDefaults = UserDefaults.init(suiteName: "perceptus.nsapple")
+//        let name_preference = String(describing: sharedDefaults?.object(forKey: "name_preference"))
+//        self.label.setText(name_preference)
     }
     
     @IBOutlet weak var primarydisplay: UISegmentedControl!
     
     @IBAction func primarydisplay(_ sender: AnyObject) {
         
-          var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
-        if primarydisplay.selectedSegmentIndex==0 {defaults.set("dex", forKey: "primarydisplay")} else
-        {defaults.set("raw", forKey: "primarydisplay")}
-        
-        defaults.synchronize()
+//          var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
+//        if primarydisplay.selectedSegmentIndex==0 {defaults.set("dex", forKey: "primarydisplay")} else
+//        {defaults.set("raw", forKey: "primarydisplay")}
+//
+//        defaults.synchronize()
     }
     @IBAction func urlbuttontouch(_ sender: AnyObject) {
         //var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
-        let preferencesUserDefaults = UserDefaults(suiteName: "perceptus.nsapple")
+//        let preferencesUserDefaults = UserDefaults(suiteName: "perceptus.nsapple")
+//
+//        let url=pebbleurl.text
+//        preferencesUserDefaults?.setValue(url, forKey: "name_preference")
         
-        let url=pebbleurl.text
-        preferencesUserDefaults?.setValue(url, forKey: "name_preference")
-        
-        let alertController = UIAlertController(title: "URL Has Been Saved", message: "If WatchApp Says No Connection Please Check URL", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
-            print(action)
-        }
-        alertController.addAction(cancelAction)
-        self.present(alertController, animated: true) {
-            // ...
-        }
+//        let alertController = UIAlertController(title: "URL Has Been Saved", message: "If WatchApp Says No Connection Please Check URL", preferredStyle: .alert)
+//        let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
+//            print(action)
+//        }
+//        alertController.addAction(cancelAction)
+//        self.present(alertController, animated: true) {
+//            // ...
+//        }
         
     }
     @IBAction func urlchanged(_ sender: AnyObject) {
@@ -56,16 +56,16 @@ class ViewController2: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-         var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
-        if let url=defaults.object(forKey: "pebbleurl") as? String {
-            pebbleurl.text=url}
-        //will write dex to defaults first time thru
-        if let primarydisplay=defaults.object(forKey: "primarydisplay") as? String {
-            if primarydisplay=="dex" {self.primarydisplay.selectedSegmentIndex=0} else {self.primarydisplay.selectedSegmentIndex=1}
-        }
-        if primarydisplay.selectedSegmentIndex==0 {defaults.set("dex", forKey: "primarydisplay")} else
-        {defaults.set("raw", forKey: "primarydisplay")}
-        defaults.synchronize()
+//         var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
+//        if let url=defaults.object(forKey: "pebbleurl") as? String {
+//            pebbleurl.text=url}
+//        //will write dex to defaults first time thru
+//        if let primarydisplay=defaults.object(forKey: "primarydisplay") as? String {
+//            if primarydisplay=="dex" {self.primarydisplay.selectedSegmentIndex=0} else {self.primarydisplay.selectedSegmentIndex=1}
+//        }
+//        if primarydisplay.selectedSegmentIndex==0 {defaults.set("dex", forKey: "primarydisplay")} else
+//        {defaults.set("raw", forKey: "primarydisplay")}
+//        defaults.synchronize()
 
 
         // Do any additional setup after loading the view.

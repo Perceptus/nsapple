@@ -144,9 +144,13 @@ class InterfaceController: WKInterfaceController {
     func updatepumpstats() {
         
         let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
-        let urlstring2 = defaults?.string(forKey: "name_preference")
+        guard let urlstring2 = defaults?.string(forKey: "name_preference") else {
+            self.primarybg.setText("")
+            self.vlabel.setText("URL Entry Error")
+            return
+        }
         
-        let urlPath2 = urlstring2!+"/api/v1/devicestatus.json?count=50"
+        let urlPath2 = urlstring2 + "/api/v1/devicestatus.json?count=50"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let url2 = URL(string: escapedAddress!) else {
@@ -291,7 +295,11 @@ class InterfaceController: WKInterfaceController {
         //add retrieve urlfrom user storage
 
         let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
-        let url = defaults?.string(forKey: "name_preference")
+        guard let url = defaults?.string(forKey: "name_preference") else {
+            self.primarybg.setText("")
+            self.vlabel.setText("URL Entry Error")
+            return
+        }
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
@@ -304,8 +312,6 @@ class InterfaceController: WKInterfaceController {
         self.minago.setTextColor(gray)
         self.deltabg.setTextColor(gray)
  
-        
-        //var url="t1daarsloop.herokuapp.com"
 
         let urlPath: String = (url as? String)! + "/pebble?count=576"
         print("in watchkit")
