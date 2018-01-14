@@ -37,7 +37,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 
 
-
 public extension WKInterfaceImage {
     
     public func setImageWithUrl(_ url:String) -> WKInterfaceImage? {
@@ -121,23 +120,7 @@ class InterfaceController: WKInterfaceController {
         super.willActivate()
         updatecore()
         updatepumpstats()
-        //updatecore()
-       
-//        let google=bggraph(graphlength)!.addingPercentEscapes(using: String.Encoding.utf8)!
-//        if (bghistread==true)&&(google != "NoData") {
-//            graphhours.setTextColor(UIColor.white)
-//            graphhours.setText("Last "+String(graphlength)+" Hours")
-//            bgimage.setHidden(false)
-//            chartraw.setHidden(false)
-//            bgimage.setImageWithUrl(google)
-//        }
-//        else {
-//            //need to create no data image
-//            graphhours.setTextColor(UIColor.red)
-//            graphhours.setText("No Chart Data")
-//            bgimage.setHidden(true)
-//            chartraw.setHidden(true)
-//        }
+
         
         
     }
@@ -158,19 +141,11 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
     
-//    struct loop : Codable {
-//        let created_at : String
-//        let loop : [String:AnyObject]
-//        let failureReason : String?
-//        let cob : [String:Double]?
-//        let iob : [String:Double]?
-//    }
+
     
     func updatepumpstats() {
         
-   // var key="J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
-   // var url3s="https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4" as String
-        //let urlPath2: String = "https://api.mongolab.com/api/1/databases/kenstackdb/collections/nodehawkdata?s={\"date\":-1}&l=1&apiKey=J-UUWxWL8YLvtdaO2bNUvrqtv615YZe4"
+   
         let urlPath2="https://t1daarsloop.herokuapp.com/api/v1/devicestatus.json?count=50"
         var escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         //url3s=url3s.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
@@ -347,8 +322,13 @@ class InterfaceController: WKInterfaceController {
      //get pebble data
   //    var dexprimary=false as Bool
         //add retrieve urlfrom user storage
-       // var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
-        //var url=defaults.object(forKey: "pebbleurl") as! String
+      // var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
+     //   var urltest=defaults.object(forKey: "pebbleurl") as! String
+        let defaults = UserDefaults(suiteName:
+            "group.perceptus.nsapple")
+        let test = defaults?.string(forKey: "name_preference")
+        let test2 = defaults?.double(forKey: "enabled_preference")
+        print(test)
         var dexprimary=true as Bool
        // if defaults.object(forKey: "primarydisplay") as! String == "dex" {dexprimary=true} else {dexprimary=false}
       print("in updarte core")
