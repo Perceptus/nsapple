@@ -16,11 +16,11 @@
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
-			<string>Name</string>
+			<string>URL</string>
 			<key>Key</key>
 			<string>name_preference</string>
 			<key>DefaultValue</key>
-			<string></string>
+			<string>https://yoursite.herokuapp.com</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>KeyboardType</key>
@@ -29,32 +29,6 @@
 			<string>None</string>
 			<key>AutocorrectionType</key>
 			<string>No</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
-			<string>Enabled</string>
-			<key>Key</key>
-			<string>enabled_preference</string>
-			<key>DefaultValue</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSSliderSpecifier</string>
-			<key>Key</key>
-			<string>slider_preference</string>
-			<key>DefaultValue</key>
-			<real>0.5</real>
-			<key>MinimumValue</key>
-			<integer>0</integer>
-			<key>MaximumValue</key>
-			<integer>1</integer>
-			<key>MinimumValueImage</key>
-			<string></string>
-			<key>MaximumValueImage</key>
-			<string></string>
 		</dict>
 	</array>
 	<key>ApplicationGroupContainerIdentifier</key>

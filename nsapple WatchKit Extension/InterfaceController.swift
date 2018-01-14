@@ -120,15 +120,13 @@ class InterfaceController: WKInterfaceController {
         super.willActivate()
         updatecore()
         updatepumpstats()
-
         
         
     }
 
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
-        var gray=UIColor.gray as UIColor
-    
+        let gray=UIColor.gray as UIColor
         self.primarybg.setTextColor(gray)
         self.bgdirection.setTextColor(gray)
         self.plabel.setTextColor(gray)
@@ -145,21 +143,28 @@ class InterfaceController: WKInterfaceController {
     
     func updatepumpstats() {
         
-   
-        let urlPath2="https://t1daarsloop.herokuapp.com/api/v1/devicestatus.json?count=50"
-        var escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-        //url3s=url3s.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
+        let urlstring2 = defaults?.string(forKey: "name_preference")
         
-        var url3 = URL(string: escapedAddress!)
+        let urlPath2 = urlstring2!+"/api/v1/devicestatus.json?count=50"
+        let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        let task3 = URLSession.shared.dataTask(with: url3!) { data, response, error in
-            //let task = URLSession.synchronousDataTaskWithURL(urlPath2) { data, response, error in
+        guard let url2 = URL(string: escapedAddress!) else {
+            print ("URL Parsing Error")
+            pumpstatus.setText("")
+            pumpstatus.setText("URL ERROR")
+            return
+        }
+        
+        let task3 = URLSession.shared.dataTask(with: url2) { data, response, error in
             guard error == nil else {
                 print(error!)
+                self.pumpstatus.setText(error?.localizedDescription)
                 return
             }
             guard let data = data else {
                 print("Data is empty")
+                self.pumpstatus.setText("Data is Empty")
                 return
             }
            // print (response)
@@ -173,17 +178,13 @@ class InterfaceController: WKInterfaceController {
            
            
             
-            // pump, uploader, device, loop
-            if json?.count == 0 {return}
-            //var pump : [String : AnyObject] = [:]
+            if json?.count == 0 {
+                self.pumpstatus.setText("No Records")
+                return}
             var pump = [[String : AnyObject]] ()
-//            var uploader = [[String : AnyObject]] ()
-//            var device = [[String : AnyObject]] ()
             var loop = [[String : AnyObject]] ()
             for item in json! {
                 if item["pump"] != nil {pump.append(item)} else
-//                    if item["uploader"] != nil {uploader.append(item)} else
-//                        if item["device"] != nil {device.append(item)} else
                             if item["loop"] != nil {loop.append(item)}
             }
             
@@ -192,22 +193,31 @@ class InterfaceController: WKInterfaceController {
             for item in pump {
                 cdatepump.append(formatter.date(from: (item["created_at"] as! String))!)
             }
-                ////// add check to see if no elements
-                
+                if cdatepump.count == 0 {
+                    self.pumpstatus.setText("No Pump Records")
+                    return
+                }
                 
             let lastpump = pump[cdatepump.index(of:cdatepump.max()!) as! Int]
             var cdateloop = [Date]()
             for item in loop {
                 cdateloop.append(formatter.date(from: (item["created_at"] as! String))!)
             }
+                
+                if cdateloop.count == 0 {
+                    self.pumpstatus2.setText("No Loop Records")
+                    return
+                }
             let lastloop = loop[cdateloop.index(of:cdateloop.max()!) as! Int]
-            
-            let keylist:[String]=["iob","predictedbgiob","pumpstate","bgstale","reslevel","bgreaderror"]
-            //print(json?[0]["iob"] as! Double)
+
                 if let pumpdata = lastpump["pump"] as? [String:AnyObject] {
                     if let pumptime = formatter.date(from: (pumpdata["clock"] as! String))?.timeIntervalSince1970  {
                         let ct=TimeInterval(Date().timeIntervalSince1970)
                         let deltat=(ct-pumptime)/60
+                        ///////////////////////////
+                        /// TO DO NEED TO FIX COLORS AND DATES BY EACH TYPE
+                        ///////////////////////////
+                        
                         if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
                             if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
                         
@@ -265,50 +275,7 @@ class InterfaceController: WKInterfaceController {
                 }
                 
                 
-            
-         
-//
-//            var pstatus2 : String = "BGI "
-//            if let iob=(json?[0]["iob"]) {if iob as! Double > -1.0
-//            {pstatus=pstatus + String(format:"%.1f", iob as! Double )
-//                pstatus2=pstatus2+String(format:"%.0f", json?[0]["predictedbgiob"] as! Double )
-//            }
-//            else
-//            {pstatus=pstatus+"N/A"
-//                pstatus2=pstatus2+"N/A"
-//                }
-//            } else {pstatus=pstatus+"N/A"
-//                pstatus2=pstatus2+"N/A"}
-//
-//
-//            if let pumpstate=json?[0]["pumpstate"] {
-//                if (json?[0]["pumpstate"] as! String)=="normal" {pstatus2=pstatus2+" : Normal : EBat "} else
-//                if (json?[0]["pumpstate"] as! String)=="zerobasal" {pstatus2=pstatus2+" : ZeroBas : Ebat "}
-//                else {pstatus2=pstatus2+" : BasError : Ebat "}
-//            }
-//            else {pstatus2=pstatus2+" : BasError : Ebat "}
-//
-//
-//
-//
-          //  let batjson = json?[0]["edison_bat"] as! [String:AnyObject]
-            
-            //pstatus2=pstatus2+String(format:"%.0f",batjson["percentage"] as! Double)+"%"
-           
-//            var pstatus3:String="BG Status "
-//            if let bgstale=json?[0]["bgstale"] {if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
-//            {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
-//            else
-//            {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}} else {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
-//            
-////            if (json?[0]["bgstale"] as! Bool) == false && (json?[0]["bgreaderror"] as! Bool) == false
-////                {pstatus3=pstatus3+"OK";self.pumpstatus3.setTextColor(UIColor.green)}
-////                else
-////                {pstatus3=pstatus3+"Fail Check BG Data";self.pumpstatus3.setTextColor(UIColor.red)}
-//        
-//            
-//           // self.pumpstatus2.setText(pstatus2)
-//            self.pumpstatus3.setText(pstatus3)
+
             } else {
                 // Fallback on earlier versions watch
             }
@@ -322,13 +289,9 @@ class InterfaceController: WKInterfaceController {
      //get pebble data
   
         //add retrieve urlfrom user storage
-      // var defaults: UserDefaults = UserDefaults(suiteName: "group.perceptus.nsapple")!
-     //   var urltest=defaults.object(forKey: "pebbleurl") as! String
-        let defaults = UserDefaults(suiteName:
-            "group.perceptus.nsapple")
+
+        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
         let url = defaults?.string(forKey: "name_preference")
-        
-        var dexprimary=true as Bool
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
