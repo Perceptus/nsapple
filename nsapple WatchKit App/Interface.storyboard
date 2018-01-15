@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="12117" systemVersion="16D32" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="13771" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12084"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="12029"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="13756"/>
     </dependencies>
     <scenes>
         <!--Interface Controller-->
@@ -51,9 +51,15 @@
                                 <label alignment="left" text="Label" id="1cw-2v-v8O"/>
                                 <label alignment="center" text="N/A" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" weight="thin" pointSize="28"/>
+                                    </variation>
                                 </label>
                                 <label alignment="center" text="-" id="YV0-Ga-4dz">
                                     <fontDescription key="font" type="system" pointSize="30"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="26"/>
+                                    </variation>
                                 </label>
                                 <label alignment="right" text="Label" id="oEG-1v-IuD"/>
                             </items>
@@ -63,17 +69,28 @@
                                 <label alignment="left" text="0 min ago" textAlignment="center" id="IwJ-4k-L7w">
                                     <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="9"/>
+                                    </variation>
                                 </label>
                                 <label alignment="right" text="- 5.0 mg/dl" id="drV-DZ-SeX">
                                     <fontDescription key="font" type="system" pointSize="10"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
                                 </label>
                             </items>
                         </group>
-                        <imageView width="1" height="70" alignment="center" id="v8P-Xw-gHJ"/>
+                        <imageView width="1" height="70" alignment="center" id="v8P-Xw-gHJ">
+                            <variation key="device=watch38mm" height="60"/>
+                        </imageView>
                         <group width="1" alignment="left" id="LxB-Yd-NVT">
                             <items>
                                 <label alignment="center" text="IOB 16.2 10 min ago Res 300" id="Vcl-QY-KNQ">
                                     <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
                                 </label>
                             </items>
                         </group>
@@ -81,6 +98,9 @@
                             <items>
                                 <label alignment="center" text="BGI 100 : 1.25 U/hr : EBat99%" id="8Qo-he-BQ1">
                                     <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
                                 </label>
                             </items>
                         </group>

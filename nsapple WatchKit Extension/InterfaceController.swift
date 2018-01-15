@@ -60,6 +60,24 @@ public extension WKInterfaceImage {
     
 }
 
+
+public struct watch {
+    
+    public static var screenWidth: CGFloat {
+        return WKInterfaceDevice.current().screenBounds.width
+    }
+    
+    public static var is38: Bool {
+        return screenWidth == 136
+    }
+    
+    public static var is42: Bool {
+        return screenWidth == 156
+    }
+}
+
+
+
 class InterfaceController: WKInterfaceController {
     @IBOutlet weak var bgimage: WKInterfaceImage!
     @IBOutlet weak var primarybg: WKInterfaceLabel!
@@ -143,6 +161,9 @@ class InterfaceController: WKInterfaceController {
     
     func updatepumpstats() {
         
+       
+        
+        
         let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
         guard let urlstring2 = defaults?.string(forKey: "name_preference") else {
             self.primarybg.setText("")
@@ -150,7 +171,7 @@ class InterfaceController: WKInterfaceController {
             return
         }
         
-        let urlPath2 = urlstring2 + "/api/v1/devicestatus.json?count=50"
+        let urlPath2 = urlstring2 + "/api/v1/devicestatus.json?count=20"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let url2 = URL(string: escapedAddress!) else {
@@ -252,7 +273,7 @@ class InterfaceController: WKInterfaceController {
                             if deltat<20 {self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus2.setTextColor(UIColor.red)}
                          var pstatus2:String = " IOB "
                         if let failure = loopdata["failureReason"] {
-                            pstatus2 = "Loop Failure " + (failure as! String)
+                            pstatus2 = failure as! String
                         }
                         else
                         {
@@ -293,7 +314,7 @@ class InterfaceController: WKInterfaceController {
      //get pebble data
   
         //add retrieve urlfrom user storage
-
+        let bundle = Bundle.main.bundleIdentifier
         let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
         guard let url = defaults?.string(forKey: "name_preference") else {
             self.primarybg.setText("")
@@ -394,7 +415,7 @@ class InterfaceController: WKInterfaceController {
                 else
                     
                     {
-                        self.primarybg.setText(cbg)
+                            self.primarybg.setText(cbg)
                         self.primarybg.setTextColor(self.bgcolor(Int(cbg)!))
                         self.bgdirection.setText(self.dirgraphics(direction))
                         self.bgdirection.setTextColor(self.bgcolor(Int(cbg)!))
