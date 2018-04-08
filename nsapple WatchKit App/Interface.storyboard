@@ -38,7 +38,7 @@
                     <items>
                         <group width="154" alignment="left" id="0XS-Xb-x7m">
                             <items>
-                                <label alignment="left" text=" V mg/dl.min" id="1qW-8W-XE3">
+                                <label alignment="left" text=" V per min" id="1qW-8W-XE3">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
                                 <label alignment="right" text="30m Min Pred" id="wWp-A4-E1K">

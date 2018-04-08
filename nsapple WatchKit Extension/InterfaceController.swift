@@ -8,6 +8,17 @@
 
 import WatchKit
 import Foundation
+
+//////////////////////////////////
+//until we fix accessing data from outside of watch app only modify the following variables
+// urlUser - your ns site - you must include the entire thing including https://
+// mmol - True or False - True means display data in mmol/L.  False, which is default, means display in mg/dL
+var urlUser : String = "https://t1daarsloop.herokuapp.com"
+var mmol : Bool = true
+/////////////////////////////////
+
+
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -164,14 +175,15 @@ class InterfaceController: WKInterfaceController {
        
         
         
-        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
-        guard let urlstring2 = defaults?.string(forKey: "name_preference") else {
-            self.primarybg.setText("")
-            self.vlabel.setText("URL Entry Error")
-            return
-        }
+//        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
+//        guard let urlstring2 = defaults?.string(forKey: "name_preference") else {
+//            self.primarybg.setText("")
+//            self.vlabel.setText("URL Entry Error")
+//            return
+//        }
         
-        let urlPath2 = urlstring2 + "/api/v1/devicestatus.json?count=20"
+        //let urlPath2 = urlstring2 + "/api/v1/devicestatus.json?count=20"
+        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=20"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let url2 = URL(string: escapedAddress!) else {
@@ -314,13 +326,15 @@ class InterfaceController: WKInterfaceController {
      //get pebble data
   
         //add retrieve urlfrom user storage
-        let bundle = Bundle.main.bundleIdentifier
-        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
-        guard let url = defaults?.string(forKey: "name_preference") else {
-            self.primarybg.setText("")
-            self.vlabel.setText("URL Entry Error")
-            return
-        }
+//        let bundle = Bundle.main.bundleIdentifier
+//        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
+//        guard let url = defaults?.string(forKey: "name_preference") else {
+//            self.primarybg.setText("")
+//            self.vlabel.setText("URL Entry Error")
+//            return
+//        }
+        
+        //let url = urlUser
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
@@ -334,7 +348,9 @@ class InterfaceController: WKInterfaceController {
         self.deltabg.setTextColor(gray)
  
 
-        let urlPath: String = (url as? String)! + "/pebble?count=576"
+       // let urlPath: String = (url as? String)! + "/pebble?count=576"
+        let urlPath: String = urlUser + "/api/v1/entries.json?count=576"
+        ///api/v1/entries/sgv.json
         print("in watchkit")
     
         guard let url2 = URL(string: urlPath) else {
@@ -361,7 +377,7 @@ class InterfaceController: WKInterfaceController {
             
             DispatchQueue.main.async() {
             
-            let responseDict = try! JSONSerialization.jsonObject(with: data, options: []) as! [String:AnyObject]
+                let entries = try! JSONSerialization.jsonObject(with: data, options: []) as! [[String:AnyObject]]
             print ("read resp")
             
             
@@ -370,29 +386,32 @@ class InterfaceController: WKInterfaceController {
             
  // new main
             
-            print("before main")
+           // print("before main")
            
             //successfully received pebble end point data
-            if let bgs=responseDict["bgs"] as? [[String:AnyObject]] {
+            //if let bgs=responseDict["bgs"] as? [[String:AnyObject]] {
+                if entries.count > 0 {
                 print("after main")
                 self.bghistread=true
                 let rawavailable=false as Bool
                 let slope=0.0 as Double
                let intercept=0.0 as Double
                 let scale=0.0 as Double
-                let cbg=bgs[0]["sgv"] as! String
-                let direction=bgs[0]["direction"] as! String
-                let dbg=bgs[0]["bgdelta"] as! Int
-                let bgtime=bgs[0]["datetime"] as! TimeInterval
+                let cbg=entries[0]["sgv"] as! Int
+                let priorbg = entries[1]["sgv"] as! Int
+                let direction=entries[0]["direction"] as! String
+                let dbg = cbg - priorbg as Int
+                let bgtime=entries[0]["date"] as! TimeInterval
                 let red=UIColor.red as UIColor
                 let green=UIColor.green as UIColor
                 let yellow=UIColor.yellow as UIColor
                 let rawcolor="green" as String
                 //save as global variables
-                self.bghist=bgs
+                self.bghist=entries
+                   let bgs = entries as? [[String:AnyObject]]
                 //calculate text colors for sgv,direction
   
-                let sgvi=Int(cbg)
+                //let sgvi=Int(cbg)
                 // let sgvcolor=bgcolor(sgvi!) as String
               
     
@@ -405,9 +424,9 @@ class InterfaceController: WKInterfaceController {
                     if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
                 self.minago.setText(String(Int(deltat))+" min ago")
          //       self.secondarybgname.setText("Raw")
-                if (sgvi<40) {
+                if (cbg<40) {
                     self.primarybg.setTextColor(red)
-                    self.primarybg.setText(self.errorcode(sgvi!))
+                    self.primarybg.setText(self.errorcode(cbg))
                     self.bgdirection.setText("")
                     self.deltabg.setText("")
                 }
@@ -415,19 +434,34 @@ class InterfaceController: WKInterfaceController {
                 else
                     
                     {
-                            self.primarybg.setText(cbg)
-                        self.primarybg.setTextColor(self.bgcolor(Int(cbg)!))
-                        self.bgdirection.setText(self.dirgraphics(direction))
-                        self.bgdirection.setTextColor(self.bgcolor(Int(cbg)!))
-                        let velocity=self.velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
-                        let prediction=velocity*30.0+Double(cbg)!
-                        print("vel")
-                        print(velocity)
-                        self.deltabg.setTextColor(UIColor.white)
-                        if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl")}
                         
-                        self.vlabel.setText(String(format:"%.1f", velocity))
-                        self.plabel.setText(String(format:"%.0f", prediction))
+                        self.primarybg.setTextColor(self.bgcolor(cbg))
+                        self.bgdirection.setText(self.dirgraphics(direction))
+                        self.bgdirection.setTextColor(self.bgcolor(cbg))
+                        let velocity=self.velocity_cf(bgs!, slope: slope,intercept: intercept,scale: scale) as Double
+                        let prediction=velocity*30.0+Double(cbg)
+
+                        self.deltabg.setTextColor(UIColor.white)
+                        
+                        if (mmol == false) {
+                            self.primarybg.setText(String(cbg))
+                            if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl")}
+                            self.vlabel.setText(String(format:"%.1f", velocity))
+                            self.plabel.setText(String(format:"%.0f", prediction))
+                        }
+                        
+                        else
+                        
+                        {   let conv = 18.0 as Double
+                            let mmolbg = Double(cbg) / conv
+                            let mmoltext = String(format:"%.1f", mmolbg)
+                             self.primarybg.setText(mmoltext)
+                            let deltammol = Double(dbg) / conv
+                            let delmmoltext = String(format:"%.1f", deltammol)
+                            if (dbg<0) {self.deltabg.setText(delmmoltext + " mmol/L")} else {self.deltabg.setText("+" + delmmoltext + " mmol/L")}
+                            self.vlabel.setText(String(format:"%.1f", velocity/conv))
+                            self.plabel.setText(String(format:"%.1f", prediction/conv))
+                        }
 
                 }
 
@@ -505,8 +539,8 @@ class InterfaceController: WKInterfaceController {
       
         i=0
         while i<4 {
-         date[i]=(bgs[i]["datetime"] as? Double)!
-         bgsgv[i]=(bgs[i]["sgv"] as? NSString)!.doubleValue
+         date[i]=(bgs[i]["date"] as? Double)!
+         bgsgv[i]=(bgs[i]["sgv"])!.doubleValue
             i=i+1
           
         }
@@ -687,14 +721,19 @@ class InterfaceController: WKInterfaceController {
         var i=0 as Int;
       //  for var i=0; i<bghist.count; i=i+1 {
         while (i<bghist.count) {
-            let curdate: Double = (bghist[i]["datetime"] as! Double)/1000
+            let curdate: Double = (bghist[i]["date"] as! Double)/1000
             bgtimes[i]=Int((Double(minutes)-(Double(ct2)-curdate)/(60.0)))
             print(bgtimes[i])
             if (bgtimes[i]>=0) {
                 gpoints += 1
             if (bgtimes[i]>maxx) { maxx=bgtimes[i]}
-            if (Int((bghist[i]["sgv"] as! String))>maxy) {maxy=Int(bghist[i]["sgv"] as! String)!}
-            if (Int(bghist[i]["sgv"] as! String)<miny) {miny=Int(bghist[i]["sgv"] as! String)!}
+            let bgi = bghist[i]["sgv"] as! Int
+            if (bghist[i]["sgv"] as! Int > maxy) {maxy = bghist[i]["sgv"] as! Int}
+            if (bgi < miny) {miny = bgi}
+                
+               // if (bghist[i]["sgv"] as! Int < miny) {miny = bghist[i]["sgv"] as! Int}
+                
+             // if (bghist[i]["sgv"] as! Int < miny) {miny = bghist[i]["sgv"] as! Int}
                 //calculate raw values, include in min max calc
 //                if cals?.count>0 && craw==true {
 //                    let sgvd=Double(Int(bghist[i]["sgv"] as! String)!)
@@ -721,7 +760,7 @@ class InterfaceController: WKInterfaceController {
             if (bgtimes[i]>=0) {
                 //scale time values
                 xg=xg+String(bgtimes[i]*100/minutes)+","
-                var sgv:Int=(Int(bghist[i]["sgv"] as! String)!)
+                var sgv:Int = bghist[i]["sgv"] as! Int
                 if sgv<60 {pc=pc+"FF0000|"} else
                     if sgv<80 {pc=pc+"FFFF00|"} else
                         if sgv<180 {pc=pc+"00FF00|"} else
