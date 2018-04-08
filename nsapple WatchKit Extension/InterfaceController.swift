@@ -14,7 +14,7 @@ import Foundation
 // urlUser - your ns site - you must include the entire thing including https://
 // mmol - True or False - True means display data in mmol/L.  False, which is default, means display in mg/dL
 var urlUser : String = "https://t1daarsloop.herokuapp.com"
-var mmol : Bool = true
+var mmol : Bool = false
 /////////////////////////////////
 
 
@@ -767,15 +767,19 @@ class InterfaceController: WKInterfaceController {
                             if sgv<260 {pc=pc+"FFFF00|"} else
                             {pc=pc+"FF0000|"}
                 //scale bg data to 100 is the max
+
                 sgv=(sgv-miny)*100/(maxy-miny)
                 yg=yg+String(sgv)+","
+                
+                
+           
                 //add raw points on the fly if cal available
-                if cals?.count>0 && craw==true {
-                    let rawscaled=(rawv[i]-miny)*100/(maxy-miny)
-                    xg=xg+String(bgtimes[i]*100/minutes)+".05,"
-                    yg=yg+String(rawscaled)+","
-                    pc=pc+"FFFFFF|"
-                }
+//                if cals?.count>0 && craw==true {
+//                    let rawscaled=(rawv[i]-miny)*100/(maxy-miny)
+//                    xg=xg+String(bgtimes[i]*100/minutes)+".05,"
+//                    yg=yg+String(rawscaled)+","
+//                    pc=pc+"FFFFFF|"
+//                }
             }
         i=i+inc}
         
@@ -794,7 +798,18 @@ class InterfaceController: WKInterfaceController {
         let band2="|r,FFFFFF,0,"+String(format:"%.2f",(low))+","+String(format:"%.3f",low+0.01)
         let h:String=String(stringInterpolationSegment: 100.0/Double(hours))
         let hourlyverticals="&chg="+h+",0"
-        google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(miny)+","+String(maxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
+        if (mmol == false) {
+                    google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(miny)+","+String(maxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
+        }
+        
+        else {
+            let mmolminy = Double(miny) / 18.0
+            let mmolmaxy = Double(maxy) / 18.0
+            google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(format:"%.1f",mmolminy)+","+String(format:"%.1f",mmolmaxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
+            
+        }
+        
+
             return google
    
     
