@@ -14,7 +14,7 @@ import Foundation
 // urlUser - your ns site - you must include the entire thing including https://
 // mmol - True or False - True means display data in mmol/L.  False, which is default, means display in mg/dL
 var urlUser : String = "https://t1daarsloop.herokuapp.com"
-var mmol : Bool = false
+var mmol : Bool = true
 /////////////////////////////////
 
 
