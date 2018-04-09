@@ -13,7 +13,7 @@ import Foundation
 //until we fix accessing data from outside of watch app only modify the following variables
 // urlUser - your ns site - you must include the entire thing including https://
 // mmol - True or False - True means display data in mmol/L.  False, which is default, means display in mg/dL
-var urlUser : String = "https://t1daarsloop.herokuapp.com"
+var urlUser : String = "https://kermitface.herokuapp.com"
 var mmol : Bool = true
 /////////////////////////////////
 
@@ -349,7 +349,7 @@ class InterfaceController: WKInterfaceController {
  
 
        // let urlPath: String = (url as? String)! + "/pebble?count=576"
-        let urlPath: String = urlUser + "/api/v1/entries.json?count=576"
+        let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=576"
         ///api/v1/entries/sgv.json
         print("in watchkit")
     
