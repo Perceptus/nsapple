@@ -27,6 +27,10 @@
 		11832FFE1B5F4794005E3536 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11832FFD1B5F4794005E3536 /* ViewController2.swift */; };
 		1189EA9A1E7987C400B11975 /* nsapple WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1189EA9D1E7987C400B11975 /* nsapple WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */; };
+		118FA3EA20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
+		118FA3EB20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
+		118FA3EC20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
+		118FA3ED20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +108,7 @@
 		114199A62009CA61007AD506 /* nsapple WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "nsapple WatchKit App.entitlements"; sourceTree = "<group>"; };
 		114199AD200ADAB1007AD506 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = "Settings-Watch.bundle"; sourceTree = "<group>"; };
 		11832FFD1B5F4794005E3536 /* ViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
+		118FA3E920805EB000757121 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "nsapple WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		11C9660B1B5FDA87007C5B1E /* nsapple.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = nsapple.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -136,6 +141,7 @@
 		1119B9E51B4F046E00046ABF = {
 			isa = PBXGroup;
 			children = (
+				118FA3E920805EB000757121 /* Config.xcconfig */,
 				1119B9F01B4F046E00046ABF /* nsapple */,
 				1119BA081B4F046E00046ABF /* nsappleTests */,
 				1119BA1A1B4F04FC00046ABF /* nsapple WatchKit Extension */,
@@ -387,6 +393,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1119B9FB1B4F046E00046ABF /* Main.storyboard in Resources */,
+				118FA3EA20805EB000757121 /* Config.xcconfig in Resources */,
 				1119BA001B4F046E00046ABF /* LaunchScreen.xib in Resources */,
 				114199AE200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
 				1119B9FD1B4F046E00046ABF /* Images.xcassets in Resources */,
@@ -397,6 +404,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				118FA3EB20805EB000757121 /* Config.xcconfig in Resources */,
 				114199AF200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -406,6 +414,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				114199B0200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
+				118FA3EC20805EB000757121 /* Config.xcconfig in Resources */,
 				1119BA251B4F04FC00046ABF /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -414,6 +423,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				118FA3ED20805EB000757121 /* Config.xcconfig in Resources */,
 				1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */,
 				1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */,
 				114199B1200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,

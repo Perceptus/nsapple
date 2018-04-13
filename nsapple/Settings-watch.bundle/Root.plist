@@ -8,6 +8,16 @@
 	<array>
 		<dict>
 			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>mmol/L</string>
+			<key>Key</key>
+			<string>mmol</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Group</string>
@@ -32,6 +42,6 @@
 		</dict>
 	</array>
 	<key>ApplicationGroupContainerIdentifier</key>
-	<string>perceptus.nsapple</string>
+	<string>com.nsapple</string>
 </dict>
 </plist>

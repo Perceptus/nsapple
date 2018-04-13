@@ -327,14 +327,18 @@ class InterfaceController: WKInterfaceController {
   
         //add retrieve urlfrom user storage
 //        let bundle = Bundle.main.bundleIdentifier
-//        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
-//        guard let url = defaults?.string(forKey: "name_preference") else {
+        let defaults = UserDefaults(suiteName:"group.com.nsapple")
+        print("pre")
+        print(defaults?.string(forKey: "name_preference"))
+        //guard let url = defaults?.string(forKey: "name_preference") else {
+      //      print("error")
 //            self.primarybg.setText("")
 //            self.vlabel.setText("URL Entry Error")
 //            return
 //        }
         
         //let url = urlUser
+        //    print("got "+url)
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
