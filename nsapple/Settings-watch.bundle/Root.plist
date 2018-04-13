@@ -10,17 +10,11 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>mmol/L</string>
+			<string>mmol/L (Default is mg/dL)</string>
 			<key>Key</key>
 			<string>mmol</string>
 			<key>DefaultValue</key>
 			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Group</string>
 		</dict>
 		<dict>
 			<key>Type</key>

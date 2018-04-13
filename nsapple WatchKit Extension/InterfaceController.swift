@@ -9,13 +9,10 @@
 import WatchKit
 import Foundation
 
-//////////////////////////////////
-//until we fix accessing data from outside of watch app only modify the following variables
-// urlUser - your ns site - you must include the entire thing including https://
-// mmol - True or False - True means display data in mmol/L.  False, which is default, means display in mg/dL
-var urlUser : String = "https://kermitface.herokuapp.com"
-var mmol : Bool = true
-/////////////////////////////////
+
+let defaults = UserDefaults(suiteName:"group.com.nsapple")
+let mmol = defaults?.bool(forKey: "mmol")
+
 
 
 
@@ -175,14 +172,13 @@ class InterfaceController: WKInterfaceController {
        
         
         
-//        let defaults = UserDefaults(suiteName:"group.perceptus.nsapple")
-//        guard let urlstring2 = defaults?.string(forKey: "name_preference") else {
-//            self.primarybg.setText("")
-//            self.vlabel.setText("URL Entry Error")
-//            return
-//        }
-        
-        //let urlPath2 = urlstring2 + "/api/v1/devicestatus.json?count=20"
+        guard let urlUser = defaults?.string(forKey: "name_preference") else {
+            print ("no url is set")
+            pumpstatus.setText("")
+            pumpstatus.setText("URL NOT SET")
+            return}
+        let mmol = defaults?.bool(forKey: "mmol")
+
         let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=20"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
@@ -204,7 +200,7 @@ class InterfaceController: WKInterfaceController {
                 self.pumpstatus.setText("Data is Empty")
                 return
             }
-           // print (response)
+         
             let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
             if #available(watchOSApplicationExtension 3.0, *) {
                 let formatter = ISO8601DateFormatter()
@@ -300,7 +296,13 @@ class InterfaceController: WKInterfaceController {
                         if let predictdata = loopdata["predicted"] as? [String:AnyObject] {
                             let prediction = predictdata["values"] as! [Int]
                             let plast = prediction.last as! Int
+                            if mmol == false {
                             pstatus2 = pstatus2 + "  EBG " + String(plast)
+                            }
+                            else
+                            {
+                                pstatus2 = pstatus2 + "  EBG " + String(format:"%.1f", Double(plast)/18.0)
+                            }
                             
                         }
                         }
@@ -323,22 +325,7 @@ class InterfaceController: WKInterfaceController {
     
     func updatecore() {
  
-     //get pebble data
-  
-        //add retrieve urlfrom user storage
-//        let bundle = Bundle.main.bundleIdentifier
-        let defaults = UserDefaults(suiteName:"group.com.nsapple")
-        print("pre")
-        print(defaults?.string(forKey: "name_preference"))
-        //guard let url = defaults?.string(forKey: "name_preference") else {
-      //      print("error")
-//            self.primarybg.setText("")
-//            self.vlabel.setText("URL Entry Error")
-//            return
-//        }
-        
-        //let url = urlUser
-        //    print("got "+url)
+
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
@@ -351,10 +338,13 @@ class InterfaceController: WKInterfaceController {
         self.minago.setTextColor(gray)
         self.deltabg.setTextColor(gray)
  
-
-       // let urlPath: String = (url as? String)! + "/pebble?count=576"
+        guard let urlUser = defaults?.string(forKey: "name_preference") else {
+            print ("no url is set")
+            pumpstatus.setText("")
+            pumpstatus.setText("URL NOT SET")
+            return}
+        let mmol = defaults?.bool(forKey: "mmol")
         let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=576"
-        ///api/v1/entries/sgv.json
         print("in watchkit")
     
         guard let url2 = URL(string: urlPath) else {
@@ -413,10 +403,7 @@ class InterfaceController: WKInterfaceController {
                 //save as global variables
                 self.bghist=entries
                    let bgs = entries as? [[String:AnyObject]]
-                //calculate text colors for sgv,direction
-  
-                //let sgvi=Int(cbg)
-                // let sgvcolor=bgcolor(sgvi!) as String
+
               
     
                 self.plabel.setTextColor(white)
@@ -427,14 +414,14 @@ class InterfaceController: WKInterfaceController {
                 if deltat<10 {self.minago.setTextColor(UIColor.green)} else
                     if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
                 self.minago.setText(String(Int(deltat))+" min ago")
-         //       self.secondarybgname.setText("Raw")
+ 
                 if (cbg<40) {
                     self.primarybg.setTextColor(red)
                     self.primarybg.setText(self.errorcode(cbg))
                     self.bgdirection.setText("")
                     self.deltabg.setText("")
                 }
-                    //if raw doesnt exist or dex is primary.0
+                    
                 else
                     
                     {
@@ -480,15 +467,14 @@ class InterfaceController: WKInterfaceController {
                 return
             }
                   //add graph
-                    let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
+                let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
                     if (self.bghistread==true)&&(google != "NoData") {
                         self.graphhours.setTextColor(UIColor.white)
                         self.graphhours.setText("Last "+String(self.graphlength)+" Hours")
                         self.bgimage.setHidden(false)
-//                        self.chartraw.setHidden(false)
                         let imgURL: URL = URL(string: google)! as URL
                         let task2 = URLSession.shared.dataTask(with: imgURL) { data, response, error in
-                            //let task = URLSession.synchronousDataTaskWithURL(urlPath2) { data, response, error in
+
                             guard error == nil else {
                                 print(error!)
                                 self.primarybg.setText("")
@@ -684,6 +670,7 @@ class InterfaceController: WKInterfaceController {
         
         //get bghistory
         //grabbing double the data in case of gap sync issues
+        let mmol = defaults?.bool(forKey: "mmol")
         var google="" as String
         let ct2=NSInteger(Date().timeIntervalSince1970)
                 var xg="" as String
@@ -714,11 +701,7 @@ class InterfaceController: WKInterfaceController {
             scale=cals?[0]["scale"] as! Double
             intercept=cals?[0]["intercept"] as! Double
         }
-       // var descriptor: NSSortDescriptor = NSSortDescriptor(key: "datetime", ascending: false)
-       // var sortedbgs: NSArray = (bghist.sortedArray(using: [descriptor]) as? NSArray)!
-        //var sortedbgs=bghist
-        
-        
+
         
   
         //find max time, min and max bg
@@ -735,19 +718,6 @@ class InterfaceController: WKInterfaceController {
             if (bghist[i]["sgv"] as! Int > maxy) {maxy = bghist[i]["sgv"] as! Int}
             if (bgi < miny) {miny = bgi}
                 
-               // if (bghist[i]["sgv"] as! Int < miny) {miny = bghist[i]["sgv"] as! Int}
-                
-             // if (bghist[i]["sgv"] as! Int < miny) {miny = bghist[i]["sgv"] as! Int}
-                //calculate raw values, include in min max calc
-//                if cals?.count>0 && craw==true {
-//                    let sgvd=Double(Int(bghist[i]["sgv"] as! String)!)
-//                    let unfilt=bghist[i]["unfiltered"] as! Double
-//                    let filt=bghist[i]["filtered"] as! Double
-//                    rawv[i]=calcraw(sgvd,filt: filt,unfilt: unfilt,slope: slope,intercept: intercept,scale: scale)
-//                    if rawv[i]>maxy {maxy=rawv[i]}
-//                    if rawv[i]<miny {miny=rawv[i]}
-//
-//                }
             }
             i=i+1;}
   
