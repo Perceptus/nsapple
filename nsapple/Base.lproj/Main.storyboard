@@ -46,76 +46,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="NSApple Settings" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d8b-BN-Yrc">
-                                <rect key="frame" x="239" y="79" width="137" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aYb-IZ-USl">
-                                <rect key="frame" x="139" y="177" width="359" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="359" id="81o-p3-zvQ"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="urlchanged:" destination="cNu-Jg-hmD" eventType="valueChanged" id="TQi-Im-Qwy"/>
-                                </connections>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZJR-55-TB1">
-                                <rect key="frame" x="295" y="215" width="46" height="30"/>
-                                <state key="normal" title="Save">
-                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="urlbuttontouch:" destination="cNu-Jg-hmD" eventType="touchUpInside" id="nbH-QV-anJ"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="enter URL : name.azurewebsites.net" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eUg-YU-tTT">
-                                <rect key="frame" x="163" y="148" width="307" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="SET URL IN WATCH SETTINGS APP" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eUg-YU-tTT">
+                                <rect key="frame" x="42" y="312" width="307" height="21"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Primary Display" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xD0-yv-5f7">
-                                <rect key="frame" x="257" y="262" width="136" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CIf-9T-zOJ">
-                                <rect key="frame" x="253" y="303" width="123" height="29"/>
-                                <segments>
-                                    <segment title="Dexcom"/>
-                                    <segment title="Raw"/>
-                                </segments>
-                                <connections>
-                                    <action selector="primarydisplay:" destination="cNu-Jg-hmD" eventType="valueChanged" id="Q8a-kp-z9N"/>
-                                </connections>
-                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="eUg-YU-tTT" firstAttribute="centerY" secondItem="aYb-IZ-USl" secondAttribute="centerY" constant="-33.5" id="16u-CD-BiH"/>
-                            <constraint firstAttribute="centerX" secondItem="d8b-BN-Yrc" secondAttribute="centerX" id="2CZ-Ns-mfT"/>
-                            <constraint firstItem="aYb-IZ-USl" firstAttribute="top" secondItem="SPi-59-KiJ" secondAttribute="bottom" constant="123" id="38C-A6-nvG"/>
-                            <constraint firstItem="aYb-IZ-USl" firstAttribute="leading" secondItem="q3e-Ff-nqo" secondAttribute="leadingMargin" constant="50" id="CQe-t3-gYX"/>
                             <constraint firstAttribute="centerX" secondItem="eUg-YU-tTT" secondAttribute="centerX" id="Hnh-Pv-Y43"/>
-                            <constraint firstItem="aYb-IZ-USl" firstAttribute="centerY" secondItem="ZJR-55-TB1" secondAttribute="centerY" constant="-38" id="Ilf-WK-Bbg"/>
-                            <constraint firstAttribute="centerX" secondItem="ZJR-55-TB1" secondAttribute="centerX" id="YXA-Q6-BP2"/>
-                            <constraint firstAttribute="centerX" secondItem="xD0-yv-5f7" secondAttribute="centerX" id="grj-yh-OOY"/>
-                            <constraint firstAttribute="centerX" secondItem="CIf-9T-zOJ" secondAttribute="centerX" id="pYA-CB-gho"/>
-                            <constraint firstAttribute="centerX" secondItem="aYb-IZ-USl" secondAttribute="centerX" id="sXt-3v-9BR"/>
+                            <constraint firstItem="eUg-YU-tTT" firstAttribute="top" secondItem="SPi-59-KiJ" secondAttribute="bottom" constant="268" id="Pbw-gy-ERh"/>
+                            <constraint firstItem="eUg-YU-tTT" firstAttribute="leading" secondItem="q3e-Ff-nqo" secondAttribute="leadingMargin" constant="26" id="kaH-C8-MK7"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="pebbleurl" destination="aYb-IZ-USl" id="jib-kP-IhH"/>
-                        <outlet property="primarydisplay" destination="CIf-9T-zOJ" id="M99-za-Quz"/>
-                        <outlet property="urlbutton" destination="ZJR-55-TB1" id="eLX-Qs-UvA"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Ry-6f-pj4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NSApple Settings" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="d8b-BN-Yrc">
+                    <rect key="frame" x="0.0" y="0.0" width="137" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </objects>
         </scene>
     </scenes>
