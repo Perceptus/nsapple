@@ -263,8 +263,9 @@ class InterfaceController: WKInterfaceController {
                             pstatus = pstatus + "  PBat " + String(format:"%.0f", upbat)
                         }
                         if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
-                            let rrssi = riley["RSSI"] as! Int
-                            pstatus = pstatus + "%  RdB " + String(rrssi)
+                            if let rrssi = riley["RSSI"] as? Int {
+                                pstatus = pstatus + "%  RdB " + String(rrssi)
+                            }
                         }
                         self.pumpstatus.setText(pstatus)
                                        }
