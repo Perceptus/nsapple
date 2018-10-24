@@ -53,7 +53,7 @@ public extension WKInterfaceImage {
             if let url = URL(string: url) {
                 if let data = try? Data(contentsOf: url) { // may return nil, too
                     // do something with data
-                    var placeholder = UIImage(data: data)!
+                    let placeholder = UIImage(data: data)!
                     DispatchQueue.main.async {
                                         self.setImage(placeholder)
                                     }
@@ -242,7 +242,7 @@ class InterfaceController: WKInterfaceController {
                     return
                 }
             let lastloop = loop[cdateloop.index(of:cdateloop.max()!) as! Int]
-
+                var pstatus:String = "Res "
                 if let pumpdata = lastpump["pump"] as? [String:AnyObject] {
                     if let pumptime = formatter.date(from: (pumpdata["clock"] as! String))?.timeIntervalSince1970  {
                         let ct=TimeInterval(Date().timeIntervalSince1970)
@@ -255,18 +255,20 @@ class InterfaceController: WKInterfaceController {
                             if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
                         
                         
-                        var pstatus:String = "Res "
+                    //    var pstatus:String = "Res "
                         let res = pumpdata["reservoir"] as! Double
                         pstatus = pstatus + String(format:"%.0f", res)
-                        if let uploader = lastpump["uploader"] as? [String:AnyObject] {
+                        if let uploader = lastloop["uploader"] as? [String:AnyObject] {
                             let upbat = uploader["battery"] as! Double
-                            pstatus = pstatus + "  PBat " + String(format:"%.0f", upbat)
+                            pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
                         }
-                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
-                            if let rrssi = riley["RSSI"] as? Int {
-                                pstatus = pstatus + "%  RdB " + String(rrssi)
-                            }
-                        }
+                        
+//add back if loop ever uploads again
+//                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
+//                            if let rrssi = riley["RSSI"] as? Int {
+//                                pstatus = pstatus + "%  RdB " + String(rrssi)
+//                            }
+//                        }
                         self.pumpstatus.setText(pstatus)
                                        }
                     
@@ -286,7 +288,13 @@ class InterfaceController: WKInterfaceController {
                         }
                         else
                         {
-                       
+                        if let enacted = loopdata["enacted"] as? [String:AnyObject] {
+                            if let tempbasal = enacted["rate"] as? Double {
+                                pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
+                                //need to restrcture code so we dont set this twice
+                                 self.pumpstatus.setText(pstatus)
+                            }
+                            }
                         let iobdata = loopdata["iob"] as? [String:AnyObject]
                         let iob = iobdata!["iob"] as! Double
                         pstatus2 = pstatus2 + String(format:"%.1f", iob)
@@ -332,12 +340,13 @@ class InterfaceController: WKInterfaceController {
         //set bg color to something old so we know if its not really updating
         let gray=UIColor.gray as UIColor
         let white=UIColor.white as UIColor
-        self.primarybg.setTextColor(gray)
-        self.bgdirection.setTextColor(gray)
-        self.plabel.setTextColor(gray)
-        self.vlabel.setTextColor(gray)
-        self.minago.setTextColor(gray)
-        self.deltabg.setTextColor(gray)
+        //remove set already in deactivate
+//        self.primarybg.setTextColor(gray)
+//        self.bgdirection.setTextColor(gray)
+//        self.plabel.setTextColor(gray)
+//        self.vlabel.setTextColor(gray)
+//        self.minago.setTextColor(gray)
+//        self.deltabg.setTextColor(gray)
  
         guard let urlUser = defaults?.string(forKey: "name_preference") else {
             print ("no url is set")
