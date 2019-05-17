@@ -179,7 +179,7 @@ class InterfaceController: WKInterfaceController {
             return}
         let mmol = defaults?.bool(forKey: "mmol")
 
-        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=20"
+        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=3"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let url2 = URL(string: escapedAddress!) else {
@@ -214,37 +214,28 @@ class InterfaceController: WKInterfaceController {
             if json?.count == 0 {
                 self.pumpstatus.setText("No Records")
                 return}
-            var pump = [[String : AnyObject]] ()
-            var loop = [[String : AnyObject]] ()
-            for item in json! {
-                if item["pump"] != nil {pump.append(item)} else
-                            if item["loop"] != nil {loop.append(item)}
-            }
+
             
-            //find the index of the most recent items
-            var cdatepump = [Date]()
-            for item in pump {
-                cdatepump.append(formatter.date(from: (item["created_at"] as! String))!)
+            //find the index of the most recent upload
+            var cdate = [Date]()
+                for item in json!  {
+                cdate.append(formatter.date(from: (item["created_at"] as! String))!)
             }
-                if cdatepump.count == 0 {
-                    self.pumpstatus.setText("No Pump Records")
-                    return
-                }
+//                if cdatepump.count == 0 {
+//                    self.pumpstatus.setText("No Pump Records")
+//                    return
+//                }
+                //find most recent;t created data
+            let index = cdate.index(of:cdate.max()!) as! Int
+            let lastdata = json?[index] as [String : AnyObject]?
+
                 
-            let lastpump = pump[cdatepump.index(of:cdatepump.max()!) as! Int]
-            var cdateloop = [Date]()
-            for item in loop {
-                cdateloop.append(formatter.date(from: (item["created_at"] as! String))!)
-            }
                 
-                if cdateloop.count == 0 {
-                    self.pumpstatus2.setText("No Loop Records")
-                    return
-                }
-            let lastloop = loop[cdateloop.index(of:cdateloop.max()!) as! Int]
+//pump and uploader
                 var pstatus:String = "Res "
-                if let pumpdata = lastpump["pump"] as? [String:AnyObject] {
-                    if let pumptime = formatter.date(from: (pumpdata["clock"] as! String))?.timeIntervalSince1970  {
+                let lastpump = lastdata?["pump"] as! [String : AnyObject]?
+                if lastpump != nil {
+                    if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
                         let ct=TimeInterval(Date().timeIntervalSince1970)
                         let deltat=(ct-pumptime)/60
                         ///////////////////////////
@@ -255,80 +246,102 @@ class InterfaceController: WKInterfaceController {
                             if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
                         
                         
-                    //    var pstatus:String = "Res "
-                        let res = pumpdata["reservoir"] as! Double
+                        //    var pstatus:String = "Res "
+                        let res = lastpump?["reservoir"] as! Double
                         pstatus = pstatus + String(format:"%.0f", res)
-                        if let uploader = lastloop["uploader"] as? [String:AnyObject] {
+                        if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
                             let upbat = uploader["battery"] as! Double
                             pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
                         }
                         
-//add back if loop ever uploads again
-//                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
-//                            if let rrssi = riley["RSSI"] as? Int {
-//                                pstatus = pstatus + "%  RdB " + String(rrssi)
-//                            }
-//                        }
+                        //add back if loop ever uploads again
+                        //                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
+                        //                            if let rrssi = riley["RSSI"] as? Int {
+                        //                                pstatus = pstatus + "%  RdB " + String(rrssi)
+                        //                            }
+                        //                        }
                         self.pumpstatus.setText(pstatus)
-                                       }
+                    }
                     
-                    
-                }
-                
-                
-                if let loopdata = lastloop["loop"] as? [String:AnyObject] {
-                    if let looptime = formatter.date(from: (loopdata["timestamp"] as! String))?.timeIntervalSince1970  {
+                } //finihs pump
+
+//loop
+                let lastloop = lastdata?["loop"] as! [String : AnyObject]?
+                if lastloop != nil {
+                    if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
                         let ct=TimeInterval(Date().timeIntervalSince1970)
                         let deltat=(ct-looptime)/60
                         if deltat<10 {self.pumpstatus2.setTextColor(UIColor.green)} else
                             if deltat<20 {self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus2.setTextColor(UIColor.red)}
-                         var pstatus2:String = " IOB "
-                        if let failure = loopdata["failureReason"] {
-                            pstatus2 = failure as! String
+                        var pstatus2:String = " IOB "
+                        if let failure = lastloop?["failureReason"] {
+                            pstatus2 = "Loop Failure " + (failure as! String)
                         }
                         else
                         {
-                        if let enacted = loopdata["enacted"] as? [String:AnyObject] {
-                            if let tempbasal = enacted["rate"] as? Double {
-                                pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
-                                //need to restrcture code so we dont set this twice
-                                 self.pumpstatus.setText(pstatus)
+                            if let enacted = lastloop?["enacted"] as? [String:AnyObject] {
+                                if let tempbasal = enacted["rate"] as? Double {
+                                    pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
+                                    //need to restrcture code so we dont set this twice
+                                    self.pumpstatus.setText(pstatus)
+                                }
                             }
+                            let iobdata = lastloop?["iob"] as? [String:AnyObject]
+                            let iob = iobdata!["iob"] as! Double
+                            pstatus2 = pstatus2 + String(format:"%.1f", iob)
+                            if let cobdata = lastloop?["cob"] as? [String:AnyObject] {
+                                let cob = cobdata["cob"] as! Double
+                                pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cob)
                             }
-                        let iobdata = loopdata["iob"] as? [String:AnyObject]
-                        let iob = iobdata!["iob"] as! Double
-                        pstatus2 = pstatus2 + String(format:"%.1f", iob)
-                        if let cobdata = loopdata["cob"] as? [String:AnyObject] {
-                            let cob = cobdata["cob"] as! Double
-                            pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cob)
-                        }
-                        if let predictdata = loopdata["predicted"] as? [String:AnyObject] {
-                            let prediction = predictdata["values"] as! [Int]
-                            let plast = prediction.last as! Int
-                            if mmol == false {
-                            pstatus2 = pstatus2 + "  EBG " + String(plast)
-                            }
-                            else
-                            {
-                                pstatus2 = pstatus2 + "  EBG " + String(format:"%.1f", Double(plast)/18.0)
+                            if let predictdata = lastloop?["predicted"] as? [String:AnyObject] {
+                                let prediction = predictdata["values"] as! [Int]
+                                let plast = prediction.last as! Int
+                                if mmol == false {
+                                    pstatus2 = pstatus2 + "  EBG " + String(plast)
+                                }
+                                else
+                                {
+                                    pstatus2 = pstatus2 + "  EBG " + String(format:"%.1f", Double(plast)/18.0)
+                                }
+                                
                             }
                             
                         }
-                        }
-                        
-                        self.pumpstatus2.setText(pstatus2)
+                       self.pumpstatus2.setText(pstatus2)
                     }
                     
+               
+                } //finish loop
+                
+               let lastoverride = lastdata?["override"] as! [String : AnyObject]?
+                var pstatus3 = "No Override Active" as String
+              //  let lastloop = lastdata?["loop"] as! [String : AnyObject]?
+                if lastoverride != nil {
+                    if let overridetime = formatter.date(from: (lastoverride?["timestamp"] as! String))?.timeIntervalSince1970  {
+                        let ct=TimeInterval(Date().timeIntervalSince1970)
+                        let deltat=(ct-overridetime)/60
+                        if deltat<10 {self.pumpstatus3.setTextColor(UIColor.green)} else
+                            if deltat<20 {self.pumpstatus3.setTextColor(UIColor.yellow)} else {self.pumpstatus3.setTextColor(UIColor.red)}
+                    } //finish color
+                    if lastoverride?["active"] as! Bool {
+                        let currentCorrection  = lastoverride?["currentCorrectionRange"] as! [String: AnyObject]
+                        pstatus3 = "BGTargets("
+                        let minValue = currentCorrection["minValue"] as! Int
+                        let maxValue = currentCorrection["maxValue"] as! Int
+                        pstatus3 = pstatus3 + String(minValue) + ":" + String(maxValue) + ") M:"
+                        let multiplier = lastoverride?["multiplier"] as! Double
+                        pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
+                    }
                     
-                }
+                } //finish override
+                self.pumpstatus3.setText(pstatus3)
+               
                 
                 
-
-            } else {
-                // Fallback on earlier versions watch
-            }
-            
-        }
+        
+            } //watch extention
+                } //task3
+        
         task3.resume()
     }
     
@@ -354,7 +367,9 @@ class InterfaceController: WKInterfaceController {
             pumpstatus.setText("URL NOT SET")
             return}
         let mmol = defaults?.bool(forKey: "mmol")
-        let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=576"
+        
+        let points = String(self.graphlength * 12 + 5)
+        let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=" + points
         print("in watchkit")
     
         guard let url2 = URL(string: urlPath) else {
@@ -477,12 +492,15 @@ class InterfaceController: WKInterfaceController {
                 return
             }
                   //add graph
-                let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
-                    if (self.bghistread==true)&&(google != "NoData") {
+                let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
+              //               let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
+                
+                if (self.bghistread==true)&&(String(google ?? "") != "NoData") {
                         self.graphhours.setTextColor(UIColor.white)
                         self.graphhours.setText("Last "+String(self.graphlength)+" Hours")
                         self.bgimage.setHidden(false)
-                        let imgURL: URL = URL(string: google)! as URL
+                    let imgURL: URL = URL(string: google ?? "")! as URL
+                    //TODO add if imgurl = "" then dont
                         let task2 = URLSession.shared.dataTask(with: imgURL) { data, response, error in
 
                             guard error == nil else {
@@ -770,9 +788,12 @@ class InterfaceController: WKInterfaceController {
 //        xg=(dropLast(xg))
 //        yg=(dropLast(yg))
 //        pc=(dropLast(pc))
-        xg=String(xg.characters.dropLast())
-        yg=String(yg.characters.dropLast())
-        pc=String(pc.characters.dropLast())
+//        xg=String(xg.characters.dropLast())
+//        yg=String(yg.characters.dropLast())
+//        pc=String(pc.characters.dropLast())
+        xg=String(xg.dropLast())
+        yg=String(yg.dropLast())
+        pc=String(pc.dropLast())
         
         let low:Double=Double(bgtl-miny)/Double(maxy-miny)
         let high:Double=Double(bgth-miny)/Double(maxy-miny)
@@ -780,7 +801,8 @@ class InterfaceController: WKInterfaceController {
         //bands are at 80,180, vertical lines for hours
         let band1="&chm=r,FFFFFF,0,"+String(format:"%.2f",high-0.01)+","+String(format:"%.3f",high)
         let band2="|r,FFFFFF,0,"+String(format:"%.2f",(low))+","+String(format:"%.3f",low+0.01)
-        let h:String=String(stringInterpolationSegment: 100.0/Double(hours))
+        //let h:String=String(stringInterpolationSegment: 100.0/Double(hours))
+        let h:String=String(100.0/Double(hours))
         let hourlyverticals="&chg="+h+",0"
         if (mmol == false) {
                     google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(miny)+","+String(maxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
