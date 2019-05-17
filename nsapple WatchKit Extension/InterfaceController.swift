@@ -229,22 +229,12 @@ class InterfaceController: WKInterfaceController {
                 
                 
 //pump and uploader
-           //     self.pumpdata(index: index, lastdata: lastdata, formatter: formatter)
-                
                 
                 var pstatus:String = "Res "
                 let lastpump = lastdata?["pump"] as! [String : AnyObject]?
                 if lastpump != nil {
                     if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
-                        let ct=TimeInterval(Date().timeIntervalSince1970)
-                        let deltat=(ct-pumptime)/60
-                        ///////////////////////////
-                        /// TO DO NEED TO FIX COLORS AND DATES BY EACH TYPE
-                        ///////////////////////////
-
-                        if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
-                            if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
-
+                        self.labelColor(label: self.pumpstatus, timeSince: pumptime)
                         let res = lastpump?["reservoir"] as! Double
                         pstatus = pstatus + String(format:"%.0f", res)
                         if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
@@ -276,11 +266,7 @@ class InterfaceController: WKInterfaceController {
                 var pstatus2:String = " IOB "
                 if lastloop != nil {
                     if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
-                        let ct=TimeInterval(Date().timeIntervalSince1970)
-                        let deltat=(ct-looptime)/60
-                        if deltat<10 {self.pumpstatus2.setTextColor(UIColor.green)} else
-                            if deltat<20 {self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus2.setTextColor(UIColor.red)}
-
+                         self.labelColor(label: self.pumpstatus2, timeSince: looptime)
                         if let failure = lastloop?["failureReason"] {
                             pstatus2 = "Loop Failure " + (failure as! String)
                         }
@@ -298,18 +284,12 @@ class InterfaceController: WKInterfaceController {
                             pstatus2 = pstatus2 + String(format:"%.1f", iob)
                             if let cobdata = lastloop?["cob"] as? [String:AnyObject] {
                                 let cob = cobdata["cob"] as! Double
-                                pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cob)
+                                pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cob) + " EBG "
                             }
                             if let predictdata = lastloop?["predicted"] as? [String:AnyObject] {
-                                let prediction = predictdata["values"] as! [Int]
-                                let plast = prediction.last as! Int
-                                if mmol == false {
-                                    pstatus2 = pstatus2 + "  EBG " + String(plast)
-                                }
-                                else
-                                {
-                                    pstatus2 = pstatus2 + "  EBG " + String(format:"%.1f", Double(plast)/18.0)
-                                }
+                                let prediction = predictdata["values"] as! [Double]
+                                pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol ?? false)
+
                                 
                             }
                             
@@ -334,27 +314,15 @@ class InterfaceController: WKInterfaceController {
               //  let lastloop = lastdata?["loop"] as! [String : AnyObject]?
            
                     if let overridetime = formatter.date(from: (lastoverride["timestamp"] as! String))?.timeIntervalSince1970  {
-                        let ct=TimeInterval(Date().timeIntervalSince1970)
-                        let deltat=(ct-overridetime)/60
-                        if deltat<10 {self.pumpstatus3.setTextColor(UIColor.green)} else
-                            if deltat<20 {self.pumpstatus3.setTextColor(UIColor.yellow)} else {self.pumpstatus3.setTextColor(UIColor.red)}
+                          self.labelColor(label: self.pumpstatus3, timeSince: overridetime)
                     } //finish color
                     if lastoverride["active"] as! Bool {
                         let currentCorrection  = lastoverride["currentCorrectionRange"] as! [String: AnyObject]
                         pstatus3 = "BGTargets("
-                        var minValue = currentCorrection["minValue"] as! Double
-                        var maxValue = currentCorrection["maxValue"] as! Double
+                        let minValue = currentCorrection["minValue"] as! Double
+                        let maxValue = currentCorrection["maxValue"] as! Double
                         
-                        if mmol ?? false {
-                            minValue = minValue / 18.6
-                            maxValue = maxValue / 18.6
-                            pstatus3 = pstatus3 + String(format:"%.1f", minValue) + ":" + String(format:"%.1f", maxValue) + ") M:"
-                        }
-                        
-                        else
-                        {
-                        pstatus3 = pstatus3 + String(format:"%.0f", minValue) + ":" + String(format:"%.0f", maxValue) + ") M:"
-                        }
+                        pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol ?? false) + ":" + self.bgOutput(bg: maxValue, mmol: mmol ?? false) + ") M:"
                         let multiplier = lastoverride["multiplier"] as! Double
                         pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
                     }
@@ -371,50 +339,33 @@ class InterfaceController: WKInterfaceController {
         task3.resume()
     }
     
+    func bgOutput(bg: Double, mmol: Bool) -> String {
+        if !mmol {
+            return String(format:"%.0f", bg)
+        }
+        
+        else
+        
+        {
+            return String(format:"%.1f", bg / 18.6)
+        }
+    }
     
-//    func pumpdata(index: Int, lastdata: [String : AnyObject]?, formatter: ISO8601DateFormatter) {
-//
-//
-//        var pstatus:String = "Res "
-//        let lastpump = lastdata?["pump"] as! [String : AnyObject]?
-//        if lastpump != nil {
-//            if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
-//                let ct=TimeInterval(Date().timeIntervalSince1970)
-//                let deltat=(ct-pumptime)/60
-//                ///////////////////////////
-//                /// TO DO NEED TO FIX COLORS AND DATES BY EACH TYPE
-//                ///////////////////////////
-//
-//                if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
-//                    if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
-//
-//                let res = lastpump?["reservoir"] as! Double
-//                pstatus = pstatus + String(format:"%.0f", res)
-//                if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
-//                    let upbat = uploader["battery"] as! Double
-//                    pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
-//                }
-//
-//                //add back if loop ever uploads again
-//                //                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
-//                //                            if let rrssi = riley["RSSI"] as? Int {
-//                //                                pstatus = pstatus + "%  RdB " + String(rrssi)
-//                //                            }
-//                //                        }
-//
-//            }
-//
-//        } //finish pump data
-//
-//        else
-//
-//        {
-//            pstatus = "Pump Record Error"
-//        }
-//
-//        self.pumpstatus.setText(pstatus)
-//        return
-//    }
+    func labelColor(label: WKInterfaceLabel, timeSince: TimeInterval) {
+        let ct=TimeInterval(Date().timeIntervalSince1970)
+        let deltat=(ct-timeSince)/60
+        
+        if deltat<6
+            {label.setTextColor(UIColor.green)}
+        else
+        if deltat<14
+            {label.setTextColor(UIColor.yellow)}
+        else
+            {label.setTextColor(UIColor.red)}
+             
+        return
+        }
+
     
     func updatecore() {
  
@@ -695,9 +646,9 @@ class InterfaceController: WKInterfaceController {
     func bgcolor(_ value:Int)->UIColor
     {
         
-        var red=UIColor.red as UIColor
-        var green=UIColor.green as UIColor
-        var yellow=UIColor.yellow as UIColor
+       let red=UIColor.red as UIColor
+        let green=UIColor.green as UIColor
+        let yellow=UIColor.yellow as UIColor
         var sgvcolor=green as UIColor
         
         if (value<65) {sgvcolor=red}
