@@ -221,10 +221,7 @@ class InterfaceController: WKInterfaceController {
                 for item in json!  {
                 cdate.append(formatter.date(from: (item["created_at"] as! String))!)
             }
-//                if cdatepump.count == 0 {
-//                    self.pumpstatus.setText("No Pump Records")
-//                    return
-//                }
+
                 //find most recent;t created data
             let index = cdate.index(of:cdate.max()!) as! Int
             let lastdata = json?[index] as [String : AnyObject]?
@@ -232,6 +229,9 @@ class InterfaceController: WKInterfaceController {
                 
                 
 //pump and uploader
+           //     self.pumpdata(index: index, lastdata: lastdata, formatter: formatter)
+                
+                
                 var pstatus:String = "Res "
                 let lastpump = lastdata?["pump"] as! [String : AnyObject]?
                 if lastpump != nil {
@@ -241,39 +241,46 @@ class InterfaceController: WKInterfaceController {
                         ///////////////////////////
                         /// TO DO NEED TO FIX COLORS AND DATES BY EACH TYPE
                         ///////////////////////////
-                        
+
                         if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
                             if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
-                        
-                        
-                        //    var pstatus:String = "Res "
+
                         let res = lastpump?["reservoir"] as! Double
                         pstatus = pstatus + String(format:"%.0f", res)
                         if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
                             let upbat = uploader["battery"] as! Double
                             pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
                         }
-                        
+
                         //add back if loop ever uploads again
                         //                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
                         //                            if let rrssi = riley["RSSI"] as? Int {
                         //                                pstatus = pstatus + "%  RdB " + String(rrssi)
                         //                            }
                         //                        }
-                        self.pumpstatus.setText(pstatus)
+
                     }
-                    
-                } //finihs pump
+
+                } //finish pump data
+
+                else
+
+                {
+                    pstatus = "Pump Record Error"
+                }
+
+                self.pumpstatus.setText(pstatus)
 
 //loop
                 let lastloop = lastdata?["loop"] as! [String : AnyObject]?
+                var pstatus2:String = " IOB "
                 if lastloop != nil {
                     if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
                         let ct=TimeInterval(Date().timeIntervalSince1970)
                         let deltat=(ct-looptime)/60
                         if deltat<10 {self.pumpstatus2.setTextColor(UIColor.green)} else
                             if deltat<20 {self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus2.setTextColor(UIColor.red)}
-                        var pstatus2:String = " IOB "
+
                         if let failure = lastloop?["failureReason"] {
                             pstatus2 = "Loop Failure " + (failure as! String)
                         }
@@ -307,36 +314,55 @@ class InterfaceController: WKInterfaceController {
                             }
                             
                         }
-                       self.pumpstatus2.setText(pstatus2)
                     }
                     
                
                 } //finish loop
                 
-               let lastoverride = lastdata?["override"] as! [String : AnyObject]?
-                var pstatus3 = "No Override Active" as String
+                else
+                
+                {
+                    pstatus2 = "Loop Record Error"
+                }
+                
+                  self.pumpstatus2.setText(pstatus2)
+                
+//overrides
+                var pstatus3 = "" as String
+                if let lastoverride = lastdata?["override"] as! [String : AnyObject]? {
+ 
               //  let lastloop = lastdata?["loop"] as! [String : AnyObject]?
-                if lastoverride != nil {
-                    if let overridetime = formatter.date(from: (lastoverride?["timestamp"] as! String))?.timeIntervalSince1970  {
+           
+                    if let overridetime = formatter.date(from: (lastoverride["timestamp"] as! String))?.timeIntervalSince1970  {
                         let ct=TimeInterval(Date().timeIntervalSince1970)
                         let deltat=(ct-overridetime)/60
                         if deltat<10 {self.pumpstatus3.setTextColor(UIColor.green)} else
                             if deltat<20 {self.pumpstatus3.setTextColor(UIColor.yellow)} else {self.pumpstatus3.setTextColor(UIColor.red)}
                     } //finish color
-                    if lastoverride?["active"] as! Bool {
-                        let currentCorrection  = lastoverride?["currentCorrectionRange"] as! [String: AnyObject]
+                    if lastoverride["active"] as! Bool {
+                        let currentCorrection  = lastoverride["currentCorrectionRange"] as! [String: AnyObject]
                         pstatus3 = "BGTargets("
-                        let minValue = currentCorrection["minValue"] as! Int
-                        let maxValue = currentCorrection["maxValue"] as! Int
-                        pstatus3 = pstatus3 + String(minValue) + ":" + String(maxValue) + ") M:"
-                        let multiplier = lastoverride?["multiplier"] as! Double
+                        var minValue = currentCorrection["minValue"] as! Double
+                        var maxValue = currentCorrection["maxValue"] as! Double
+                        
+                        if mmol ?? false {
+                            minValue = minValue / 18.6
+                            maxValue = maxValue / 18.6
+                            pstatus3 = pstatus3 + String(format:"%.1f", minValue) + ":" + String(format:"%.1f", maxValue) + ") M:"
+                        }
+                        
+                        else
+                        {
+                        pstatus3 = pstatus3 + String(format:"%.0f", minValue) + ":" + String(format:"%.0f", maxValue) + ") M:"
+                        }
+                        let multiplier = lastoverride["multiplier"] as! Double
                         pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
                     }
                     
-                } //finish override
-                self.pumpstatus3.setText(pstatus3)
-               
+
+                } //if let for override - older versions dont have an overide field
                 
+                self.pumpstatus3.setText(pstatus3)
                 
         
             } //watch extention
@@ -344,6 +370,51 @@ class InterfaceController: WKInterfaceController {
         
         task3.resume()
     }
+    
+    
+//    func pumpdata(index: Int, lastdata: [String : AnyObject]?, formatter: ISO8601DateFormatter) {
+//
+//
+//        var pstatus:String = "Res "
+//        let lastpump = lastdata?["pump"] as! [String : AnyObject]?
+//        if lastpump != nil {
+//            if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
+//                let ct=TimeInterval(Date().timeIntervalSince1970)
+//                let deltat=(ct-pumptime)/60
+//                ///////////////////////////
+//                /// TO DO NEED TO FIX COLORS AND DATES BY EACH TYPE
+//                ///////////////////////////
+//
+//                if deltat<10 {self.pumpstatus.setTextColor(UIColor.green);self.pumpstatus2.setTextColor(UIColor.green)} else
+//                    if deltat<20 {self.pumpstatus.setTextColor(UIColor.yellow);self.pumpstatus2.setTextColor(UIColor.yellow)} else {self.pumpstatus.setTextColor(UIColor.red);self.pumpstatus2.setTextColor(UIColor.red)}
+//
+//                let res = lastpump?["reservoir"] as! Double
+//                pstatus = pstatus + String(format:"%.0f", res)
+//                if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
+//                    let upbat = uploader["battery"] as! Double
+//                    pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
+//                }
+//
+//                //add back if loop ever uploads again
+//                //                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
+//                //                            if let rrssi = riley["RSSI"] as? Int {
+//                //                                pstatus = pstatus + "%  RdB " + String(rrssi)
+//                //                            }
+//                //                        }
+//
+//            }
+//
+//        } //finish pump data
+//
+//        else
+//
+//        {
+//            pstatus = "Pump Record Error"
+//        }
+//
+//        self.pumpstatus.setText(pstatus)
+//        return
+//    }
     
     func updatecore() {
  
