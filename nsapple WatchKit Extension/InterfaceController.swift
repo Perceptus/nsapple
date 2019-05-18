@@ -10,6 +10,7 @@ import WatchKit
 import Foundation
 
 
+
 let defaults = UserDefaults(suiteName:"group.com.nsapple")
 let mmol = defaults?.bool(forKey: "mmol")
 
@@ -87,6 +88,13 @@ public struct watch {
 
 
 class InterfaceController: WKInterfaceController {
+    
+    
+    
+    
+    
+    
+    
     @IBOutlet weak var bgimage: WKInterfaceImage!
     @IBOutlet weak var primarybg: WKInterfaceLabel!
     @IBOutlet weak var bgdirection: WKInterfaceLabel!
@@ -130,6 +138,14 @@ class InterfaceController: WKInterfaceController {
         craw=value
         willActivate()
     }
+        
+   
+        
+        
+
+        
+        
+        
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -235,8 +251,17 @@ class InterfaceController: WKInterfaceController {
                 if lastpump != nil {
                     if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
                         self.labelColor(label: self.pumpstatus, timeSince: pumptime)
-                        let res = lastpump?["reservoir"] as! Double
+                        if let res = lastpump?["reservoir"] as? Double
+                        {
                         pstatus = pstatus + String(format:"%.0f", res)
+                        }
+                        
+                        else
+                            
+                        {
+                         pstatus = pstatus + "N/A"
+                        }
+                        
                         if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
                             let upbat = uploader["battery"] as! Double
                             pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
@@ -373,8 +398,8 @@ class InterfaceController: WKInterfaceController {
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
-        let gray=UIColor.gray as UIColor
-        let white=UIColor.white as UIColor
+ //       let gray=UIColor.gray as UIColor
+ //       let white=UIColor.white as UIColor
         //remove set already in deactivate
 //        self.primarybg.setTextColor(gray)
 //        self.bgdirection.setTextColor(gray)
@@ -434,7 +459,7 @@ class InterfaceController: WKInterfaceController {
                 if entries.count > 0 {
                 print("after main")
                 self.bghistread=true
-                let rawavailable=false as Bool
+   //             let rawavailable=false as Bool
                 let slope=0.0 as Double
                let intercept=0.0 as Double
                 let scale=0.0 as Double
@@ -444,24 +469,26 @@ class InterfaceController: WKInterfaceController {
                 let dbg = cbg - priorbg as Int
                 let bgtime=entries[0]["date"] as! TimeInterval
                 let red=UIColor.red as UIColor
-                let green=UIColor.green as UIColor
-                let yellow=UIColor.yellow as UIColor
-                let rawcolor="green" as String
+ //               let green=UIColor.green as UIColor
+  //              let yellow=UIColor.yellow as UIColor
+   //             let rawcolor="green" as String
                 //save as global variables
                 self.bghist=entries
                    let bgs = entries as? [[String:AnyObject]]
 
               
     
-                self.plabel.setTextColor(white)
-                self.vlabel.setTextColor(white)
-                self.deltabg.setTextColor(white)
+//                self.plabel.setTextColor(white)
+//                self.vlabel.setTextColor(white)
+//                self.deltabg.setTextColor(white)
+                    
+                //self.labelColor(label: self.minago, timeSince: bgtime)
                 let ct=TimeInterval(Date().timeIntervalSince1970)
                 let deltat=(ct-bgtime/1000)/60
                 if deltat<10 {self.minago.setTextColor(UIColor.green)} else
                     if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
                 self.minago.setText(String(Int(deltat))+" min ago")
- 
+//
                 if (cbg<40) {
                     self.primarybg.setTextColor(red)
                     self.primarybg.setText(self.errorcode(cbg))
@@ -513,10 +540,21 @@ class InterfaceController: WKInterfaceController {
                 self.noconnection()
                 return
             }
-                  //add graph
-                let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
-              //               let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
                 
+//               // let chart = YOChart.SmoothLineChart
+//                let image = YOLineChartImage()
+//                let frame = CGRect(x: 0, y: 0, width: self.contentFrame.width, height: self.contentFrame.height / 1.5)
+//                //let image = chart.drawImage(frame: frame, scale: WKInterfaceDevice.current().screenScale)
+//                image.values = [0.0,1.0,2.0]
+//                image.smooth = false
+//                self.bgimage.setImage(image.draw(frame, scale: WKInterfaceDevice.current().screenScale))
+                //image.draw(frame,scale: bgimage)
+                
+                
+//                  //add graph
+                let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
+     
+
                 if (self.bghistread==true)&&(String(google ?? "") != "NoData") {
                         self.graphhours.setTextColor(UIColor.white)
                         self.graphhours.setText("Last "+String(self.graphlength)+" Hours")
@@ -537,7 +575,7 @@ class InterfaceController: WKInterfaceController {
                                 self.vlabel.setText("Google API Error")
                                 return
                             }
-                            
+
                             print("setting image")
                             self.bgimage.setImageData(data)
                         }
@@ -723,34 +761,34 @@ class InterfaceController: WKInterfaceController {
         let mmol = defaults?.bool(forKey: "mmol")
         var google="" as String
         let ct2=NSInteger(Date().timeIntervalSince1970)
-                var xg="" as String
+        var xg="" as String
         var yg="" as String
-        var rg="" as String
+//        var rg="" as String
         var pc="&chco=" as String
         var maxy=0
         var maxx=0
         var miny=1000
-        let bgoffset=40
+ //       let bgoffset=40
         let bgth=180
         let bgtl=80
         let numbg=577 as Int
-        var slope=0 as Double
-        var scale=0 as Double
+//        var slope=0 as Double
+ //       var scale=0 as Double
         var gpoints=0 as Int
-        var intercept=0  as Double
+//        var intercept=0  as Double
         var bgtimes = [Int](repeating: 0, count: numbg+1)
-        var rawv=[Int](repeating: 0, count: numbg+1)
+ //       var rawv=[Int](repeating: 0, count: numbg+1)
         let minutes=hours*60
         var inc:Int=1
         if (hours==3||hours==1) {inc=1} else
             if hours==6 {inc=2} else
             if hours==12 {inc=3} else
                 {inc=5}
-        if cals?.count>0 && craw==true {
-            slope=cals?[0]["slope"] as! Double
-            scale=cals?[0]["scale"] as! Double
-            intercept=cals?[0]["intercept"] as! Double
-        }
+//        if cals?.count>0 && craw==true {
+//            slope=cals?[0]["slope"] as! Double
+//            scale=cals?[0]["scale"] as! Double
+//            intercept=cals?[0]["intercept"] as! Double
+//        }
 
         
   

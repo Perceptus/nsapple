@@ -147,6 +147,7 @@
 				1119BA1A1B4F04FC00046ABF /* nsapple WatchKit Extension */,
 				1119BA2C1B4F04FC00046ABF /* nsapple WatchKit App */,
 				1119B9EF1B4F046E00046ABF /* Products */,
+				116509C8228F4FD900A0E996 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -244,6 +245,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		116509C8228F4FD900A0E996 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -291,6 +299,7 @@
 				1119BA151B4F04FC00046ABF /* Sources */,
 				1119BA161B4F04FC00046ABF /* Frameworks */,
 				1119BA171B4F04FC00046ABF /* Resources */,
+				116509CB228F507500A0E996 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -432,6 +441,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		116509CB228F507500A0E996 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\n Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1119B9EA1B4F046E00046ABF /* Sources */ = {
@@ -738,6 +767,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 6Q7ZC8Q56M;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -766,6 +799,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 6Q7ZC8Q56M;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
 				INFOPLIST_FILE = "nsapple WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
