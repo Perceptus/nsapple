@@ -586,8 +586,8 @@ class InterfaceController: WKInterfaceController {
                 //draw vertical lines on hour marks
                 context?.setStrokeColor(UIColor.gray.cgColor)
                 context?.setLineDash(phase: 4, lengths: [4])
-                context?.move(to:CGPoint(x: 0, y: 0))
-                context?.addLine(to: CGPoint(x: 0, y: height))
+//                context?.move(to:CGPoint(x: 0, y: 0))
+//                context?.addLine(to: CGPoint(x: 0, y: height))
                 context?.move(to:CGPoint(x: width, y: 0))
                 context?.addLine(to: CGPoint(x: width, y: height))
                 
@@ -598,7 +598,35 @@ class InterfaceController: WKInterfaceController {
                     context?.addLine(to: CGPoint(x: width*ratio, y: height))
                     i=i+1
                 }
+                 context!.strokePath();
                 
+                
+                //labels
+                let ybuffer : CGFloat = 6
+                let xbuffer : CGFloat = 9
+                //round to 5's or mgdl, 0.5 for mmol/L
+                var rounder : Double = 5
+                if mmol ?? false {rounder = 0.2}
+                self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
+                self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: ybuffer)
+                self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height/2)
+                
+//                let paragraphStyle = NSMutableParagraphStyle()
+//                paragraphStyle.alignment = .center
+//
+//                let attributes = [
+//                    NSAttributedStringKey.paragraphStyle: paragraphStyle,
+//                    NSAttributedStringKey.font: UIFont.systemFont(ofSize: 6.0),
+//                    NSAttributedStringKey.foregroundColor: UIColor.white
+//                ]
+//
+//                let myText = "80"
+//                let attributedString = NSAttributedString(string: myText, attributes: attributes)
+//
+//                let stringRect = CGRect(x: 0, y: height, width: 100, height: 100)
+//                attributedString.draw(in: stringRect)
+//                context?.addRect(stringRect)
+//                context?.strokePath()
                 
                 
                 //                context?.addLine(to: CGPoint(x: 0, y: 100))
@@ -672,7 +700,7 @@ class InterfaceController: WKInterfaceController {
 //                context!.strokePath();
                 
                 // Draw and Convert to UIImage
-                context!.strokePath();
+               
                 let cgimage = context!.makeImage();
                 let uiimage = UIImage(cgImage: cgimage!)
                 
@@ -748,6 +776,27 @@ class InterfaceController: WKInterfaceController {
  
         
    
+    }
+    
+    
+    
+    func drawText( context : CGContext?, text : NSString, centreX : CGFloat, centreY : CGFloat )
+    {
+        let attributes = [
+           
+            //NSAttributedStringKey.font : UIFont.systemFont( ofSize: 12 ),
+            NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.thin),
+            NSAttributedStringKey.foregroundColor : UIColor.white
+        ]
+        
+        let textSize = text.size( withAttributes: attributes )
+        
+        text.draw(
+            in: CGRect( x: centreX - textSize.width / 2.0,
+                        y: centreY - textSize.height / 2.0,
+                        width: textSize.width,
+                        height: textSize.height + 2),
+            withAttributes : attributes )
     }
     
     func velocity_cf(_ bgs:[[String:AnyObject]],slope:Double,intercept:Double,scale:Double)->Double {
