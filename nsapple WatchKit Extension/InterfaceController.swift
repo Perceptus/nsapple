@@ -398,15 +398,15 @@ class InterfaceController: WKInterfaceController {
       
       print("in update core")
         //set bg color to something old so we know if its not really updating
- //       let gray=UIColor.gray as UIColor
- //       let white=UIColor.white as UIColor
-        //remove set already in deactivate
-//        self.primarybg.setTextColor(gray)
-//        self.bgdirection.setTextColor(gray)
-//        self.plabel.setTextColor(gray)
-//        self.vlabel.setTextColor(gray)
-//        self.minago.setTextColor(gray)
-//        self.deltabg.setTextColor(gray)
+        let gray=UIColor.gray as UIColor
+      
+      //  remove set already in deactivate
+        self.primarybg.setTextColor(gray)
+        self.bgdirection.setTextColor(gray)
+        self.plabel.setTextColor(gray)
+        self.vlabel.setTextColor(gray)
+        self.minago.setTextColor(gray)
+        self.deltabg.setTextColor(gray)
  
         guard let urlUser = defaults?.string(forKey: "name_preference") else {
             print ("no url is set")
@@ -541,8 +541,7 @@ class InterfaceController: WKInterfaceController {
                 return
             }
                 
-                //          // core graphics
-                ////////////
+                // create graph
                 
                 // Create a graphics context
                 let height : CGFloat = 101
@@ -560,11 +559,15 @@ class InterfaceController: WKInterfaceController {
                 var hours : Int
                 
                 //ydata is scaled to 100
+                //xdata is scaled to width
                 (xdata, ydata, colorData, miny, maxy, hours) = self.bgextract(self.graphlength,bghist: self.bghist!, width: width)
                 var i: Int = 0
+                let leftbuffer : Double = 20
+                let widthD : Double = Double(width)
                 while i < xdata.count {
-                    //reverse y data
+                    //reverse y data, rescale x for leftbuffer
                     ydata[i] = 100.0 - ydata[i]
+                    xdata[i] = (widthD - leftbuffer) / widthD * xdata[i] + leftbuffer
                     context!.setStrokeColor(colorData[i].cgColor)
                     let rect = CGRect(x: CGFloat(xdata[i]), y: CGFloat(ydata[i]), width: width/2/100, height: 50/100)
                     context?.addEllipse(in: rect)
@@ -574,130 +577,48 @@ class InterfaceController: WKInterfaceController {
                 
                 //draw horizontal lines at 80 and 180 for xcontext
                 //to do make user configurable
-                let topBound : CGFloat = 100 - (180 - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
-                let bottomBound : CGFloat = 100 - (80 - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
+                let lowLimit : CGFloat = 80
+                let highLimit : CGFloat = 180
+                let topBound : CGFloat = 100 - (highLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
+                let bottomBound : CGFloat = 100 - (lowLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
                 context?.setStrokeColor(UIColor.white.cgColor)
                 context?.setLineWidth(1)
-                context?.move(to: CGPoint(x: 0,y: topBound))
+                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: topBound))
                 context?.addLine(to: CGPoint(x: width, y: topBound))
-                context?.move(to: CGPoint(x: 0,y: bottomBound))
+                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: bottomBound))
                 context?.addLine(to: CGPoint(x: width, y: bottomBound))
+                
                 context!.strokePath();
                 //draw vertical lines on hour marks
                 context?.setStrokeColor(UIColor.gray.cgColor)
                 context?.setLineDash(phase: 4, lengths: [4])
-//                context?.move(to:CGPoint(x: 0, y: 0))
-//                context?.addLine(to: CGPoint(x: 0, y: height))
-                context?.move(to:CGPoint(x: width, y: 0))
-                context?.addLine(to: CGPoint(x: width, y: height))
+                context?.move(to:CGPoint(x: CGFloat(leftbuffer), y: 0))
+                context?.addLine(to: CGPoint(x: CGFloat(leftbuffer), y: height))
+                context?.move(to:CGPoint(x: width-1, y: 0))
+                context?.addLine(to: CGPoint(x: width-1, y: height))
                 
                 i=1
                 while i < hours {
                     let ratio : CGFloat = CGFloat(Double(i)/Double(hours))
-                    context?.move(to:CGPoint(x: width*ratio, y: 0))
-                    context?.addLine(to: CGPoint(x: width*ratio, y: height))
+                    let xvert : CGFloat = width*ratio
+                    context?.move(to:CGPoint(x: (width - CGFloat(leftbuffer))*xvert/width + CGFloat(leftbuffer), y: 0))
+                    context?.addLine(to: CGPoint(x: (width - CGFloat(leftbuffer))*xvert/width + CGFloat(leftbuffer), y: height))
                     i=i+1
                 }
                  context!.strokePath();
                 
                 
                 //labels
-                let ybuffer : CGFloat = 6
+                let ybuffer : CGFloat = 5
                 let xbuffer : CGFloat = 9
-                //round to 5's or mgdl, 0.5 for mmol/L
+                //round to 5's or mgdl, 0.2 for mmol/L
                 var rounder : Double = 5
                 if mmol ?? false {rounder = 0.2}
                 self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
-                self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: ybuffer)
+                self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
                 self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height/2)
                 
-//                let paragraphStyle = NSMutableParagraphStyle()
-//                paragraphStyle.alignment = .center
-//
-//                let attributes = [
-//                    NSAttributedStringKey.paragraphStyle: paragraphStyle,
-//                    NSAttributedStringKey.font: UIFont.systemFont(ofSize: 6.0),
-//                    NSAttributedStringKey.foregroundColor: UIColor.white
-//                ]
-//
-//                let myText = "80"
-//                let attributedString = NSAttributedString(string: myText, attributes: attributes)
-//
-//                let stringRect = CGRect(x: 0, y: height, width: 100, height: 100)
-//                attributedString.draw(in: stringRect)
-//                context?.addRect(stringRect)
-//                context?.strokePath()
-                
-                
-                //                context?.addLine(to: CGPoint(x: 0, y: 100))
-                //                context?.addLine(to: CGPoint(x: 100, y: 0))
-                //find xmin and xmax, scale to width
-                
-//                var xmin : Int
-//                var max : Int
-//
-//                for x in xdata {
-//
-//                }
-                
-                
-                
-                
-                // Create a graphics context
-//                let size = CGSize(width:self.contentFrame.size.width, height:100)
-//                let width = self.contentFrame.size.width
-                
-                
-                
-//                context!.setLineWidth(1.0)
-//
-//                context!.setStrokeColor(UIColor.green.cgColor)
-//                let rect = CGRect(x: 0, y: 0, width: width/2/100, height: 50/100)
-//                context?.addEllipse(in: rect)
-//                context?.drawPath(using: .fillStroke)
-//               // context!.strokePath();
-//
-//                context!.setStrokeColor(UIColor.red.cgColor)
-//                let rect2 = CGRect(x: width, y: 0, width: width/2/100, height: 50/100)
-//                context?.addEllipse(in: rect2)
-//                context?.drawPath(using: .fillStroke)
-//
-//                context!.setStrokeColor(UIColor.orange.cgColor)
-//                let rect3 = CGRect(x: width, y: 100, width: width/2/100, height: 50/100)
-//                context?.addEllipse(in: rect3)
-//                context?.drawPath(using: .fillStroke)
-//
-//                context!.setStrokeColor(UIColor.blue.cgColor)
-//                let rect4 = CGRect(x: 0, y: 100, width: width/2/100, height: 50/100)
-//                context?.addEllipse(in: rect4)
-//                context?.drawPath(using: .fillStroke)
-                
-                
-   
-//                // Setup for the path appearance
 
-//
-//                let center = CGPoint(x: width/2, y: 100/2)
-//                let radius = (width/40)
-//                context?.move(to: center)
-//                context!.addArc(center: center, radius: radius, startAngle: 0.0, endAngle: .pi * 2.0, clockwise: true)
-//                // Set the circle outerline-width
-//                context!.setLineWidth(1.0);
-//
-//                // Set the circle outerline-colour
-//                context!.setStrokeColor(UIColor.red.cgColor)              // Draw
-//                context!.strokePath()
-                
-//                // Draw lines
-//                context!.beginPath ();
-//
-//                context?.move(to: CGPoint())
-//                context?.addEllipse(in: <#T##CGRect#>)
-//                context?.addLine(to: CGPoint(x: width, y: 100))
-//                context?.addLine(to: CGPoint(x: 0, y: 100))
-//                context?.addLine(to: CGPoint(x: 100, y: 0))
-//
-//                context!.strokePath();
                 
                 // Draw and Convert to UIImage
                
@@ -709,71 +630,10 @@ class InterfaceController: WKInterfaceController {
                 
                 self.bgimage.setImage(uiimage)
                 
-//                var xdata = [Double]()
-//                var ydata = [Double]()
-//                var colorData = [UIColor]()
-//                var miny : Double
-//                var maxy: Double
-//                var maxx : Int
-//
-//
-//
-//                 (xdata, ydata, colorData, miny, maxy, maxx) = self.bgextract(self.graphlength,bghist: self.bghist!)
-                
-                print(xdata)
-                
-                
-                
-                
-                
-                //                let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
-                //              //               let google=self.bggraph(self.graphlength,bghist: self.bghist!)!.addingPercentEscapes(using: String.Encoding.utf8)!
-                //
-                //                if (self.bghistread==true)&&(String(google ?? "") != "NoData") {
-                //                        self.graphhours.setTextColor(UIColor.white)
-                //                        self.graphhours.setText("Last "+String(self.graphlength)+" Hours")
-                //                        self.bgimage.setHidden(false)
-                //                    let imgURL: URL = URL(string: google ?? "")! as URL
-                //                    //TODO add if imgurl = "" then dont
-                //                        let task2 = URLSession.shared.dataTask(with: imgURL) { data, response, error in
-                //
-                //                            guard error == nil else {
-                //                                print(error!)
-                //                                self.primarybg.setText("")
-                //                                self.vlabel.setText(error?.localizedDescription)
-                //                                return
-                //                            }
-                //                            guard let data = data else {
-                //                                print("Data is empty")
-                //                                self.primarybg.setText("")
-                //                                self.vlabel.setText("Google API Error")
-                //                                return
-                //                            }
-                //
-                //                            print("setting image")
-                //                            self.bgimage.setImageData(data)
-                //                        }
-                //                        task2.resume()
-                //                    }
-                //                    else {
-                //                        //need to create no data image
-                //                        self.graphhours.setTextColor(UIColor.red)
-                //                        self.graphhours.setText("No Chart Data")
-                //                        self.bgimage.setHidden(true)
-                //                    }
-            
+
         }//end dispatch
         } //end urlsession
         task.resume()
-        
-        
-        
-        
-        
-        
- 
-        
- 
         
    
     }
@@ -785,7 +645,7 @@ class InterfaceController: WKInterfaceController {
         let attributes = [
            
             //NSAttributedStringKey.font : UIFont.systemFont( ofSize: 12 ),
-            NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.thin),
+            NSAttributedStringKey.font : UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.thin),
             NSAttributedStringKey.foregroundColor : UIColor.white
         ]
         
@@ -861,14 +721,7 @@ class InterfaceController: WKInterfaceController {
     
     return v
     }
-    
-    
-    
-    
-    
-    
-    
-    
+  
     func noconnection() {
         deltabg.setTextColor(UIColor.red)
         deltabg.setText("No Data")
@@ -911,198 +764,28 @@ class InterfaceController: WKInterfaceController {
         return graphics[value]!
     }
     
-    func rawdir(_ velocity:Double,dt:Double) ->String {
-        var direction="NONE" as String
-        if (dt>10.1) {direction="NOT COMPUTABLE"} else
-            if (velocity <= -3.0) {direction="DoubleDown"} else
-                if (velocity > -3.0 && velocity <= -2.0) {direction="SingleDown"} else
-                    if (velocity > -2.0 && velocity <= -1.0) {direction="FortyFiveDown"} else
-        if (velocity > -1.0 && velocity <= 1.0) {direction="Flat"} else
-        if (velocity > 1.0 && velocity <= 2.0) {direction="FortyFiveUp"} else
-        if (velocity > 2.0 && velocity <= 3.0) {direction="SingleUp"} else
-            if (velocity > 3.0) {direction="DoubleUp"} else
-            {direction="RATE OUT OF RANGE"}
-       
-        
-    return direction
-    }
+ 
     
     func test(_ a:Double,b:Double) ->Int {
         return Int(a+b)
     }
     
-//    func calcraw(_ sgv:Double,filt:Double,unfilt:Double, slope:Double, intercept:Double, scale:Double) -> Int
-//
-//    {
-//        var rawv=0 as Int
-//        if(sgv<40) {
-//            rawv = Int(scale*(unfilt-intercept)/slope)
-//        }
-//        else
-//        {
-//            rawv = Int((unfilt-intercept)/(filt-intercept)*Double(sgv))
-//
-//        }
-//        return rawv
-//    }
-    
-    func bggraph(_ hours:Int,bghist:[[String:AnyObject]])-> String? {
-        
-        
-        
-        //get bghistory
-        //grabbing double the data in case of gap sync issues
-        let mmol = defaults?.bool(forKey: "mmol")
-        var google="" as String
-        let ct2=NSInteger(Date().timeIntervalSince1970)
-        var xg="" as String
-        var yg="" as String
-//        var rg="" as String
-        var pc="&chco=" as String
-        var maxy=0
-        var maxx=0
-        var miny=1000
- //       let bgoffset=40
-        let bgth=180
-        let bgtl=80
-        let numbg=577 as Int
-//        var slope=0 as Double
- //       var scale=0 as Double
-        var gpoints=0 as Int
-//        var intercept=0  as Double
-        var bgtimes = [Int](repeating: 0, count: numbg+1)
- //       var rawv=[Int](repeating: 0, count: numbg+1)
-        let minutes=hours*60
-        var inc:Int=1
-        if (hours==3||hours==1) {inc=1} else
-            if hours==6 {inc=2} else
-            if hours==12 {inc=3} else
-                {inc=5}
-//        if cals?.count>0 && craw==true {
-//            slope=cals?[0]["slope"] as! Double
-//            scale=cals?[0]["scale"] as! Double
-//            intercept=cals?[0]["intercept"] as! Double
-//        }
 
-        
-  
-        //find max time, min and max bg
-        var i=0 as Int;
-        while (i<bghist.count) {
-            let curdate: Double = (bghist[i]["date"] as! Double)/1000
-            bgtimes[i]=Int((Double(minutes)-(Double(ct2)-curdate)/(60.0)))
-            print(bgtimes[i])
-            if (bgtimes[i]>=0) {
-                gpoints += 1
-            if (bgtimes[i]>maxx) { maxx=bgtimes[i]}
-            let bgi = bghist[i]["sgv"] as! Int
-            if (bghist[i]["sgv"] as! Int > maxy) {maxy = bghist[i]["sgv"] as! Int}
-            if (bgi < miny) {miny = bgi}
-                
-            }
-            i=i+1;}
-  
-        if gpoints < 2 {return "NoData"}
-        
-
-         //insert prediction points into
-        if maxy<bgth {maxy=bgth}
-        if miny>bgtl {miny=bgtl}
-
-        //create strings of data points xg (time) and yg (bg) and string of colors pc
-         i=0;
-        while i<bghist.count  {
-            if (bgtimes[i]>=0) {
-                //scale time values
-                xg=xg+String(bgtimes[i]*100/minutes)+","
-                var sgv:Int = bghist[i]["sgv"] as! Int
-                if sgv<60 {pc=pc+"FF0000|"} else
-                    if sgv<80 {pc=pc+"FFFF00|"} else
-                        if sgv<180 {pc=pc+"00FF00|"} else
-                            if sgv<260 {pc=pc+"FFFF00|"} else
-                            {pc=pc+"FF0000|"}
-                //scale bg data to 100 is the max
-
-                sgv=(sgv-miny)*100/(maxy-miny)
-                yg=yg+String(sgv)+","
-                
-                
-           
-                //add raw points on the fly if cal available
-//                if cals?.count>0 && craw==true {
-//                    let rawscaled=(rawv[i]-miny)*100/(maxy-miny)
-//                    xg=xg+String(bgtimes[i]*100/minutes)+".05,"
-//                    yg=yg+String(rawscaled)+","
-//                    pc=pc+"FFFFFF|"
-//                }
-            }
-        i=i+inc}
-        
-//        xg=(dropLast(xg))
-//        yg=(dropLast(yg))
-//        pc=(dropLast(pc))
-//        xg=String(xg.characters.dropLast())
-//        yg=String(yg.characters.dropLast())
-//        pc=String(pc.characters.dropLast())
-        xg=String(xg.dropLast())
-        yg=String(yg.dropLast())
-        pc=String(pc.dropLast())
-        
-        let low:Double=Double(bgtl-miny)/Double(maxy-miny)
-        let high:Double=Double(bgth-miny)/Double(maxy-miny)
-        //create string for google chart api
-        //bands are at 80,180, vertical lines for hours
-        let band1="&chm=r,FFFFFF,0,"+String(format:"%.2f",high-0.01)+","+String(format:"%.3f",high)
-        let band2="|r,FFFFFF,0,"+String(format:"%.2f",(low))+","+String(format:"%.3f",low+0.01)
-        //let h:String=String(stringInterpolationSegment: 100.0/Double(hours))
-        let h:String=String(100.0/Double(hours))
-        let hourlyverticals="&chg="+h+",0"
-        if (mmol == false) {
-                    google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(miny)+","+String(maxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
-        }
-        
-        else {
-            let mmolminy = Double(miny) / 18.0
-            let mmolmaxy = Double(maxy) / 18.0
-            google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(format:"%.1f",mmolminy)+","+String(format:"%.1f",mmolmaxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
-            
-        }
-        
-
-            return google
-   
-    
-    }
-    
     
     func bgextract(_ hours:Int,bghist:[[String:AnyObject]], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double, Int) {
-        
-        
-        
-        //get bghistory
-        //grabbing double the data in case of gap sync issues
-     //   let mmol = defaults?.bool(forKey: "mmol")
-     //   var google="" as String
+
+
         let ct2=NSInteger(Date().timeIntervalSince1970)
-      //  var xg="" as String
-      //  var yg="" as String
-        //        var rg="" as String
-      //  var pc="&chco=" as String
+
         var maxy=0
         var maxx=0
         var miny=1000
         var minx=1000000
-        //       let bgoffset=40
         let bgth=180
         let bgtl=80
-        let numbg=577 as Int
-        //        var slope=0 as Double
-        //       var scale=0 as Double
+
         var gpoints=0 as Int
-        //        var intercept=0  as Double
-        //var bgtimes = [Int](repeating: 0, count: numbg+1)
         var bgtimes = [Int]()
-        //       var rawv=[Int](repeating: 0, count: numbg+1)
         let minutes=hours*60
         var inc:Int=1
         if (hours==3||hours==1) {inc=1} else
@@ -1132,7 +815,7 @@ class InterfaceController: WKInterfaceController {
             }
             i=i+1;}
         
-      //  if gpoints < 2 {return "NoData"}
+
         
         
         //insert prediction points into
@@ -1162,43 +845,10 @@ class InterfaceController: WKInterfaceController {
                 //scale bg data to 100 is the max
                 
                 ydata.append(Double((sgv-miny)*100/(maxy-miny)))
-                //yg=yg+String(sgv)+","
-                
-                
-                
-                //add raw points on the fly if cal available
-                //                if cals?.count>0 && craw==true {
-                //                    let rawscaled=(rawv[i]-miny)*100/(maxy-miny)
-                //                    xg=xg+String(bgtimes[i]*100/minutes)+".05,"
-                //                    yg=yg+String(rawscaled)+","
-                //                    pc=pc+"FFFFFF|"
-                //                }
+ 
             }
             i=i+inc}
         
-      
-        
-//        let low:Double=Double(bgtl-miny)/Double(maxy-miny)
-//        let high:Double=Double(bgth-miny)/Double(maxy-miny)
-//        //create string for google chart api
-//        //bands are at 80,180, vertical lines for hours
-//        let band1="&chm=r,FFFFFF,0,"+String(format:"%.2f",high-0.01)+","+String(format:"%.3f",high)
-//        let band2="|r,FFFFFF,0,"+String(format:"%.2f",(low))+","+String(format:"%.3f",low+0.01)
-//        //let h:String=String(stringInterpolationSegment: 100.0/Double(hours))
-//        let h:String=String(100.0/Double(hours))
-//        let hourlyverticals="&chg="+h+",0"
-//        if (mmol == false) {
-//            google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(miny)+","+String(maxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
-//        }
-//
-//        else {
-//            let mmolminy = Double(miny) / 18.0
-//            let mmolmaxy = Double(maxy) / 18.0
-//            google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(format:"%.1f",mmolminy)+","+String(format:"%.1f",mmolmaxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
-//
-//        }
-        
-        //x data
         return (xdata, ydata, dataColor, Double(miny), Double(maxy), hours)
         
         
