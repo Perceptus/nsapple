@@ -149,11 +149,7 @@ class InterfaceController: WKInterfaceController {
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
-      //  let theImage = UIImage(named: "nsblue")
-        //  var img: UIImage = UIImage(named: "nsblue")! // grabs the image from extension's bundle
-        // WKInterfaceDevice().addCachedImage(img,"nsblue") // adds to the Watch cache
-        
-       // self.loadingicon.setImage(theImage)         // Configure interface objects here.
+  
     }
     
     override func willActivate() {
@@ -561,6 +557,8 @@ class InterfaceController: WKInterfaceController {
                 //ydata is scaled to 100
                 //xdata is scaled to width
                 (xdata, ydata, colorData, miny, maxy, hours) = self.bgextract(self.graphlength,bghist: self.bghist!, width: width)
+                
+                //draw data points
                 var i: Int = 0
                 let leftbuffer : Double = 20
                 let widthD : Double = Double(width)
@@ -577,19 +575,31 @@ class InterfaceController: WKInterfaceController {
                 
                 //draw horizontal lines at 80 and 180 for xcontext
                 //to do make user configurable
+                
+                //draw high and low bound bars
                 let lowLimit : CGFloat = 80
                 let highLimit : CGFloat = 180
                 let topBound : CGFloat = 100 - (highLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
                 let bottomBound : CGFloat = 100 - (lowLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
                 context?.setStrokeColor(UIColor.white.cgColor)
+                context?.setLineWidth(2)
+                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: topBound+1))
+                context?.addLine(to: CGPoint(x: width, y: topBound+1))
+                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: bottomBound-1))
+                context?.addLine(to: CGPoint(x: width, y: bottomBound-1))
+                //draw outline if outline isnt set by low or high limit bars
                 context?.setLineWidth(1)
-                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: topBound))
-                context?.addLine(to: CGPoint(x: width, y: topBound))
-                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: bottomBound))
-                context?.addLine(to: CGPoint(x: width, y: bottomBound))
+                if (abs(miny - Double(lowLimit)) > 5 ) {
+                    context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: height))
+                    context?.addLine(to: CGPoint(x: width, y: height))
+                }
                 
+                if (abs(maxy - Double(highLimit)) > 5 ) {
+                    context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: 0))
+                    context?.addLine(to: CGPoint(x: width, y: 0))
+                }
                 context!.strokePath();
-                //draw vertical lines on hour marks
+                //draw vertical dashedlines on hour marks
                 context?.setStrokeColor(UIColor.gray.cgColor)
                 context?.setLineDash(phase: 4, lengths: [4])
                 context?.move(to:CGPoint(x: CGFloat(leftbuffer), y: 0))
@@ -645,7 +655,7 @@ class InterfaceController: WKInterfaceController {
         let attributes = [
            
             //NSAttributedStringKey.font : UIFont.systemFont( ofSize: 12 ),
-            NSAttributedStringKey.font : UIFont.systemFont(ofSize: 11, weight: UIFont.Weight.thin),
+            NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.thin),
             NSAttributedStringKey.foregroundColor : UIColor.white
         ]
         
