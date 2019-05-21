@@ -14,7 +14,7 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="nsapple_WatchKit_App" customModuleProvider="target">
                     <items>
-                        <group width="154" alignment="left" id="0XS-Xb-x7m">
+                        <group width="1" alignment="center" id="0XS-Xb-x7m">
                             <items>
                                 <label alignment="left" text=" V per min" id="1qW-8W-XE3">
                                     <fontDescription key="font" type="system" pointSize="8"/>
