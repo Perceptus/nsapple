@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580157746.807778"
+            timestampString = "580159103.506108"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "787"
-            endingLineNumber = "787"
+            startingLineNumber = "751"
+            endingLineNumber = "751"
             landmarkName = "bgScaling(_:bgHist:width:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580157746.808504"
+            timestampString = "580159103.50664"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "469"
-            endingLineNumber = "469"
+            startingLineNumber = "433"
+            endingLineNumber = "433"
             landmarkName = "updateBG(pebbleResponse:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580157746.809182"
+            timestampString = "580159103.5069979"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "466"
-            endingLineNumber = "466"
+            startingLineNumber = "430"
+            endingLineNumber = "430"
             landmarkName = "updateBG(pebbleResponse:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,27 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580157746.8097399"
+            timestampString = "580159103.5073611"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "422"
-            endingLineNumber = "422"
-            landmarkName = "updateBG(pebbleResponse:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580157746.8102469"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "431"
-            endingLineNumber = "431"
+            startingLineNumber = "395"
+            endingLineNumber = "395"
             landmarkName = "updateBG(pebbleResponse:)"
             landmarkType = "7">
          </BreakpointContent>

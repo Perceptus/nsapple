@@ -49,8 +49,6 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var velocity: WKInterfaceLabel!
     @IBOutlet var errorDisplay: WKInterfaceLabel!
     var graphLength:Int=3
-    var bghist = [entriesData]()
-    var responseDict=[:] as [String:AnyObject]
    
     @IBAction func hourslidervalue(_ value: Float) {
         let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
@@ -99,38 +97,29 @@ class InterfaceController: WKInterfaceController {
         self.statusOverride.setTextColor(gray)
     }
     
-    func updatePumpStatus(json: [[String:AnyObject]]) {
+    func updateLoopStatus(json: [[String:AnyObject]]) {
         
         // print("in updatePump")
-
-            
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withFullDate,
-                                       .withTime,
-                                       .withDashSeparatorInDate,
-                                       .withColonSeparatorInTime]
-            
-            
-            
+       
         if json.count == 0 {
                 self.loopStatus1.setText("No Records")
                 greyLoopStatus()
                 return}
-            
-
-        //only grabbing one record since ns sorts by created_at : -1
+        //only grabbing one record since ns sorts by {created_at : -1}
         let lastData = json[0] as [String : AnyObject]?
-            
-            
-            
+  
             //pump and uploader
-            
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withFullDate,
+                                   .withTime,
+                                   .withDashSeparatorInDate,
+                                   .withColonSeparatorInTime]
             var pstatus:String = "Res "
-            let lastpump = lastData?["pump"] as! [String : AnyObject]?
-            if lastpump != nil {
-                if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.loopStatus1, timeSince: pumptime)
-                    if let res = lastpump?["reservoir"] as? Double
+            let lastPump = lastData?["pump"] as! [String : AnyObject]?
+            if lastPump != nil {
+                if let pumpTime = formatter.date(from: (lastPump?["clock"] as! String))?.timeIntervalSince1970  {
+                    self.labelColor(label: self.loopStatus1, timeSince: pumpTime)
+                    if let res = lastPump?["reservoir"] as? Double
                     {
                         pstatus = pstatus + String(format:"%.0f", res)
                     }
@@ -163,9 +152,7 @@ class InterfaceController: WKInterfaceController {
                 pstatus = "Pump Record Error"
                 greyLoopStatus()
             }
-            
-            //
-            
+
             //loop
             let lastLoop = lastData?["loop"] as! [String : AnyObject]?
             var pstatus2:String = " IOB "
@@ -200,8 +187,6 @@ class InterfaceController: WKInterfaceController {
                         if let predictdata = lastLoop?["predicted"] as? [String:AnyObject] {
                             let prediction = predictdata["values"] as! [Double]
                             pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol)
-                            
-                            
                         }
                         
                     }
@@ -222,9 +207,6 @@ class InterfaceController: WKInterfaceController {
             //overrides
             var pstatus3 = "" as String
             if let lastOverride = lastData?["override"] as! [String : AnyObject]? {
-                
-                
-                
                 if let overridetime = formatter.date(from: (lastOverride["timestamp"] as! String))?.timeIntervalSince1970  {
                     self.labelColor(label: self.statusOverride, timeSince: overridetime)
                 } //finish color
@@ -233,7 +215,6 @@ class InterfaceController: WKInterfaceController {
                     pstatus3 = "BGTargets("
                     let minValue = currentCorrection["minValue"] as! Double
                     let maxValue = currentCorrection["maxValue"] as! Double
-                    
                     pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol) + ":" + self.bgOutput(bg: maxValue, mmol: mmol) + ") M:"
                     let multiplier = lastOverride["multiplier"] as! Double
                     pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
@@ -243,11 +224,7 @@ class InterfaceController: WKInterfaceController {
             } //if let for override - older versions dont have an overide field
             
             self.statusOverride.setText(pstatus3)
-            
-            
-            
-
-        
+ 
         // print("end updatePump")
     }
     
@@ -349,7 +326,7 @@ class InterfaceController: WKInterfaceController {
         let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=1"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
-        guard let urlpump = URL(string: escapedAddress!) else {
+        guard let urlLoop = URL(string: escapedAddress!) else {
             
             loopStatus1.setText("")
             loopStatus1.setText("URL ERROR")
@@ -357,8 +334,8 @@ class InterfaceController: WKInterfaceController {
         }
 
         // print("entered 2nd task")
-        let task3 = URLSession.shared.dataTask(with: urlpump) { data, response, error in
-            // print("in pudate pump")
+        let loopTask = URLSession.shared.dataTask(with: urlLoop) { data, response, error in
+            // print("in pudate loop")
             guard error == nil else {
                 
                 self.loopStatus1.setText(error?.localizedDescription)
@@ -373,7 +350,7 @@ class InterfaceController: WKInterfaceController {
             let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
            
             if let json = json {
-                self.updatePumpStatus(json: json)
+                self.updateLoopStatus(json: json)
             }
             
             else
@@ -386,7 +363,7 @@ class InterfaceController: WKInterfaceController {
             // print("finish pump update")
  
         }
-        task3.resume()
+        loopTask.resume()
         
 
         
@@ -394,32 +371,17 @@ class InterfaceController: WKInterfaceController {
     
     func updateBG (pebbleResponse: dataPebble) {
         // print("in update BG")
-        //set bg color to something old so we know if its not really updating
-        let gray=UIColor.gray as UIColor
-        
-        //toDO remove this and make sure if there is no data / errors things get greyed its wasting time
-//        self.primarybg.setTextColor(gray)
-//        self.bgdirection.setTextColor(gray)
-//        self.plabel.setTextColor(gray)
-//        self.vlabel.setTextColor(gray)
-//        self.minago.setTextColor(gray)
-//        self.deltabg.setTextColor(gray)
-        var entries = [entriesData]()
-       
+
+            var entries = [entriesData]()
             var j: Int = 0
-            
             //cast string sgvs to int
             //to do there must be a simpler way ......
             while j < pebbleResponse.bgs.count {
                 entries.append(entriesData(sgv: Int(pebbleResponse.bgs[j].sgv) ?? 0, date: pebbleResponse.bgs[j].datetime, direction: pebbleResponse.bgs[j].direction ))
                 j=j+1
             }
-            
             //successfully received pebble end point data
-            
             if entries.count > 0 {
-                
-             
                 let currentBG=entries[0].sgv
                 let priorBG = entries[1].sgv
                 let direction=entries[0].direction
@@ -469,7 +431,7 @@ class InterfaceController: WKInterfaceController {
                
                 noconnection()
                 greyLoopStatus()
-                //to do add output to eror window?
+                //to do add output to error window?
                 return
             }
         
