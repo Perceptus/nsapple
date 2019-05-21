@@ -88,13 +88,7 @@ public struct watch {
 
 
 class InterfaceController: WKInterfaceController {
-    
-    
-    
-    
-    
-    
-    
+   
     @IBOutlet weak var bgimage: WKInterfaceImage!
     @IBOutlet weak var primarybg: WKInterfaceLabel!
     @IBOutlet weak var bgdirection: WKInterfaceLabel!
@@ -104,11 +98,6 @@ class InterfaceController: WKInterfaceController {
    // @IBOutlet weak var secondarybg: WKInterfaceLabel!
     @IBOutlet weak var graphhours: WKInterfaceLabel!
     @IBOutlet weak var hourslider: WKInterfaceSlider!
-    //@IBOutlet weak var chartraw: WKInterfaceSwitch!
-   //@IBOutlet weak var primarybg: WKInterfaceLabel!
-   //@IBOutlet weak var secondarybg: WKInterfaceLabel!
-
-  
   
     @IBOutlet var loadingicon: WKInterfaceImage!
     @IBOutlet var pumpstatus3: WKInterfaceLabel!
@@ -119,7 +108,7 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var secondarybgname: WKInterfaceLabel!
     var graphlength:Int=3
     var bghistread=true as Bool
-    var bghist=[] as?  [[String:AnyObject]]
+    var bghist = [entriesData]()
     var responseDict=[:] as [String:AnyObject]
     var cals=[] as? [[String:AnyObject]]
     var craw=true as Bool
@@ -140,13 +129,6 @@ class InterfaceController: WKInterfaceController {
     }
         
    
-        
-        
-
-        
-        
-        
-    
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
   
@@ -185,7 +167,7 @@ class InterfaceController: WKInterfaceController {
         
         
         guard let urlUser = defaults?.string(forKey: "name_preference") else {
-            print ("no url is set")
+           
             pumpstatus.setText("")
             pumpstatus.setText("URL NOT SET")
             return}
@@ -195,7 +177,7 @@ class InterfaceController: WKInterfaceController {
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let url2 = URL(string: escapedAddress!) else {
-            print ("URL Parsing Error")
+          
             pumpstatus.setText("")
             pumpstatus.setText("URL ERROR")
             return
@@ -203,12 +185,12 @@ class InterfaceController: WKInterfaceController {
         
         let task3 = URLSession.shared.dataTask(with: url2) { data, response, error in
             guard error == nil else {
-                print(error!)
+               
                 self.pumpstatus.setText(error?.localizedDescription)
                 return
             }
             guard let data = data else {
-                print("Data is empty")
+              
                 self.pumpstatus.setText("Data is Empty")
                 return
             }
@@ -388,6 +370,22 @@ class InterfaceController: WKInterfaceController {
         }
 
     
+    struct sgvData: Codable {
+        var sgv: String
+        var datetime: TimeInterval
+        var direction: String
+    }
+    struct dataPebble: Codable{
+        var bgs: [sgvData]
+        
+    }
+    struct entriesData: Codable {
+        var sgv: Int
+        var date: TimeInterval
+        var direction: String
+    }
+    
+    
     func updatecore() {
  
 
@@ -405,18 +403,19 @@ class InterfaceController: WKInterfaceController {
         self.deltabg.setTextColor(gray)
  
         guard let urlUser = defaults?.string(forKey: "name_preference") else {
-            print ("no url is set")
+            
             pumpstatus.setText("")
             pumpstatus.setText("URL NOT SET")
             return}
         let mmol = defaults?.bool(forKey: "mmol")
         
         let points = String(self.graphlength * 12 + 1)
-        let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=" + points
-        print("in watchkit")
+       //let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=" + points
+        let urlPath: String = urlUser + "/pebble?count=" + points
+        
     
         guard let url2 = URL(string: urlPath) else {
-            print ("URL Parsing Error")
+         
             self.primarybg.setText("")
             self.vlabel.setText("URL ERROR")
             return
@@ -424,13 +423,13 @@ class InterfaceController: WKInterfaceController {
         
         let task = URLSession.shared.dataTask(with: url2) { data, response, error in
             guard error == nil else {
-                print(error!)
+                
                 self.primarybg.setText("")
                 self.vlabel.setText(error?.localizedDescription)
                 return
             }
             guard let data = data else {
-                print("Data is empty")
+                
                 self.primarybg.setText("")
                 self.vlabel.setText("No Data")
                 return
@@ -439,46 +438,73 @@ class InterfaceController: WKInterfaceController {
             
             DispatchQueue.main.async() {
             
-                let entries = try! JSONSerialization.jsonObject(with: data, options: []) as! [[String:AnyObject]]
-            print ("read resp")
-            
-            
-            
-            
-            
- // new main
-            
-           // print("before main")
-           
+             
+               // let test = try! JSONSerialization.jsonObject(with: data, options: []) as! Dictionary <String, AnyObject>
+
+                
+              //  let sgv = Int(bgs!["sgv"] as! String)
+                
+                //let bgInt : [Int] = Int(bgString["sgv"] as? String ?? "") ?? 0
+                //    bgString["sgv"].map { Int($0)!} // [11, 43, 26, 11, 45, 40]
+                
+                let decoder = JSONDecoder()
+                let entries2 = try! decoder.decode(dataPebble.self, from: data)
+               // print(entries2.bgs[0].)
+                
+//                let entries = try! JSONSerialization.jsonObject(with: data, options: []) as! [[String:AnyObject]]
+            //    let entries = try! JSONSerialization.jsonObject(with: data, options: []) as! Dictionary<String, AnyObject>
+                
+  
+//
+//                do {
+//                    let decoder = JSONDecoder()
+//                    let entries2 = try decoder.decode(bgPebble.self, from: data)
+//                    print(bgPebble.sgv)
+//
+//                } catch let err {
+//                    print("Err", err)
+//                }
+//                }.resume()
+                
+                
+                
+              //  let entries = try decoder.decode(bgPebble.self, from: data)
+               // print(entries)
+                
+                var entries = [entriesData]()
+                var j: Int = 0
+             
+               
+                while j < entries2.bgs.count {
+                    
+     //               let test = entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction )
+//                    test.sgv = Int(entries2.bgs[j].sgv) ?? 0
+//                    test.date = entries2.bgs[j].datetime
+//                    test.direction = entries2.bgs[j].direction
+                    entries.append(entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction ))
+
+                    j=j+1
+                }
+                
             //successfully received pebble end point data
-            //if let bgs=responseDict["bgs"] as? [[String:AnyObject]] {
+        
                 if entries.count > 0 {
-                print("after main")
+                
                 self.bghistread=true
-   //             let rawavailable=false as Bool
+   
                 let slope=0.0 as Double
                let intercept=0.0 as Double
                 let scale=0.0 as Double
-                let cbg=entries[0]["sgv"] as! Int
-                let priorbg = entries[1]["sgv"] as! Int
-                let direction=entries[0]["direction"] as! String
+                let cbg=entries[0].sgv
+                let priorbg = entries[1].sgv
+                let direction=entries[0].direction
                 let dbg = cbg - priorbg as Int
-                let bgtime=entries[0]["date"] as! TimeInterval
+                let bgtime=entries[0].date
                 let red=UIColor.red as UIColor
- //               let green=UIColor.green as UIColor
-  //              let yellow=UIColor.yellow as UIColor
-   //             let rawcolor="green" as String
                 //save as global variables
                 self.bghist=entries
-                   let bgs = entries as? [[String:AnyObject]]
+                   let bgs = entries
 
-              
-    
-//                self.plabel.setTextColor(white)
-//                self.vlabel.setTextColor(white)
-//                self.deltabg.setTextColor(white)
-                    
-                //self.labelColor(label: self.minago, timeSince: bgtime)
                 let ct=TimeInterval(Date().timeIntervalSince1970)
                 let deltat=(ct-bgtime/1000)/60
                 if deltat<10 {self.minago.setTextColor(UIColor.green)} else
@@ -499,7 +525,7 @@ class InterfaceController: WKInterfaceController {
                         self.primarybg.setTextColor(self.bgcolor(cbg))
                         self.bgdirection.setText(self.dirgraphics(direction))
                         self.bgdirection.setTextColor(self.bgcolor(cbg))
-                        let velocity=self.velocity_cf(bgs!, slope: slope,intercept: intercept,scale: scale) as Double
+                        let velocity=self.velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
                         let prediction=velocity*30.0+Double(cbg)
 
                         self.deltabg.setTextColor(UIColor.white)
@@ -556,7 +582,7 @@ class InterfaceController: WKInterfaceController {
                 
                 //ydata is scaled to 100
                 //xdata is scaled to width
-                (xdata, ydata, colorData, miny, maxy, hours) = self.bgextract(self.graphlength,bghist: self.bghist!, width: width)
+                (xdata, ydata, colorData, miny, maxy, hours) = self.bgextract(self.graphlength,bghist: self.bghist, width: width)
                 
                 //draw data points
                 var i: Int = 0
@@ -669,7 +695,7 @@ class InterfaceController: WKInterfaceController {
             withAttributes : attributes )
     }
     
-    func velocity_cf(_ bgs:[[String:AnyObject]],slope:Double,intercept:Double,scale:Double)->Double {
+    func velocity_cf(_ bgs:[entriesData],slope:Double,intercept:Double,scale:Double)->Double {
     //linear fit to 3 data points get slope (ie velocity)
     var v=0 as Double
     var n=0 as Int
@@ -681,8 +707,8 @@ class InterfaceController: WKInterfaceController {
       
         i=0
         while i<4 {
-         date[i]=(bgs[i]["date"] as? Double)!
-         bgsgv[i]=(bgs[i]["sgv"])!.doubleValue
+         date[i] = bgs[i].date
+            bgsgv[i] = Double(bgs[i].sgv)
             i=i+1
           
         }
@@ -722,8 +748,7 @@ class InterfaceController: WKInterfaceController {
                 j=j+1
     }
     v=c1/c2
-        print(v)
-    //	console.log(v)
+
     }
     //need to decide what to return if there isnt enough data
     
@@ -782,7 +807,7 @@ class InterfaceController: WKInterfaceController {
     
 
     
-    func bgextract(_ hours:Int,bghist:[[String:AnyObject]], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double, Int) {
+    func bgextract(_ hours:Int,bghist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double, Int) {
 
 
         let ct2=NSInteger(Date().timeIntervalSince1970)
@@ -811,16 +836,15 @@ class InterfaceController: WKInterfaceController {
         var test2 = [Double] ()
         //  for var i=0; i<bghist.count; i=i+1 {
         while (i<bghist.count) {
-            let curdate: Double = (bghist[i]["date"] as! Double)/1000
+            let curdate: Double = (bghist[i].date)/1000
             bgtimes.append(Int((Double(minutes)-(Double(ct2)-curdate)/(60.0))))
             test2.append(curdate)
-            print(bgtimes[i])
             if (bgtimes[i]>=0) {
                 gpoints += 1
                 if (bgtimes[i]>maxx) {maxx=bgtimes[i]}
                 if (bgtimes[i]<minx) {minx=bgtimes[i]}
-                let bgi = bghist[i]["sgv"] as! Int
-                if (bghist[i]["sgv"] as! Int > maxy) {maxy = bghist[i]["sgv"] as! Int}
+                let bgi = bghist[i].sgv
+                if (bghist[i].sgv  > maxy) {maxy = bghist[i].sgv }
                 if (bgi < miny) {miny = bgi}
             }
             i=i+1;}
@@ -845,7 +869,7 @@ class InterfaceController: WKInterfaceController {
                 //scale time values
                 //xg=xg+String(bgtimes[i]*100/minutes)+","
                 xdata.append(Double(bgtimes[i])*Double(width)/Double(minutes))
-                let sgv:Int = bghist[i]["sgv"] as! Int
+                let sgv:Int = bghist[i].sgv
                 test.append(sgv)
                 if sgv<60 {dataColor.append(UIColor.red)} else
                     if sgv<80 {dataColor.append(UIColor.yellow)} else
