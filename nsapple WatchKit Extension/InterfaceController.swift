@@ -70,8 +70,6 @@ class InterfaceController: WKInterfaceController {
    
         super.willActivate()
         loadData()
-       // updateBG()
-       // updatepumpstats()
         
         
     }
@@ -103,7 +101,7 @@ class InterfaceController: WKInterfaceController {
     
     func updatePumpStatus(json: [[String:AnyObject]]) {
         
-        print("in updatePump")
+        // print("in updatePump")
 
             
             let formatter = ISO8601DateFormatter()
@@ -250,7 +248,7 @@ class InterfaceController: WKInterfaceController {
             
 
         
-        print("end updatePump")
+        // print("end updatePump")
     }
     
 
@@ -307,7 +305,7 @@ class InterfaceController: WKInterfaceController {
     }
     
     func loadData () {
-        print("in load BG")
+        // print("in load BG")
      
         let points = String(self.graphLength * 12 + 1)
     
@@ -322,7 +320,7 @@ class InterfaceController: WKInterfaceController {
 
         let getBGTask = URLSession.shared.dataTask(with: url2) { data, response, error in
             
-            print("start bg url")
+            // print("start bg url")
             guard error == nil else {
                 self.primaryBG.setText("")
                 self.velocity.setText(error?.localizedDescription)
@@ -358,9 +356,9 @@ class InterfaceController: WKInterfaceController {
             return
         }
 
-        print("entered 2nd task")
+        // print("entered 2nd task")
         let task3 = URLSession.shared.dataTask(with: urlpump) { data, response, error in
-            print("in pudate pump")
+            // print("in pudate pump")
             guard error == nil else {
                 
                 self.loopStatus1.setText(error?.localizedDescription)
@@ -385,7 +383,7 @@ class InterfaceController: WKInterfaceController {
                 self.loopStatus1.setText("Pump Stat Decoding Error")
                 return
             }
-            print("finish pump update")
+            // print("finish pump update")
  
         }
         task3.resume()
@@ -395,7 +393,7 @@ class InterfaceController: WKInterfaceController {
     }
     
     func updateBG (pebbleResponse: dataPebble) {
-        print("in update BG")
+        // print("in update BG")
         //set bg color to something old so we know if its not really updating
         let gray=UIColor.gray as UIColor
         
@@ -479,7 +477,7 @@ class InterfaceController: WKInterfaceController {
          
             
  
-        print("end update bg")
+        // print("end update bg")
     }
 
     
