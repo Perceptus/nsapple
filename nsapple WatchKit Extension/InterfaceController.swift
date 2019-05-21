@@ -35,27 +35,24 @@ public struct watch {
 
 class InterfaceController: WKInterfaceController {
    
-    @IBOutlet weak var bgimage: WKInterfaceImage!
-    @IBOutlet weak var primarybg: WKInterfaceLabel!
-    @IBOutlet weak var bgdirection: WKInterfaceLabel!
-    @IBOutlet weak var deltabg: WKInterfaceLabel!
-    @IBOutlet weak var minago: WKInterfaceLabel!
-    @IBOutlet weak var graphhours: WKInterfaceLabel!
-    @IBOutlet weak var hourslider: WKInterfaceSlider!
-    @IBOutlet var pumpstatus3: WKInterfaceLabel!
-    @IBOutlet var pumpstatus2: WKInterfaceLabel!
-    @IBOutlet var pumpstatus: WKInterfaceLabel!
-    @IBOutlet weak var plabel: WKInterfaceLabel!
-    @IBOutlet weak var vlabel: WKInterfaceLabel!
+    @IBOutlet weak var bgGraph: WKInterfaceImage!
+    @IBOutlet weak var primaryBG: WKInterfaceLabel!
+    @IBOutlet weak var bgDirection: WKInterfaceLabel!
+    @IBOutlet weak var deltaBG: WKInterfaceLabel!
+    @IBOutlet weak var minAgo: WKInterfaceLabel!
+    @IBOutlet weak var graphHours: WKInterfaceLabel!
+    @IBOutlet weak var hourSlider: WKInterfaceSlider!
+    @IBOutlet var statusOverride: WKInterfaceLabel!
+    @IBOutlet var loopStatus2: WKInterfaceLabel!
+    @IBOutlet var loopStatus1: WKInterfaceLabel!
+    @IBOutlet weak var prediction: WKInterfaceLabel!
+    @IBOutlet weak var velocity: WKInterfaceLabel!
     @IBOutlet var errorDisplay: WKInterfaceLabel!
     var graphlength:Int=3
     var bghistread=true as Bool
     var bghist = [entriesData]()
     var responseDict=[:] as [String:AnyObject]
-    //var entries2 = [entriesData]()
-
-    //
-    
+   
     @IBAction func hourslidervalue(_ value: Float) {
         let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let slidervalue=Int(round(value*1000)/1000)
@@ -64,8 +61,6 @@ class InterfaceController: WKInterfaceController {
         
     }
 
-        
-   
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
   
@@ -85,15 +80,16 @@ class InterfaceController: WKInterfaceController {
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         let gray=UIColor.gray as UIColor
-        self.primarybg.setTextColor(gray)
-        self.bgdirection.setTextColor(gray)
-        self.plabel.setTextColor(gray)
-        self.vlabel.setTextColor(gray)
-        self.minago.setTextColor(gray)
-        self.deltabg.setTextColor(gray)
-        self.pumpstatus.setTextColor(gray)
-        self.pumpstatus2.setTextColor(gray)
-        self.pumpstatus3.setTextColor(gray)
+        self.primaryBG.setTextColor(gray)
+        self.bgDirection.setTextColor(gray)
+        self.prediction.setTextColor(gray)
+        self.velocity.setTextColor(gray)
+        self.minAgo.setTextColor(gray)
+        self.deltaBG.setTextColor(gray)
+        self.loopStatus1.setTextColor(gray)
+        self.loopStatus2.setTextColor(gray)
+        self.statusOverride.setTextColor(gray)
+        //to do add blank image and set on sleep
         super.didDeactivate()
     }
     
@@ -111,19 +107,12 @@ class InterfaceController: WKInterfaceController {
             
             
         if json.count == 0 {
-                self.pumpstatus.setText("No Records")
+                self.loopStatus1.setText("No Records")
                 return}
             
-            
-            //find the index of the most recent upload
-            var cdate = [Date]()
-        for item in json  {
-                cdate.append(formatter.date(from: (item["created_at"] as! String))!)
-            }
-            
-            //find most recent;t created data
-            let index = cdate.index(of:cdate.max()!) as! Int
-        let lastdata = json[index] as [String : AnyObject]?
+
+        //only grabbing one record since ns sorts by created_at : -1
+        let lastdata = json[0] as [String : AnyObject]?
             
             
             
@@ -133,7 +122,7 @@ class InterfaceController: WKInterfaceController {
             let lastpump = lastdata?["pump"] as! [String : AnyObject]?
             if lastpump != nil {
                 if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.pumpstatus, timeSince: pumptime)
+                    self.labelColor(label: self.loopStatus1, timeSince: pumptime)
                     if let res = lastpump?["reservoir"] as? Double
                     {
                         pstatus = pstatus + String(format:"%.0f", res)
@@ -174,11 +163,11 @@ class InterfaceController: WKInterfaceController {
             var pstatus2:String = " IOB "
             if lastloop != nil {
                 if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.pumpstatus2, timeSince: looptime)
+                    self.labelColor(label: self.loopStatus2, timeSince: looptime)
                     if let failure = lastloop?["failureReason"] {
-                        self.pumpstatus.setText(pstatus)
+                        self.loopStatus1.setText(pstatus)
                         //pstatus2 = "Loop Failure " + (failure as! String)
-                        self.pumpstatus2.setTextColor(UIColor.red)
+                        self.loopStatus2.setTextColor(UIColor.red)
                         pstatus2 = "Loop Failure"
                         self.errorDisplay.setTextColor(UIColor.red)
                         self.errorDisplay.setText(failure as? String)
@@ -186,11 +175,11 @@ class InterfaceController: WKInterfaceController {
                     else
                     {
                         self.errorDisplay.setText("")
-                        self.pumpstatus2.setTextColor(UIColor.green)
+                        self.loopStatus2.setTextColor(UIColor.green)
                         if let enacted = lastloop?["enacted"] as? [String:AnyObject] {
                             if let tempbasal = enacted["rate"] as? Double {
                                 pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
-                                self.pumpstatus.setText(pstatus)
+                                self.loopStatus1.setText(pstatus)
                             }
                         }
                         if let iobdata = lastloop?["iob"] as? [String:AnyObject] {
@@ -218,7 +207,7 @@ class InterfaceController: WKInterfaceController {
                 pstatus2 = "Loop Record Error"
             }
             
-            self.pumpstatus2.setText(pstatus2)
+            self.loopStatus2.setText(pstatus2)
             
             //overrides
             var pstatus3 = "" as String
@@ -227,7 +216,7 @@ class InterfaceController: WKInterfaceController {
                 
                 
                 if let overridetime = formatter.date(from: (lastoverride["timestamp"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.pumpstatus3, timeSince: overridetime)
+                    self.labelColor(label: self.statusOverride, timeSince: overridetime)
                 } //finish color
                 if lastoverride["active"] as! Bool {
                     let currentCorrection  = lastoverride["currentCorrectionRange"] as! [String: AnyObject]
@@ -243,7 +232,7 @@ class InterfaceController: WKInterfaceController {
                 
             } //if let for override - older versions dont have an overide field
             
-            self.pumpstatus3.setText(pstatus3)
+            self.statusOverride.setText(pstatus3)
             
             
             
@@ -252,193 +241,7 @@ class InterfaceController: WKInterfaceController {
         print("end updatePump")
     }
     
-    func updatepumpstats() {
-        
-       print("in updatePump")
-        
-        
-        guard let urlUser = defaults?.string(forKey: "name_preference") else {
-           
-            pumpstatus.setText("")
-            pumpstatus.setText("URL NOT SET")
-            return}
-        let mmol = defaults?.bool(forKey: "mmol") ?? false
 
-        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=3"
-        let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-        
-        guard let url2 = URL(string: escapedAddress!) else {
-          
-            pumpstatus.setText("")
-            pumpstatus.setText("URL ERROR")
-            return
-        }
-        
-        let task3 = URLSession.shared.dataTask(with: url2) { data, response, error in
-            guard error == nil else {
-               
-                self.pumpstatus.setText(error?.localizedDescription)
-                return
-            }
-            guard let data = data else {
-              
-                self.pumpstatus.setText("Data is Empty")
-                return
-            }
-         
-            let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
-     
-                let formatter = ISO8601DateFormatter()
-                formatter.formatOptions = [.withFullDate,
-                                           .withTime,
-                                           .withDashSeparatorInDate,
-                                           .withColonSeparatorInTime]
-           
-           
-            
-            if json?.count == 0 {
-                self.pumpstatus.setText("No Records")
-                return}
-
-            
-            //find the index of the most recent upload
-            var cdate = [Date]()
-                for item in json!  {
-                cdate.append(formatter.date(from: (item["created_at"] as! String))!)
-            }
-
-                //find most recent;t created data
-            let index = cdate.index(of:cdate.max()!) as! Int
-            let lastdata = json?[index] as [String : AnyObject]?
-
-                
-                
-//pump and uploader
-                
-                var pstatus:String = "Res "
-                let lastpump = lastdata?["pump"] as! [String : AnyObject]?
-                if lastpump != nil {
-                    if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
-                        self.labelColor(label: self.pumpstatus, timeSince: pumptime)
-                        if let res = lastpump?["reservoir"] as? Double
-                        {
-                        pstatus = pstatus + String(format:"%.0f", res)
-                        }
-                        
-                        else
-                            
-                        {
-                         pstatus = pstatus + "N/A"
-                        }
-                        
-                        if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
-                            let upbat = uploader["battery"] as! Double
-                            pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
-                        }
-
-                        //add back if loop ever uploads again
-                        //                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
-                        //                            if let rrssi = riley["RSSI"] as? Int {
-                        //                                pstatus = pstatus + "%  RdB " + String(rrssi)
-                        //                            }
-                        //                        }
-
-                    }
-
-                } //finish pump data
-
-                else
-
-                {
-                    pstatus = "Pump Record Error"
-                }
-
-               //
-
-//loop
-                let lastloop = lastdata?["loop"] as! [String : AnyObject]?
-                var pstatus2:String = " IOB "
-                if lastloop != nil {
-                    if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
-                         self.labelColor(label: self.pumpstatus2, timeSince: looptime)
-                        if let failure = lastloop?["failureReason"] {
-                            self.pumpstatus.setText(pstatus)
-                            //pstatus2 = "Loop Failure " + (failure as! String)
-                            self.pumpstatus2.setTextColor(UIColor.red)
-                            pstatus2 = "Loop Failure"
-                            self.errorDisplay.setTextColor(UIColor.red)
-                            self.errorDisplay.setText(failure as? String)
-                        }
-                        else
-                        {
-                            self.errorDisplay.setText("")
-                            self.pumpstatus2.setTextColor(UIColor.green)
-                            if let enacted = lastloop?["enacted"] as? [String:AnyObject] {
-                                if let tempbasal = enacted["rate"] as? Double {
-                                    pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
-                                    self.pumpstatus.setText(pstatus)
-                                }
-                            }
-                            if let iobdata = lastloop?["iob"] as? [String:AnyObject] {
-                                pstatus2 = pstatus2 + String(format:"%.1f", iobdata["iob"] as! Double)
-                            }
-                            if let cobdata = lastloop?["cob"] as? [String:AnyObject] {
-                                pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cobdata["cob"] as! Double) + " EBG "
-                            }
-                            if let predictdata = lastloop?["predicted"] as? [String:AnyObject] {
-                                let prediction = predictdata["values"] as! [Double]
-                                pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol)
-
-                                
-                            }
-                            
-                        }
-                    }
-                    
-               
-                } //finish loop
-                
-                else
-                
-                {
-                    pstatus2 = "Loop Record Error"
-                }
-                
-                  self.pumpstatus2.setText(pstatus2)
-                
-//overrides
-                var pstatus3 = "" as String
-                if let lastoverride = lastdata?["override"] as! [String : AnyObject]? {
- 
-           
-           
-                    if let overridetime = formatter.date(from: (lastoverride["timestamp"] as! String))?.timeIntervalSince1970  {
-                          self.labelColor(label: self.pumpstatus3, timeSince: overridetime)
-                    } //finish color
-                    if lastoverride["active"] as! Bool {
-                        let currentCorrection  = lastoverride["currentCorrectionRange"] as! [String: AnyObject]
-                        pstatus3 = "BGTargets("
-                        let minValue = currentCorrection["minValue"] as! Double
-                        let maxValue = currentCorrection["maxValue"] as! Double
-                        
-                        pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol) + ":" + self.bgOutput(bg: maxValue, mmol: mmol) + ") M:"
-                        let multiplier = lastoverride["multiplier"] as! Double
-                        pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
-                    }
-                    
-
-                } //if let for override - older versions dont have an overide field
-                
-                self.pumpstatus3.setText(pstatus3)
-                
-        
-       
-                } //task3
-        
-        task3.resume()
-        
-        print("end updatePump")
-    }
     
     func bgOutput(bg: Double, mmol: Bool) -> String {
         if !mmol {
@@ -447,6 +250,16 @@ class InterfaceController: WKInterfaceController {
         else
         {
             return String(format:"%.1f", bg / 18.6)
+        }
+    }
+    
+    func velocityOutput(v: Double, mmol: Bool) -> String {
+        if !mmol {
+            return String(format:"%.1f", v)
+        }
+        else
+        {
+            return String(format:"%.1f", v / 18.6)
         }
     }
     
@@ -490,8 +303,8 @@ class InterfaceController: WKInterfaceController {
         let urlPath: String = urlUser + "/pebble?count=" + points
         guard let url2 = URL(string: urlPath) else {
             
-            self.primarybg.setText("")
-            self.vlabel.setText("URL ERROR")
+            self.primaryBG.setText("")
+            self.velocity.setText("URL ERROR")
             return
         }
 
@@ -499,29 +312,37 @@ class InterfaceController: WKInterfaceController {
             
             print("start bg url")
             guard error == nil else {
-                self.primarybg.setText("")
-                self.vlabel.setText(error?.localizedDescription)
+                self.primaryBG.setText("")
+                self.velocity.setText(error?.localizedDescription)
                 return
             }
             guard let data = data else {
-                self.primarybg.setText("")
-                self.vlabel.setText("No Data")
+                self.primaryBG.setText("")
+                self.velocity.setText("No Data")
                 return
             }
             let decoder = JSONDecoder()
-            let entries2 = try! decoder.decode(dataPebble.self, from: data)
+            let entries2 = try? decoder.decode(dataPebble.self, from: data)
+            if let entries2 = entries2 {
             self.updateBG2(entries2: entries2)
+            }
+            else
+            {
+                self.primaryBG.setText("")
+                self.velocity.setText("BG Decoding Error")
+                return
+            }
             }
         getBGTask.resume()
         
         
-        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=3"
+        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=1"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let urlpump = URL(string: escapedAddress!) else {
             
-            pumpstatus.setText("")
-            pumpstatus.setText("URL ERROR")
+            loopStatus1.setText("")
+            loopStatus1.setText("URL ERROR")
             return
         }
 
@@ -530,12 +351,12 @@ class InterfaceController: WKInterfaceController {
             print("in pudate pump")
             guard error == nil else {
                 
-                self.pumpstatus.setText(error?.localizedDescription)
+                self.loopStatus1.setText(error?.localizedDescription)
                 return
             }
             guard let data = data else {
                 
-                self.pumpstatus.setText("Data is Empty")
+                self.loopStatus1.setText("Data is Empty")
                 return
             }
             
@@ -543,6 +364,14 @@ class InterfaceController: WKInterfaceController {
            
             if let json = json {
                 self.updatepumpstats2(json: json)
+            }
+            
+            else
+            
+            {
+                self.loopStatus1.setText("")
+                self.loopStatus1.setText("Pump Stat Decoding Error")
+                return
             }
             print("finish pump update")
  
@@ -558,28 +387,21 @@ class InterfaceController: WKInterfaceController {
         //set bg color to something old so we know if its not really updating
         let gray=UIColor.gray as UIColor
         
-        //  DispatchQueue.main.async() {
-        //  remove set already in deactivate
-        self.primarybg.setTextColor(gray)
-        self.bgdirection.setTextColor(gray)
-        self.plabel.setTextColor(gray)
-        self.vlabel.setTextColor(gray)
-        self.minago.setTextColor(gray)
-        self.deltabg.setTextColor(gray)
+        //toDO remove this and make sure if there is no data / errors things get greyed its wasting time
+//        self.primarybg.setTextColor(gray)
+//        self.bgdirection.setTextColor(gray)
+//        self.plabel.setTextColor(gray)
+//        self.vlabel.setTextColor(gray)
+//        self.minago.setTextColor(gray)
+//        self.deltabg.setTextColor(gray)
         var entries = [entriesData]()
-        
-     
-            
-            
-        
+       
             var j: Int = 0
             
             //cast string sgvs to int
             //to do there must be a simpler way ......
             while j < entries2.bgs.count {
-                
                 entries.append(entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction ))
-                
                 j=j+1
             }
             
@@ -588,10 +410,6 @@ class InterfaceController: WKInterfaceController {
             if entries.count > 0 {
                 
                 self.bghistread=true
-                
-                let slope=0.0 as Double
-                let intercept=0.0 as Double
-                let scale=0.0 as Double
                 let cbg=entries[0].sgv
                 let priorbg = entries[1].sgv
                 let direction=entries[0].direction
@@ -600,52 +418,38 @@ class InterfaceController: WKInterfaceController {
                 let red=UIColor.red as UIColor
                 //save as global variables
                 self.bghist=entries
-                //    let bgs = entries
+
+                self.labelColor(label: self.minAgo, timeSince: bgtime)
+                let deltat=(TimeInterval(Date().timeIntervalSince1970)-bgtime/1000)/60
+                self.minAgo.setText(String(Int(deltat))+" min ago")
                 
-                let ct=TimeInterval(Date().timeIntervalSince1970)
-                let deltat=(ct-bgtime/1000)/60
-                if deltat<10 {self.minago.setTextColor(UIColor.green)} else
-                    if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
-                self.minago.setText(String(Int(deltat))+" min ago")
-                //
                 if (cbg<40) {
-                    self.primarybg.setTextColor(red)
-                    self.primarybg.setText(errorcode(cbg))
-                    self.bgdirection.setText("")
-                    self.deltabg.setText("")
+                    self.primaryBG.setTextColor(red)
+                    self.primaryBG.setText(errorcode(cbg))
+                    self.bgDirection.setText("")
+                    self.deltaBG.setText("")
                 }
                     
                 else
                     
                 {
-                    
-                    self.primarybg.setTextColor(bgcolor(cbg))
-                    self.bgdirection.setText(dirgraphics(direction))
-                    self.bgdirection.setTextColor(bgcolor(cbg))
-                    let velocity=velocity_cf(entries, slope: slope,intercept: intercept,scale: scale) as Double
+                    self.primaryBG.setTextColor(bgcolor(cbg))
+                    self.primaryBG.setText(self.bgOutput(bg: Double(cbg), mmol: mmol))
+                    self.bgDirection.setText(dirgraphics(direction))
+                    self.bgDirection.setTextColor(bgcolor(cbg))
+                    let velocity=velocity_cf(entries) as Double
                     let prediction=velocity*30.0+Double(cbg)
-                    
-                    self.deltabg.setTextColor(UIColor.white)
-                    
-                    if (mmol == false) {
-                        self.primarybg.setText(String(cbg))
-                        if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl")}
-                        self.vlabel.setText(String(format:"%.1f", velocity))
-                        self.plabel.setText(String(format:"%.0f", prediction))
+                    self.deltaBG.setTextColor(UIColor.white)
+                    if dbg < 0 {
+                        self.deltaBG.setText(self.bgOutput(bg: Double(dbg), mmol: mmol) + " mg/dl")
                     }
-                        
                     else
-                        
-                    {   let conv = 18.0 as Double
-                        let mmolbg = Double(cbg) / conv
-                        let mmoltext = String(format:"%.1f", mmolbg)
-                        self.primarybg.setText(mmoltext)
-                        let deltammol = Double(dbg) / conv
-                        let delmmoltext = String(format:"%.1f", deltammol)
-                        if (dbg<0) {self.deltabg.setText(delmmoltext + " mmol/L")} else {self.deltabg.setText("+" + delmmoltext + " mmol/L")}
-                        self.vlabel.setText(String(format:"%.1f", velocity/conv))
-                        self.plabel.setText(String(format:"%.1f", prediction/conv))
+                    {
+                        self.deltaBG.setText("+"+self.bgOutput(bg: Double(dbg), mmol: mmol)+" mg/dl")
                     }
+                    
+                    self.velocity.setText(self.velocityOutput(v: velocity, mmol: mmol))
+                    self.prediction.setText(self.bgOutput(bg: prediction, mmol: mmol))
                     
                 }
                 
@@ -659,171 +463,14 @@ class InterfaceController: WKInterfaceController {
                 noconnection()
                 return
             }
-            
-           createGraph(hours: self.graphlength, bghist: entries)
-            //   }//end dispatch
+        
+        createGraph(hours: self.graphlength, bghist: entries)
+         
             
  
         print("end update bg")
     }
-//    func updateBG() {
-//
-//
-//
-//      print("in update BG")
-//        //set bg color to something old so we know if its not really updating
-//        let gray=UIColor.gray as UIColor
-//
-//     //  DispatchQueue.main.async() {
-//      //  remove set already in deactivate
-//        self.primarybg.setTextColor(gray)
-//        self.bgdirection.setTextColor(gray)
-//        self.plabel.setTextColor(gray)
-//        self.vlabel.setTextColor(gray)
-//        self.minago.setTextColor(gray)
-//        self.deltabg.setTextColor(gray)
-//
-//        guard let urlUser = defaults?.string(forKey: "name_preference") else {
-//
-//            self.pumpstatus.setText("")
-//            self.pumpstatus.setText("URL NOT SET")
-//            return}
-//        let mmol = defaults?.bool(forKey: "mmol") ?? false
-//
-//        let points = String(self.graphlength * 12 + 1)
-//       //let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=" + points
-//        let urlPath: String = urlUser + "/pebble?count=" + points
-//
-//
-//        guard let url2 = URL(string: urlPath) else {
-//
-//            self.primarybg.setText("")
-//            self.vlabel.setText("URL ERROR")
-//            return
-//        }
-//
-//        let task = URLSession.shared.dataTask(with: url2) { data, response, error in
-//            print("start bg url")
-//            guard error == nil else {
-//
-//                self.primarybg.setText("")
-//                self.vlabel.setText(error?.localizedDescription)
-//                return
-//            }
-//            guard let data = data else {
-//
-//                self.primarybg.setText("")
-//                self.vlabel.setText("No Data")
-//                return
-//            }
-//
-//
-//
-//
-//
-//
-//                let decoder = JSONDecoder()
-//                let entries2 = try! decoder.decode(dataPebble.self, from: data)
-//
-//
-//                var entries = [entriesData]()
-//                var j: Int = 0
-//
-//                //cast string sgvs to int
-//                //to do there must be a simpler way ......
-//                while j < entries2.bgs.count {
-//
-//                    entries.append(entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction ))
-//
-//                    j=j+1
-//                }
-//
-//            //successfully received pebble end point data
-//
-//                if entries.count > 0 {
-//
-//                self.bghistread=true
-//
-//                let slope=0.0 as Double
-//               let intercept=0.0 as Double
-//                let scale=0.0 as Double
-//                let cbg=entries[0].sgv
-//                let priorbg = entries[1].sgv
-//                let direction=entries[0].direction
-//                let dbg = cbg - priorbg as Int
-//                let bgtime=entries[0].date
-//                let red=UIColor.red as UIColor
-//                //save as global variables
-//                self.bghist=entries
-//               //    let bgs = entries
-//
-//                let ct=TimeInterval(Date().timeIntervalSince1970)
-//                let deltat=(ct-bgtime/1000)/60
-//                if deltat<10 {self.minago.setTextColor(UIColor.green)} else
-//                    if deltat<20 {self.minago.setTextColor(UIColor.yellow)} else {self.minago.setTextColor(UIColor.red)}
-//                self.minago.setText(String(Int(deltat))+" min ago")
-////
-//                if (cbg<40) {
-//                    self.primarybg.setTextColor(red)
-//                    self.primarybg.setText(self.errorcode(cbg))
-//                    self.bgdirection.setText("")
-//                    self.deltabg.setText("")
-//                }
-//
-//                else
-//
-//                    {
-//
-//                        self.primarybg.setTextColor(self.bgcolor(cbg))
-//                        self.bgdirection.setText(self.dirgraphics(direction))
-//                        self.bgdirection.setTextColor(self.bgcolor(cbg))
-//                        let velocity=self.velocity_cf(entries, slope: slope,intercept: intercept,scale: scale) as Double
-//                        let prediction=velocity*30.0+Double(cbg)
-//
-//                        self.deltabg.setTextColor(UIColor.white)
-//
-//                        if (mmol == false) {
-//                            self.primarybg.setText(String(cbg))
-//                            if (dbg<0) {self.deltabg.setText(String(dbg)+" mg/dl")} else {self.deltabg.setText("+"+String(dbg)+" mg/dl")}
-//                            self.vlabel.setText(String(format:"%.1f", velocity))
-//                            self.plabel.setText(String(format:"%.0f", prediction))
-//                        }
-//
-//                        else
-//
-//                        {   let conv = 18.0 as Double
-//                            let mmolbg = Double(cbg) / conv
-//                            let mmoltext = String(format:"%.1f", mmolbg)
-//                             self.primarybg.setText(mmoltext)
-//                            let deltammol = Double(dbg) / conv
-//                            let delmmoltext = String(format:"%.1f", deltammol)
-//                            if (dbg<0) {self.deltabg.setText(delmmoltext + " mmol/L")} else {self.deltabg.setText("+" + delmmoltext + " mmol/L")}
-//                            self.vlabel.setText(String(format:"%.1f", velocity/conv))
-//                            self.plabel.setText(String(format:"%.1f", prediction/conv))
-//                        }
-//
-//                }
-//
-//
-//            } //end bgs !=nil
-//
-//                //did not get pebble endpoint data
-//            else
-//            {
-//                self.bghistread=false
-//                self.noconnection()
-//                return
-//            }
-//
-//            self.createGraph(hours: self.graphlength, bghist: entries)
-//     //   }//end dispatch
-//
-//        } //end urlsession
-//        task.resume()
-//        print("end update bg")
-//
-//    }
-    
+
     
     func createGraph(hours:Int, bghist:[entriesData]) {
         // create graph
@@ -929,9 +576,9 @@ class InterfaceController: WKInterfaceController {
         
         // End the graphics context
         UIGraphicsEndImageContext()
-    //      DispatchQueue.main.async() {
-        self.bgimage.setImage(uiimage)
-    //    }
+     DispatchQueue.main.async() {
+        self.bgGraph.setImage(uiimage)
+        }
     }
     
     
@@ -939,8 +586,6 @@ class InterfaceController: WKInterfaceController {
     func drawText( context : CGContext?, text : NSString, centreX : CGFloat, centreY : CGFloat )
     {
         let attributes = [
-           
-            //NSAttributedStringKey.font : UIFont.systemFont( ofSize: 12 ),
             NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.thin),
             NSAttributedStringKey.foregroundColor : UIColor.white
         ]
@@ -955,7 +600,7 @@ class InterfaceController: WKInterfaceController {
             withAttributes : attributes )
     }
     
-    func velocity_cf(_ bgs:[entriesData],slope:Double,intercept:Double,scale:Double)->Double {
+    func velocity_cf(_ bgs:[entriesData])->Double {
     //linear fit to 3 data points get slope (ie velocity)
     var v=0 as Double
     var n=0 as Int
@@ -1018,8 +663,8 @@ class InterfaceController: WKInterfaceController {
     }
   
     func noconnection() {
-        deltabg.setTextColor(UIColor.red)
-        deltabg.setText("No Data")
+        deltaBG.setTextColor(UIColor.red)
+        deltaBG.setText("No Data")
         
     }
     
@@ -1087,10 +732,7 @@ class InterfaceController: WKInterfaceController {
             if hours==6 {inc=2} else
                 if hours==12 {inc=3} else
                 {inc=5}
-        
-        
-        
-        
+       
         //find max and min time, min and max bg
         var i=0 as Int;
 
@@ -1107,10 +749,6 @@ class InterfaceController: WKInterfaceController {
                 if (bgi < miny) {miny = bgi}
             }
             i=i+1;}
-        
-
-        
-        
         //insert prediction points into
         if maxy<bgth {maxy=bgth}
         if miny>bgtl {miny=bgtl}

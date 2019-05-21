@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
-    <device id="watch42" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
-        <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
     </dependencies>
@@ -106,19 +102,19 @@
                         </label>
                     </items>
                     <connections>
-                        <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
-                        <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
-                        <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
+                        <outlet property="bgDirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
+                        <outlet property="bgGraph" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
+                        <outlet property="deltaBG" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="errorDisplay" destination="o6T-Uw-G7S" id="IdW-IR-f7Z"/>
-                        <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
-                        <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
-                        <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
-                        <outlet property="plabel" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
-                        <outlet property="primarybg" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
-                        <outlet property="pumpstatus" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
-                        <outlet property="pumpstatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
-                        <outlet property="pumpstatus3" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
-                        <outlet property="vlabel" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
+                        <outlet property="graphHours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
+                        <outlet property="hourSlider" destination="t7h-De-bBi" id="66r-Am-noX"/>
+                        <outlet property="loopStatus1" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
+                        <outlet property="loopStatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
+                        <outlet property="minAgo" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
+                        <outlet property="prediction" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
+                        <outlet property="primaryBG" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
+                        <outlet property="statusOverride" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
+                        <outlet property="velocity" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>
                 </controller>
             </objects>
