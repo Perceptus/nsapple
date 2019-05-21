@@ -48,15 +48,14 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var prediction: WKInterfaceLabel!
     @IBOutlet weak var velocity: WKInterfaceLabel!
     @IBOutlet var errorDisplay: WKInterfaceLabel!
-    var graphlength:Int=3
-    var bghistread=true as Bool
+    var graphLength:Int=3
     var bghist = [entriesData]()
     var responseDict=[:] as [String:AnyObject]
    
     @IBAction func hourslidervalue(_ value: Float) {
-        let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
-        let slidervalue=Int(round(value*1000)/1000)
-        graphlength=slidermap[slidervalue]!
+        let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
+        let sliderValue=Int(round(value*1000)/1000)
+        graphLength=sliderMap[sliderValue]!
         loadData()
         
     }
@@ -79,6 +78,13 @@ class InterfaceController: WKInterfaceController {
 
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
+        greyBGStatus()
+        greyLoopStatus()
+        //to do add blank image and set on sleep
+        super.didDeactivate()
+    }
+    
+    func greyBGStatus () {
         let gray=UIColor.gray as UIColor
         self.primaryBG.setTextColor(gray)
         self.bgDirection.setTextColor(gray)
@@ -86,14 +92,16 @@ class InterfaceController: WKInterfaceController {
         self.velocity.setTextColor(gray)
         self.minAgo.setTextColor(gray)
         self.deltaBG.setTextColor(gray)
+    }
+    
+    func greyLoopStatus () {
+        let gray=UIColor.gray as UIColor
         self.loopStatus1.setTextColor(gray)
         self.loopStatus2.setTextColor(gray)
         self.statusOverride.setTextColor(gray)
-        //to do add blank image and set on sleep
-        super.didDeactivate()
     }
     
-    func updatepumpstats2(json: [[String:AnyObject]]) {
+    func updatePumpStatus(json: [[String:AnyObject]]) {
         
         print("in updatePump")
 
@@ -108,18 +116,19 @@ class InterfaceController: WKInterfaceController {
             
         if json.count == 0 {
                 self.loopStatus1.setText("No Records")
+                greyLoopStatus()
                 return}
             
 
         //only grabbing one record since ns sorts by created_at : -1
-        let lastdata = json[0] as [String : AnyObject]?
+        let lastData = json[0] as [String : AnyObject]?
             
             
             
             //pump and uploader
             
             var pstatus:String = "Res "
-            let lastpump = lastdata?["pump"] as! [String : AnyObject]?
+            let lastpump = lastData?["pump"] as! [String : AnyObject]?
             if lastpump != nil {
                 if let pumptime = formatter.date(from: (lastpump?["clock"] as! String))?.timeIntervalSince1970  {
                     self.labelColor(label: self.loopStatus1, timeSince: pumptime)
@@ -134,7 +143,7 @@ class InterfaceController: WKInterfaceController {
                         pstatus = pstatus + "N/A"
                     }
                     
-                    if let uploader = lastdata?["uploader"] as? [String:AnyObject] {
+                    if let uploader = lastData?["uploader"] as? [String:AnyObject] {
                         let upbat = uploader["battery"] as! Double
                         pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
                     }
@@ -154,41 +163,43 @@ class InterfaceController: WKInterfaceController {
                 
             {
                 pstatus = "Pump Record Error"
+                greyLoopStatus()
             }
             
             //
             
             //loop
-            let lastloop = lastdata?["loop"] as! [String : AnyObject]?
+            let lastLoop = lastData?["loop"] as! [String : AnyObject]?
             var pstatus2:String = " IOB "
-            if lastloop != nil {
-                if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
+            if lastLoop != nil {
+                if let looptime = formatter.date(from: (lastLoop?["timestamp"] as! String))?.timeIntervalSince1970  {
                     self.labelColor(label: self.loopStatus2, timeSince: looptime)
-                    if let failure = lastloop?["failureReason"] {
+                    if let failure = lastLoop?["failureReason"] {
                         self.loopStatus1.setText(pstatus)
                         //pstatus2 = "Loop Failure " + (failure as! String)
                         self.loopStatus2.setTextColor(UIColor.red)
                         pstatus2 = "Loop Failure"
                         self.errorDisplay.setTextColor(UIColor.red)
                         self.errorDisplay.setText(failure as? String)
+                        greyLoopStatus()
                     }
                     else
                     {
                         self.errorDisplay.setText("")
                         self.loopStatus2.setTextColor(UIColor.green)
-                        if let enacted = lastloop?["enacted"] as? [String:AnyObject] {
+                        if let enacted = lastLoop?["enacted"] as? [String:AnyObject] {
                             if let tempbasal = enacted["rate"] as? Double {
                                 pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
                                 self.loopStatus1.setText(pstatus)
                             }
                         }
-                        if let iobdata = lastloop?["iob"] as? [String:AnyObject] {
+                        if let iobdata = lastLoop?["iob"] as? [String:AnyObject] {
                             pstatus2 = pstatus2 + String(format:"%.1f", iobdata["iob"] as! Double)
                         }
-                        if let cobdata = lastloop?["cob"] as? [String:AnyObject] {
+                        if let cobdata = lastLoop?["cob"] as? [String:AnyObject] {
                             pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cobdata["cob"] as! Double) + " EBG "
                         }
-                        if let predictdata = lastloop?["predicted"] as? [String:AnyObject] {
+                        if let predictdata = lastLoop?["predicted"] as? [String:AnyObject] {
                             let prediction = predictdata["values"] as! [Double]
                             pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol)
                             
@@ -205,27 +216,28 @@ class InterfaceController: WKInterfaceController {
                 
             {
                 pstatus2 = "Loop Record Error"
+                greyLoopStatus()
             }
             
             self.loopStatus2.setText(pstatus2)
             
             //overrides
             var pstatus3 = "" as String
-            if let lastoverride = lastdata?["override"] as! [String : AnyObject]? {
+            if let lastOverride = lastData?["override"] as! [String : AnyObject]? {
                 
                 
                 
-                if let overridetime = formatter.date(from: (lastoverride["timestamp"] as! String))?.timeIntervalSince1970  {
+                if let overridetime = formatter.date(from: (lastOverride["timestamp"] as! String))?.timeIntervalSince1970  {
                     self.labelColor(label: self.statusOverride, timeSince: overridetime)
                 } //finish color
-                if lastoverride["active"] as! Bool {
-                    let currentCorrection  = lastoverride["currentCorrectionRange"] as! [String: AnyObject]
+                if lastOverride["active"] as! Bool {
+                    let currentCorrection  = lastOverride["currentCorrectionRange"] as! [String: AnyObject]
                     pstatus3 = "BGTargets("
                     let minValue = currentCorrection["minValue"] as! Double
                     let maxValue = currentCorrection["maxValue"] as! Double
                     
                     pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol) + ":" + self.bgOutput(bg: maxValue, mmol: mmol) + ") M:"
-                    let multiplier = lastoverride["multiplier"] as! Double
+                    let multiplier = lastOverride["multiplier"] as! Double
                     pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
                 }
                 
@@ -297,7 +309,7 @@ class InterfaceController: WKInterfaceController {
     func loadData () {
         print("in load BG")
      
-        let points = String(self.graphlength * 12 + 1)
+        let points = String(self.graphLength * 12 + 1)
     
 
         let urlPath: String = urlUser + "/pebble?count=" + points
@@ -322,9 +334,9 @@ class InterfaceController: WKInterfaceController {
                 return
             }
             let decoder = JSONDecoder()
-            let entries2 = try? decoder.decode(dataPebble.self, from: data)
-            if let entries2 = entries2 {
-            self.updateBG2(entries2: entries2)
+            let pebbleResponse = try? decoder.decode(dataPebble.self, from: data)
+            if let pebbleResponse = pebbleResponse {
+            self.updateBG(pebbleResponse: pebbleResponse)
             }
             else
             {
@@ -363,7 +375,7 @@ class InterfaceController: WKInterfaceController {
             let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
            
             if let json = json {
-                self.updatepumpstats2(json: json)
+                self.updatePumpStatus(json: json)
             }
             
             else
@@ -382,7 +394,7 @@ class InterfaceController: WKInterfaceController {
         
     }
     
-    func updateBG2 (entries2: dataPebble) {
+    func updateBG (pebbleResponse: dataPebble) {
         print("in update BG")
         //set bg color to something old so we know if its not really updating
         let gray=UIColor.gray as UIColor
@@ -400,8 +412,8 @@ class InterfaceController: WKInterfaceController {
             
             //cast string sgvs to int
             //to do there must be a simpler way ......
-            while j < entries2.bgs.count {
-                entries.append(entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction ))
+            while j < pebbleResponse.bgs.count {
+                entries.append(entriesData(sgv: Int(pebbleResponse.bgs[j].sgv) ?? 0, date: pebbleResponse.bgs[j].datetime, direction: pebbleResponse.bgs[j].direction ))
                 j=j+1
             }
             
@@ -409,23 +421,20 @@ class InterfaceController: WKInterfaceController {
             
             if entries.count > 0 {
                 
-                self.bghistread=true
-                let cbg=entries[0].sgv
-                let priorbg = entries[1].sgv
+             
+                let currentBG=entries[0].sgv
+                let priorBG = entries[1].sgv
                 let direction=entries[0].direction
-                let dbg = cbg - priorbg as Int
-                let bgtime=entries[0].date
+                let deltaBG = currentBG - priorBG as Int
+                let lastBGTime=entries[0].date
                 let red=UIColor.red as UIColor
-                //save as global variables
-                self.bghist=entries
-
-                self.labelColor(label: self.minAgo, timeSince: bgtime)
-                let deltat=(TimeInterval(Date().timeIntervalSince1970)-bgtime/1000)/60
-                self.minAgo.setText(String(Int(deltat))+" min ago")
+                self.labelColor(label: self.minAgo, timeSince: lastBGTime)
+                let deltaTime=(TimeInterval(Date().timeIntervalSince1970)-lastBGTime/1000)/60
+                self.minAgo.setText(String(Int(deltaTime))+" min ago")
                 
-                if (cbg<40) {
+                if (currentBG<40) {
                     self.primaryBG.setTextColor(red)
-                    self.primaryBG.setText(errorcode(cbg))
+                    self.primaryBG.setText(errorcode(currentBG))
                     self.bgDirection.setText("")
                     self.deltaBG.setText("")
                 }
@@ -433,19 +442,19 @@ class InterfaceController: WKInterfaceController {
                 else
                     
                 {
-                    self.primaryBG.setTextColor(bgcolor(cbg))
-                    self.primaryBG.setText(self.bgOutput(bg: Double(cbg), mmol: mmol))
+                    self.primaryBG.setTextColor(bgcolor(currentBG))
+                    self.primaryBG.setText(self.bgOutput(bg: Double(currentBG), mmol: mmol))
                     self.bgDirection.setText(dirgraphics(direction))
-                    self.bgDirection.setTextColor(bgcolor(cbg))
+                    self.bgDirection.setTextColor(bgcolor(currentBG))
                     let velocity=velocity_cf(entries) as Double
-                    let prediction=velocity*30.0+Double(cbg)
+                    let prediction=velocity*30.0+Double(currentBG)
                     self.deltaBG.setTextColor(UIColor.white)
-                    if dbg < 0 {
-                        self.deltaBG.setText(self.bgOutput(bg: Double(dbg), mmol: mmol) + " mg/dl")
+                    if deltaBG < 0 {
+                        self.deltaBG.setText(self.bgOutput(bg: Double(deltaBG), mmol: mmol) + " mg/dl")
                     }
                     else
                     {
-                        self.deltaBG.setText("+"+self.bgOutput(bg: Double(dbg), mmol: mmol)+" mg/dl")
+                        self.deltaBG.setText("+"+self.bgOutput(bg: Double(deltaBG), mmol: mmol)+" mg/dl")
                     }
                     
                     self.velocity.setText(self.velocityOutput(v: velocity, mmol: mmol))
@@ -459,12 +468,14 @@ class InterfaceController: WKInterfaceController {
                 //did not get pebble endpoint data
             else
             {
-                self.bghistread=false
+               
                 noconnection()
+                greyLoopStatus()
+                //to do add output to eror window?
                 return
             }
         
-        createGraph(hours: self.graphlength, bghist: entries)
+        createGraph(hours: self.graphLength, bghist: entries)
          
             
  
@@ -495,7 +506,7 @@ class InterfaceController: WKInterfaceController {
         //creatre stand alone scatter plot package that takes generic data of this form
         //3 arrays - xdata, ydata, color, y min and max, x min and max
         //get the scaled data
-        (xdata, ydata, colorData, miny, maxy) = self.bgScaling(hours, bghist: bghist, width: width)
+        (xdata, ydata, colorData, miny, maxy) = self.bgScaling(hours, bgHist: bghist, width: width)
         
         //create data points
         var i: Int = 0
@@ -674,20 +685,20 @@ class InterfaceController: WKInterfaceController {
         let red=UIColor.red as UIColor
         let green=UIColor.green as UIColor
         let yellow=UIColor.yellow as UIColor
-        var sgvcolor=green as UIColor
+        var sgvColor=green as UIColor
         
-        if (value<65) {sgvcolor=red}
+        if (value<65) {sgvColor=red}
         else
-            if(value<80) {sgvcolor=yellow}
+            if(value<80) {sgvColor=yellow}
                 
             else
-                if (value<180) {sgvcolor=green}
+                if (value<180) {sgvColor=green}
                     
                 else
-                    if (value<250) {sgvcolor=yellow}
+                    if (value<250) {sgvColor=yellow}
                     else
-                    {sgvcolor=red}
-        return sgvcolor
+                    {sgvColor=red}
+        return sgvColor
     }
     
     func errorcode(_ value:Int)->String {
@@ -712,7 +723,7 @@ class InterfaceController: WKInterfaceController {
     
 
     
-    func bgScaling(_ hours:Int,bghist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double) {
+    func bgScaling(_ hours:Int,bgHist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double) {
 
 
         let ct2=NSInteger(Date().timeIntervalSince1970)
@@ -721,11 +732,9 @@ class InterfaceController: WKInterfaceController {
         var maxx=0
         var miny=1000
         var minx=1000000
-        let bgth=180
-        let bgtl=80
-
-        var gpoints=0 as Int
-        var bgtimes = [Int]()
+        let bgHighLine=180
+        let bgLowLine=80
+        var bgTimes = [Int]()
         let minutes=hours*60
         var inc:Int=1
         if (hours==3||hours==1) {inc=1} else
@@ -736,22 +745,19 @@ class InterfaceController: WKInterfaceController {
         //find max and min time, min and max bg
         var i=0 as Int;
 
-        while (i<bghist.count) {
-            let curdate: Double = (bghist[i].date)/1000
-            bgtimes.append(Int((Double(minutes)-(Double(ct2)-curdate)/(60.0))))
+        while (i<bgHist.count) {
+            let curDate: Double = (bgHist[i].date)/1000
+            bgTimes.append(Int((Double(minutes)-(Double(ct2)-curDate)/(60.0))))
 
-            if (bgtimes[i]>=0) {
-                gpoints += 1
-                if (bgtimes[i]>maxx) {maxx=bgtimes[i]}
-                if (bgtimes[i]<minx) {minx=bgtimes[i]}
-                let bgi = bghist[i].sgv
-                if (bghist[i].sgv  > maxy) {maxy = bghist[i].sgv }
-                if (bgi < miny) {miny = bgi}
+            if (bgTimes[i]>=0) {
+                if (bgTimes[i]>maxx) {maxx=bgTimes[i]}
+                if (bgTimes[i]<minx) {minx=bgTimes[i]}
+                if (bgHist[i].sgv > maxy) {maxy = bgHist[i].sgv}
+                if (bgHist[i].sgv < miny) {miny = bgHist[i].sgv}
             }
             i=i+1;}
-        //insert prediction points into
-        if maxy<bgth {maxy=bgth}
-        if miny>bgtl {miny=bgtl}
+        if maxy<bgHighLine {maxy=bgHighLine}
+        if miny>bgLowLine {miny=bgLowLine}
         
         //create strings of data points xg (time) and yg (bg) and string of colors pc
         i=0;
@@ -759,14 +765,13 @@ class InterfaceController: WKInterfaceController {
         var xdata = [Double] ()
         var ydata = [Double] ()
         var dataColor = [UIColor] ()
-        var test = [Int] ()
         
-        while i<bghist.count  {
-            if (bgtimes[i]>=0) {
+        while i<bgHist.count  {
+            //only work on values that are not beyond time window
+            if (bgTimes[i]>=0) {
                 //scale time values
-                xdata.append(Double(bgtimes[i])*Double(width)/Double(minutes))
-                let sgv:Int = bghist[i].sgv
-                test.append(sgv)
+                xdata.append(Double(bgTimes[i])*Double(width)/Double(minutes))
+                let sgv:Int = bgHist[i].sgv
                 if sgv<60 {dataColor.append(UIColor.red)} else
                     if sgv<80 {dataColor.append(UIColor.yellow)} else
                         if sgv<180 {dataColor.append(UIColor.green)} else
