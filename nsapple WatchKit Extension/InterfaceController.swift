@@ -12,7 +12,7 @@ import Foundation
 
 
 let defaults = UserDefaults(suiteName:"group.com.nsapple")
-let mmol = defaults?.bool(forKey: "mmol")
+let mmol = defaults?.bool(forKey: "mmol") ?? false
 
 
 public struct watch {
@@ -65,7 +65,7 @@ class InterfaceController: WKInterfaceController {
         let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let slidervalue=Int(round(value*1000)/1000)
         graphlength=slidermap[slidervalue]!
-        willActivate()
+        updatecore()
         
     }
 
@@ -113,7 +113,7 @@ class InterfaceController: WKInterfaceController {
             pumpstatus.setText("")
             pumpstatus.setText("URL NOT SET")
             return}
-        let mmol = defaults?.bool(forKey: "mmol")
+        let mmol = defaults?.bool(forKey: "mmol") ?? false
 
         let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=3"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -238,7 +238,7 @@ class InterfaceController: WKInterfaceController {
                             }
                             if let predictdata = lastloop?["predicted"] as? [String:AnyObject] {
                                 let prediction = predictdata["values"] as! [Double]
-                                pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol ?? false)
+                                pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol)
 
                                 
                             }
@@ -272,7 +272,7 @@ class InterfaceController: WKInterfaceController {
                         let minValue = currentCorrection["minValue"] as! Double
                         let maxValue = currentCorrection["maxValue"] as! Double
                         
-                        pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol ?? false) + ":" + self.bgOutput(bg: maxValue, mmol: mmol ?? false) + ") M:"
+                        pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol) + ":" + self.bgOutput(bg: maxValue, mmol: mmol) + ") M:"
                         let multiplier = lastoverride["multiplier"] as! Double
                         pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
                     }
@@ -352,7 +352,7 @@ class InterfaceController: WKInterfaceController {
             pumpstatus.setText("")
             pumpstatus.setText("URL NOT SET")
             return}
-        let mmol = defaults?.bool(forKey: "mmol")
+        let mmol = defaults?.bool(forKey: "mmol") ?? false
         
         let points = String(self.graphlength * 12 + 1)
        //let urlPath: String = urlUser + "/api/v1/entries/sgv.json?count=" + points
@@ -384,20 +384,20 @@ class InterfaceController: WKInterfaceController {
             DispatchQueue.main.async() {
             
              
-  
+                
                 let decoder = JSONDecoder()
                 let entries2 = try! decoder.decode(dataPebble.self, from: data)
                 
                 
                 var entries = [entriesData]()
                 var j: Int = 0
-             
-               //cast string sgvs to int
+                
+                //cast string sgvs to int
                 //to do there must be a simpler way ......
                 while j < entries2.bgs.count {
-  
+                    
                     entries.append(entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction ))
-
+                    
                     j=j+1
                 }
                 
@@ -577,10 +577,10 @@ class InterfaceController: WKInterfaceController {
         let xbuffer : CGFloat = 9
         //round to 5's or mgdl, 0.2 for mmol/L
         var rounder : Double = 5
-        if mmol ?? false {rounder = 0.2}
-        self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
-        self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
-        self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height/2)
+        if mmol {rounder = 0.2}
+        self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
+        self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
+        self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height/2)
         
         
         
@@ -687,7 +687,7 @@ class InterfaceController: WKInterfaceController {
     func bgcolor(_ value:Int)->UIColor
     {
         
-       let red=UIColor.red as UIColor
+        let red=UIColor.red as UIColor
         let green=UIColor.green as UIColor
         let yellow=UIColor.yellow as UIColor
         var sgvcolor=green as UIColor
