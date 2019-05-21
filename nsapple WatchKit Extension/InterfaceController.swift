@@ -38,34 +38,27 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var primarybg: WKInterfaceLabel!
     @IBOutlet weak var bgdirection: WKInterfaceLabel!
     @IBOutlet weak var deltabg: WKInterfaceLabel!
-  //  @IBOutlet weak var battery: WKInterfaceLabel!
     @IBOutlet weak var minago: WKInterfaceLabel!
-   // @IBOutlet weak var secondarybg: WKInterfaceLabel!
     @IBOutlet weak var graphhours: WKInterfaceLabel!
     @IBOutlet weak var hourslider: WKInterfaceSlider!
-  
-  //  @IBOutlet var loadingicon: WKInterfaceImage!
     @IBOutlet var pumpstatus3: WKInterfaceLabel!
     @IBOutlet var pumpstatus2: WKInterfaceLabel!
     @IBOutlet var pumpstatus: WKInterfaceLabel!
     @IBOutlet weak var plabel: WKInterfaceLabel!
     @IBOutlet weak var vlabel: WKInterfaceLabel!
-   // @IBOutlet weak var secondarybgname: WKInterfaceLabel!
-    
     @IBOutlet var errorDisplay: WKInterfaceLabel!
     var graphlength:Int=3
     var bghistread=true as Bool
     var bghist = [entriesData]()
     var responseDict=[:] as [String:AnyObject]
-    var cals=[] as? [[String:AnyObject]]
-    var craw=true as Bool
+
     //
     
     @IBAction func hourslidervalue(_ value: Float) {
         let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let slidervalue=Int(round(value*1000)/1000)
         graphlength=slidermap[slidervalue]!
-        updatecore()
+        updateBG()
         
     }
 
@@ -80,7 +73,7 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
    
         super.willActivate()
-        updatecore()
+        updateBG()
         updatepumpstats()
         
         
@@ -105,7 +98,7 @@ class InterfaceController: WKInterfaceController {
     
     func updatepumpstats() {
         
-       
+       print("in updatePump")
         
         
         guard let urlUser = defaults?.string(forKey: "name_preference") else {
@@ -287,6 +280,8 @@ class InterfaceController: WKInterfaceController {
                 } //task3
         
         task3.resume()
+        
+        print("end updatePump")
     }
     
     func bgOutput(bg: Double, mmol: Bool) -> String {
@@ -331,11 +326,11 @@ class InterfaceController: WKInterfaceController {
     }
     
     
-    func updatecore() {
+    func updateBG() {
  
 
       
-      print("in update core")
+      print("in update BG")
         //set bg color to something old so we know if its not really updating
         let gray=UIColor.gray as UIColor
       
@@ -482,7 +477,7 @@ class InterfaceController: WKInterfaceController {
         }//end dispatch
         } //end urlsession
         task.resume()
-        
+        print("end update bg")
    
     }
     
@@ -787,7 +782,6 @@ class InterfaceController: WKInterfaceController {
         while i<bghist.count  {
             if (bgtimes[i]>=0) {
                 //scale time values
-                //xg=xg+String(bgtimes[i]*100/minutes)+","
                 xdata.append(Double(bgtimes[i])*Double(width)/Double(minutes))
                 let sgv:Int = bghist[i].sgv
                 test.append(sgv)
