@@ -10,28 +10,6 @@
     </dependencies>
     <scenes>
         <!--Interface Controller-->
-        <scene sceneID="XOP-Lt-He7">
-            <objects>
-                <controller id="nYH-eb-Cjn">
-                    <items>
-                        <table alignment="left" id="tkc-Z1-uRt">
-                            <items>
-                                <tableRow identifier="Pump Data" id="3yE-iN-AqU">
-                                    <group key="rootItem" width="1" alignment="left" id="azh-Gj-KL5"/>
-                                </tableRow>
-                                <tableRow id="t8a-OE-Blk">
-                                    <group key="rootItem" width="1" alignment="left" id="mkq-vg-1ZM"/>
-                                </tableRow>
-                                <tableRow id="tbx-Ec-zpd">
-                                    <group key="rootItem" width="1" alignment="left" id="vVK-61-TsW"/>
-                                </tableRow>
-                            </items>
-                        </table>
-                    </items>
-                </controller>
-            </objects>
-        </scene>
-        <!--Interface Controller-->
         <scene sceneID="aou-V4-d1y">
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="nsapple_WatchKit_App" customModuleProvider="target">
@@ -145,21 +123,6 @@
                 </controller>
             </objects>
             <point key="canvasLocation" x="412.35897435897436" y="212.2820512820513"/>
-        </scene>
-        <!--Static Notification Interface Controller-->
-        <scene sceneID="1Px-nn-dlv">
-            <objects>
-                <notificationController id="8WY-QB-WNU">
-                    <items>
-                        <label alignment="left" text="Alert Label" id="cdq-IX-JgV"/>
-                    </items>
-                    <notificationCategory key="notificationCategory" id="34I-Y4-Zns"/>
-                    <connections>
-                        <outlet property="notificationAlertLabel" destination="cdq-IX-JgV" id="YN2-7e-NpL"/>
-                    </connections>
-                </notificationController>
-            </objects>
-            <point key="canvasLocation" x="712.5" y="267"/>
         </scene>
     </scenes>
 </document>
