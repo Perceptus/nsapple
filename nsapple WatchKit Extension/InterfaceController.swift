@@ -106,6 +106,8 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var plabel: WKInterfaceLabel!
     @IBOutlet weak var vlabel: WKInterfaceLabel!
     @IBOutlet weak var secondarybgname: WKInterfaceLabel!
+    
+    @IBOutlet var errorDisplay: WKInterfaceLabel!
     var graphlength:Int=3
     var bghistread=true as Bool
     var bghist = [entriesData]()
@@ -262,7 +264,7 @@ class InterfaceController: WKInterfaceController {
                     pstatus = "Pump Record Error"
                 }
 
-                self.pumpstatus.setText(pstatus)
+               //
 
 //loop
                 let lastloop = lastdata?["loop"] as! [String : AnyObject]?
@@ -271,23 +273,28 @@ class InterfaceController: WKInterfaceController {
                     if let looptime = formatter.date(from: (lastloop?["timestamp"] as! String))?.timeIntervalSince1970  {
                          self.labelColor(label: self.pumpstatus2, timeSince: looptime)
                         if let failure = lastloop?["failureReason"] {
-                            pstatus2 = "Loop Failure " + (failure as! String)
+                            self.pumpstatus.setText(pstatus)
+                            //pstatus2 = "Loop Failure " + (failure as! String)
+                            self.pumpstatus2.setTextColor(UIColor.red)
+                            pstatus2 = "Loop Failure"
+                            self.errorDisplay.setTextColor(UIColor.red)
+                            self.errorDisplay.setText(failure as? String)
                         }
                         else
                         {
+                            self.errorDisplay.setText("")
+                            self.pumpstatus2.setTextColor(UIColor.green)
                             if let enacted = lastloop?["enacted"] as? [String:AnyObject] {
                                 if let tempbasal = enacted["rate"] as? Double {
                                     pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
-                                    //need to restrcture code so we dont set this twice
                                     self.pumpstatus.setText(pstatus)
                                 }
                             }
-                            let iobdata = lastloop?["iob"] as? [String:AnyObject]
-                            let iob = iobdata!["iob"] as! Double
-                            pstatus2 = pstatus2 + String(format:"%.1f", iob)
+                            if let iobdata = lastloop?["iob"] as? [String:AnyObject] {
+                                pstatus2 = pstatus2 + String(format:"%.1f", iobdata["iob"] as! Double)
+                            }
                             if let cobdata = lastloop?["cob"] as? [String:AnyObject] {
-                                let cob = cobdata["cob"] as! Double
-                                pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cob) + " EBG "
+                                pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cobdata["cob"] as! Double) + " EBG "
                             }
                             if let predictdata = lastloop?["predicted"] as? [String:AnyObject] {
                                 let prediction = predictdata["values"] as! [Double]
@@ -439,48 +446,18 @@ class InterfaceController: WKInterfaceController {
             DispatchQueue.main.async() {
             
              
-               // let test = try! JSONSerialization.jsonObject(with: data, options: []) as! Dictionary <String, AnyObject>
-
-                
-              //  let sgv = Int(bgs!["sgv"] as! String)
-                
-                //let bgInt : [Int] = Int(bgString["sgv"] as? String ?? "") ?? 0
-                //    bgString["sgv"].map { Int($0)!} // [11, 43, 26, 11, 45, 40]
-                
+  
                 let decoder = JSONDecoder()
                 let entries2 = try! decoder.decode(dataPebble.self, from: data)
-               // print(entries2.bgs[0].)
                 
-//                let entries = try! JSONSerialization.jsonObject(with: data, options: []) as! [[String:AnyObject]]
-            //    let entries = try! JSONSerialization.jsonObject(with: data, options: []) as! Dictionary<String, AnyObject>
-                
-  
-//
-//                do {
-//                    let decoder = JSONDecoder()
-//                    let entries2 = try decoder.decode(bgPebble.self, from: data)
-//                    print(bgPebble.sgv)
-//
-//                } catch let err {
-//                    print("Err", err)
-//                }
-//                }.resume()
-                
-                
-                
-              //  let entries = try decoder.decode(bgPebble.self, from: data)
-               // print(entries)
                 
                 var entries = [entriesData]()
                 var j: Int = 0
              
-               
+               //cast string sgvs to int
+                //to do there must be a simpler way ......
                 while j < entries2.bgs.count {
-                    
-     //               let test = entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction )
-//                    test.sgv = Int(entries2.bgs[j].sgv) ?? 0
-//                    test.date = entries2.bgs[j].datetime
-//                    test.direction = entries2.bgs[j].direction
+  
                     entries.append(entriesData(sgv: Int(entries2.bgs[j].sgv) ?? 0, date: entries2.bgs[j].datetime, direction: entries2.bgs[j].direction ))
 
                     j=j+1
@@ -503,7 +480,7 @@ class InterfaceController: WKInterfaceController {
                 let red=UIColor.red as UIColor
                 //save as global variables
                 self.bghist=entries
-                   let bgs = entries
+               //    let bgs = entries
 
                 let ct=TimeInterval(Date().timeIntervalSince1970)
                 let deltat=(ct-bgtime/1000)/60
@@ -525,7 +502,7 @@ class InterfaceController: WKInterfaceController {
                         self.primarybg.setTextColor(self.bgcolor(cbg))
                         self.bgdirection.setText(self.dirgraphics(direction))
                         self.bgdirection.setTextColor(self.bgcolor(cbg))
-                        let velocity=self.velocity_cf(bgs, slope: slope,intercept: intercept,scale: scale) as Double
+                        let velocity=self.velocity_cf(entries, slope: slope,intercept: intercept,scale: scale) as Double
                         let prediction=velocity*30.0+Double(cbg)
 
                         self.deltabg.setTextColor(UIColor.white)
@@ -833,12 +810,12 @@ class InterfaceController: WKInterfaceController {
         
         //find max and min time, min and max bg
         var i=0 as Int;
-        var test2 = [Double] ()
+      //  var test2 = [Double] ()
         //  for var i=0; i<bghist.count; i=i+1 {
         while (i<bghist.count) {
             let curdate: Double = (bghist[i].date)/1000
             bgtimes.append(Int((Double(minutes)-(Double(ct2)-curdate)/(60.0))))
-            test2.append(curdate)
+          //  test2.append(curdate)
             if (bgtimes[i]>=0) {
                 gpoints += 1
                 if (bgtimes[i]>maxx) {maxx=bgtimes[i]}

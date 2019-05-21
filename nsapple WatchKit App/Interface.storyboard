@@ -123,11 +123,15 @@
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
                         </slider>
+                        <label alignment="center" text="Error Messages" textAlignment="left" numberOfLines="0" id="o6T-Uw-G7S">
+                            <fontDescription key="font" type="system" pointSize="11"/>
+                        </label>
                     </items>
                     <connections>
                         <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
                         <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
+                        <outlet property="errorDisplay" destination="o6T-Uw-G7S" id="IdW-IR-f7Z"/>
                         <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
                         <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
@@ -140,7 +144,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="412.35897435897436" y="205.74358974358975"/>
+            <point key="canvasLocation" x="412.35897435897436" y="212.2820512820513"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="1Px-nn-dlv">
