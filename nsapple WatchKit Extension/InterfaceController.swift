@@ -15,61 +15,6 @@ let defaults = UserDefaults(suiteName:"group.com.nsapple")
 let mmol = defaults?.bool(forKey: "mmol")
 
 
-
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
-
-//
-
-
-
-public extension WKInterfaceImage {
-    
-    public func setImageWithUrl(_ url:String) -> WKInterfaceImage? {
-        
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
-            if let url = URL(string: url) {
-                if let data = try? Data(contentsOf: url) { // may return nil, too
-                    // do something with data
-                    let placeholder = UIImage(data: data)!
-                    DispatchQueue.main.async {
-                                        self.setImage(placeholder)
-                                    }
-                    
-                }
-            }
-            
-        }
-        
-        return self
-    }
-    
-}
-
-
 public struct watch {
     
     public static var screenWidth: CGFloat {
@@ -93,19 +38,19 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var primarybg: WKInterfaceLabel!
     @IBOutlet weak var bgdirection: WKInterfaceLabel!
     @IBOutlet weak var deltabg: WKInterfaceLabel!
-    @IBOutlet weak var battery: WKInterfaceLabel!
+  //  @IBOutlet weak var battery: WKInterfaceLabel!
     @IBOutlet weak var minago: WKInterfaceLabel!
    // @IBOutlet weak var secondarybg: WKInterfaceLabel!
     @IBOutlet weak var graphhours: WKInterfaceLabel!
     @IBOutlet weak var hourslider: WKInterfaceSlider!
   
-    @IBOutlet var loadingicon: WKInterfaceImage!
+  //  @IBOutlet var loadingicon: WKInterfaceImage!
     @IBOutlet var pumpstatus3: WKInterfaceLabel!
     @IBOutlet var pumpstatus2: WKInterfaceLabel!
     @IBOutlet var pumpstatus: WKInterfaceLabel!
     @IBOutlet weak var plabel: WKInterfaceLabel!
     @IBOutlet weak var vlabel: WKInterfaceLabel!
-    @IBOutlet weak var secondarybgname: WKInterfaceLabel!
+   // @IBOutlet weak var secondarybgname: WKInterfaceLabel!
     
     @IBOutlet var errorDisplay: WKInterfaceLabel!
     var graphlength:Int=3
@@ -124,11 +69,6 @@ class InterfaceController: WKInterfaceController {
         
     }
 
-    
-    @IBAction func chartraw(_ value: Bool) {
-        craw=value
-        willActivate()
-    }
         
    
     override func awake(withContext context: Any?) {
@@ -198,7 +138,7 @@ class InterfaceController: WKInterfaceController {
             }
          
             let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
-            if #available(watchOSApplicationExtension 3.0, *) {
+     
                 let formatter = ISO8601DateFormatter()
                 formatter.formatOptions = [.withFullDate,
                                            .withTime,
@@ -321,7 +261,7 @@ class InterfaceController: WKInterfaceController {
                 var pstatus3 = "" as String
                 if let lastoverride = lastdata?["override"] as! [String : AnyObject]? {
  
-              //  let lastloop = lastdata?["loop"] as! [String : AnyObject]?
+           
            
                     if let overridetime = formatter.date(from: (lastoverride["timestamp"] as! String))?.timeIntervalSince1970  {
                           self.labelColor(label: self.pumpstatus3, timeSince: overridetime)
@@ -343,7 +283,7 @@ class InterfaceController: WKInterfaceController {
                 self.pumpstatus3.setText(pstatus3)
                 
         
-            } //watch extention
+       
                 } //task3
         
         task3.resume()
@@ -353,9 +293,7 @@ class InterfaceController: WKInterfaceController {
         if !mmol {
             return String(format:"%.0f", bg)
         }
-        
         else
-        
         {
             return String(format:"%.1f", bg / 18.6)
         }
@@ -539,116 +477,122 @@ class InterfaceController: WKInterfaceController {
                 self.noconnection()
                 return
             }
-                
-                // create graph
-                
-                // Create a graphics context
-                let height : CGFloat = 101
-                let size = CGSize(width:self.contentFrame.size.width, height:height)
-                let width = self.contentFrame.size.width
-                UIGraphicsBeginImageContext(size)
-                let context = UIGraphicsGetCurrentContext()
-                context!.setLineWidth(1.0)
 
-                var xdata = [Double]()
-                var ydata = [Double]()
-                var colorData = [UIColor]()
-                var miny : Double
-                var maxy: Double
-                var hours : Int
-                
-                //ydata is scaled to 100
-                //xdata is scaled to width
-                (xdata, ydata, colorData, miny, maxy, hours) = self.bgextract(self.graphlength,bghist: self.bghist, width: width)
-                
-                //draw data points
-                var i: Int = 0
-                let leftbuffer : Double = 20
-                let widthD : Double = Double(width)
-                while i < xdata.count {
-                    //reverse y data, rescale x for leftbuffer
-                    ydata[i] = 100.0 - ydata[i]
-                    xdata[i] = (widthD - leftbuffer) / widthD * xdata[i] + leftbuffer
-                    context!.setStrokeColor(colorData[i].cgColor)
-                    let rect = CGRect(x: CGFloat(xdata[i]), y: CGFloat(ydata[i]), width: width/2/100, height: 50/100)
-                    context?.addEllipse(in: rect)
-                    context?.drawPath(using: .fillStroke)
-                    i=i+1
-                }
-                
-                //draw horizontal lines at 80 and 180 for xcontext
-                //to do make user configurable
-                
-                //draw high and low bound bars
-                let lowLimit : CGFloat = 80
-                let highLimit : CGFloat = 180
-                let topBound : CGFloat = 100 - (highLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
-                let bottomBound : CGFloat = 100 - (lowLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
-                context?.setStrokeColor(UIColor.white.cgColor)
-                context?.setLineWidth(2)
-                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: topBound+1))
-                context?.addLine(to: CGPoint(x: width, y: topBound+1))
-                context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: bottomBound-1))
-                context?.addLine(to: CGPoint(x: width, y: bottomBound-1))
-                //draw outline if outline isnt set by low or high limit bars
-                context?.setLineWidth(1)
-                if (abs(miny - Double(lowLimit)) > 5 ) {
-                    context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: height))
-                    context?.addLine(to: CGPoint(x: width, y: height))
-                }
-                
-                if (abs(maxy - Double(highLimit)) > 5 ) {
-                    context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: 0))
-                    context?.addLine(to: CGPoint(x: width, y: 0))
-                }
-                context!.strokePath();
-                //draw vertical dashedlines on hour marks
-                context?.setStrokeColor(UIColor.gray.cgColor)
-                context?.setLineDash(phase: 4, lengths: [4])
-                context?.move(to:CGPoint(x: CGFloat(leftbuffer), y: 0))
-                context?.addLine(to: CGPoint(x: CGFloat(leftbuffer), y: height))
-                context?.move(to:CGPoint(x: width-1, y: 0))
-                context?.addLine(to: CGPoint(x: width-1, y: height))
-                
-                i=1
-                while i < hours {
-                    let ratio : CGFloat = CGFloat(Double(i)/Double(hours))
-                    let xvert : CGFloat = width*ratio
-                    context?.move(to:CGPoint(x: (width - CGFloat(leftbuffer))*xvert/width + CGFloat(leftbuffer), y: 0))
-                    context?.addLine(to: CGPoint(x: (width - CGFloat(leftbuffer))*xvert/width + CGFloat(leftbuffer), y: height))
-                    i=i+1
-                }
-                 context!.strokePath();
-                
-                
-                //labels
-                let ybuffer : CGFloat = 5
-                let xbuffer : CGFloat = 9
-                //round to 5's or mgdl, 0.2 for mmol/L
-                var rounder : Double = 5
-                if mmol ?? false {rounder = 0.2}
-                self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
-                self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
-                self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height/2)
-                
-
-                
-                // Draw and Convert to UIImage
-               
-                let cgimage = context!.makeImage();
-                let uiimage = UIImage(cgImage: cgimage!)
-                
-                // End the graphics context
-                UIGraphicsEndImageContext()
-                
-                self.bgimage.setImage(uiimage)
-                
-
+            self.createGraph(hours: self.graphlength, bghist: entries)
         }//end dispatch
         } //end urlsession
         task.resume()
         
    
+    }
+    
+    
+    func createGraph(hours:Int, bghist:[entriesData]) {
+        // create graph
+        
+        // Create a graphics context
+        let height : CGFloat = 101
+        let width = self.contentFrame.size.width
+        let size = CGSize(width:width, height:height)
+
+        UIGraphicsBeginImageContext(size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setLineWidth(1.0)
+        
+        var xdata = [Double]()
+        var ydata = [Double]()
+        var colorData = [UIColor]()
+        var miny : Double
+        var maxy: Double
+        
+        //ydata is scaled to 100
+        //xdata is scaled to width
+        //creatre stand alone scatter plot package that takes generic data of this form
+        //3 arrays - xdata, ydata, color, y min and max, x min and max
+        //get the scaled data
+        (xdata, ydata, colorData, miny, maxy) = self.bgScaling(hours, bghist: bghist, width: width)
+        
+        //create data points
+        var i: Int = 0
+        let leftbuffer : Double = 20
+        let widthD : Double = Double(width)
+        while i < xdata.count {
+            //reverse y data, rescale x for leftbuffer
+            ydata[i] = 100.0 - ydata[i]
+            xdata[i] = (widthD - leftbuffer) / widthD * xdata[i] + leftbuffer
+            context!.setStrokeColor(colorData[i].cgColor)
+            let rect = CGRect(x: CGFloat(xdata[i]), y: CGFloat(ydata[i]), width: width/2/100, height: 50/100)
+            context?.addEllipse(in: rect)
+            context?.drawPath(using: .fillStroke)
+            i=i+1
+        }
+        
+        //draw horizontal lines at 80 and 180 for xcontext
+        //to do make user configurable
+        
+        //draw high and low bound bars
+        let lowLimit : CGFloat = 80
+        let highLimit : CGFloat = 180
+        let topBound : CGFloat = 100 - (highLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
+        let bottomBound : CGFloat = 100 - (lowLimit - CGFloat(miny))/(CGFloat(maxy) - CGFloat(miny)) * 100
+        context?.setStrokeColor(UIColor.white.cgColor)
+        context?.setLineWidth(2)
+        context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: topBound+1))
+        context?.addLine(to: CGPoint(x: width, y: topBound+1))
+        context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: bottomBound-1))
+        context?.addLine(to: CGPoint(x: width, y: bottomBound-1))
+        //draw outline if outline isnt set by low or high limit bars
+        context?.setLineWidth(1)
+        if (abs(miny - Double(lowLimit)) > 5 ) {
+            context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: height))
+            context?.addLine(to: CGPoint(x: width, y: height))
+        }
+        
+        if (abs(maxy - Double(highLimit)) > 5 ) {
+            context?.move(to: CGPoint(x: CGFloat(leftbuffer),y: 0))
+            context?.addLine(to: CGPoint(x: width, y: 0))
+        }
+        context!.strokePath();
+        //draw vertical dashedlines on hour marks
+        context?.setStrokeColor(UIColor.gray.cgColor)
+        context?.setLineDash(phase: 4, lengths: [4])
+        context?.move(to:CGPoint(x: CGFloat(leftbuffer), y: 0))
+        context?.addLine(to: CGPoint(x: CGFloat(leftbuffer), y: height))
+        context?.move(to:CGPoint(x: width-1, y: 0))
+        context?.addLine(to: CGPoint(x: width-1, y: height))
+        
+        i=1
+        while i < hours {
+            let ratio : CGFloat = CGFloat(Double(i)/Double(hours))
+            let xvert : CGFloat = width*ratio
+            context?.move(to:CGPoint(x: (width - CGFloat(leftbuffer))*xvert/width + CGFloat(leftbuffer), y: 0))
+            context?.addLine(to: CGPoint(x: (width - CGFloat(leftbuffer))*xvert/width + CGFloat(leftbuffer), y: height))
+            i=i+1
+        }
+        context!.strokePath();
+        
+        
+        //labels
+        let ybuffer : CGFloat = 5
+        let xbuffer : CGFloat = 9
+        //round to 5's or mgdl, 0.2 for mmol/L
+        var rounder : Double = 5
+        if mmol ?? false {rounder = 0.2}
+        self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
+        self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
+        self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ?? false) as NSString, centreX: 0 + xbuffer, centreY: height/2)
+        
+        
+        
+        // Draw and Convert to UIImage
+        
+        let cgimage = context!.makeImage();
+        let uiimage = UIImage(cgImage: cgimage!)
+        
+        // End the graphics context
+        UIGraphicsEndImageContext()
+        
+        self.bgimage.setImage(uiimage)
     }
     
     
@@ -784,7 +728,7 @@ class InterfaceController: WKInterfaceController {
     
 
     
-    func bgextract(_ hours:Int,bghist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double, Int) {
+    func bgScaling(_ hours:Int,bghist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double) {
 
 
         let ct2=NSInteger(Date().timeIntervalSince1970)
@@ -810,12 +754,11 @@ class InterfaceController: WKInterfaceController {
         
         //find max and min time, min and max bg
         var i=0 as Int;
-      //  var test2 = [Double] ()
-        //  for var i=0; i<bghist.count; i=i+1 {
+
         while (i<bghist.count) {
             let curdate: Double = (bghist[i].date)/1000
             bgtimes.append(Int((Double(minutes)-(Double(ct2)-curdate)/(60.0))))
-          //  test2.append(curdate)
+
             if (bgtimes[i]>=0) {
                 gpoints += 1
                 if (bgtimes[i]>maxx) {maxx=bgtimes[i]}
@@ -860,7 +803,7 @@ class InterfaceController: WKInterfaceController {
             }
             i=i+inc}
         
-        return (xdata, ydata, dataColor, Double(miny), Double(maxy), hours)
+        return (xdata, ydata, dataColor, Double(miny), Double(maxy))
         
         
     }
