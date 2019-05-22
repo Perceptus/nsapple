@@ -60,14 +60,15 @@ class InterfaceController: WKInterfaceController {
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
+        
   
     }
     
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
-   
-        super.willActivate()
         loadData()
+        super.willActivate()
+        
         
         
     }
@@ -179,14 +180,14 @@ class InterfaceController: WKInterfaceController {
                             }
                         }
                         if let iobdata = lastLoop?["iob"] as? [String:AnyObject] {
-                            pstatus2 = pstatus2 + String(format:"%.1f", iobdata["iob"] as! Double)
+                            pstatus2 = pstatus2 + String(format:"%.1f", (iobdata["iob"] as! Double))
                         }
                         if let cobdata = lastLoop?["cob"] as? [String:AnyObject] {
-                            pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cobdata["cob"] as! Double) + " EBG "
+                            pstatus2 = pstatus2 + "  COB " + String(format:"%.0f", cobdata["cob"] as! Double)
                         }
                         if let predictdata = lastLoop?["predicted"] as? [String:AnyObject] {
                             let prediction = predictdata["values"] as! [Double]
-                            pstatus2 = pstatus2 + self.bgOutput(bg: prediction.last!, mmol: mmol)
+                            pstatus2 = pstatus2 +  " EBG " + self.bgOutput(bg: prediction.last!, mmol: mmol)
                         }
                         
                     }
@@ -436,9 +437,7 @@ class InterfaceController: WKInterfaceController {
             }
         
         createGraph(hours: self.graphLength, bghist: entries)
-         
-            
- 
+   
         // print("end update bg")
     }
 
