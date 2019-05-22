@@ -27,10 +27,6 @@
 		11832FFE1B5F4794005E3536 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11832FFD1B5F4794005E3536 /* ViewController2.swift */; };
 		1189EA9A1E7987C400B11975 /* nsapple WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1189EA9D1E7987C400B11975 /* nsapple WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */; };
-		118FA3EA20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
-		118FA3EB20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
-		118FA3EC20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
-		118FA3ED20805EB000757121 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 118FA3E920805EB000757121 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -334,7 +330,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Perceptus.org;
 				TargetAttributes = {
 					1119B9ED1B4F046E00046ABF = {
@@ -403,7 +399,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1119B9FB1B4F046E00046ABF /* Main.storyboard in Resources */,
-				118FA3EA20805EB000757121 /* Config.xcconfig in Resources */,
 				1119BA001B4F046E00046ABF /* LaunchScreen.xib in Resources */,
 				114199AE200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
 				1119B9FD1B4F046E00046ABF /* Images.xcassets in Resources */,
@@ -414,7 +409,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				118FA3EB20805EB000757121 /* Config.xcconfig in Resources */,
 				114199AF200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,7 +418,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				114199B0200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
-				118FA3EC20805EB000757121 /* Config.xcconfig in Resources */,
 				1119BA251B4F04FC00046ABF /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,7 +426,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				118FA3ED20805EB000757121 /* Config.xcconfig in Resources */,
 				1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */,
 				1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */,
 				114199B1200ADAB1007AD506 /* Settings-Watch.bundle in Resources */,
@@ -536,18 +528,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -586,18 +587,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -631,7 +641,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nsapple/nsapple.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Installer: Kenneth Stack (6Q7ZC8Q56M)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 6Q7ZC8Q56M;
 				INFOPLIST_FILE = nsapple/Info.plist;
@@ -654,7 +664,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = nsapple/nsapple.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Installer: Kenneth Stack (6Q7ZC8Q56M)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 6Q7ZC8Q56M;
 				INFOPLIST_FILE = nsapple/Info.plist;
