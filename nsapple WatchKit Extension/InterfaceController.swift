@@ -162,7 +162,6 @@ class InterfaceController: WKInterfaceController {
                     self.labelColor(label: self.loopStatus2, timeSince: looptime)
                     if let failure = lastLoop?["failureReason"] {
                         self.loopStatus1.setText(pstatus)
-                        //pstatus2 = "Loop Failure " + (failure as! String)
                         self.loopStatus2.setTextColor(UIColor.red)
                         pstatus2 = "Loop Failure"
                         self.errorDisplay.setTextColor(UIColor.red)
