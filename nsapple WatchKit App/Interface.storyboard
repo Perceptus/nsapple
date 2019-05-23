@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
+        <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
     </dependencies>
@@ -12,42 +16,42 @@
                     <items>
                         <group width="1" alignment="center" id="0XS-Xb-x7m">
                             <items>
-                                <label alignment="left" text=" V per min" id="1qW-8W-XE3">
+                                <label alignment="left" id="1qW-8W-XE3">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
-                                <label alignment="right" text="30m Min Pred" id="wWp-A4-E1K">
+                                <label alignment="right" id="wWp-A4-E1K">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
                             </items>
                         </group>
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
-                                <label alignment="left" text="Label" id="1cw-2v-v8O"/>
-                                <label alignment="center" text="N/A" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
+                                <label alignment="left" id="1cw-2v-v8O"/>
+                                <label alignment="center" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" weight="thin" pointSize="28"/>
                                     </variation>
                                 </label>
-                                <label alignment="center" text="-" id="YV0-Ga-4dz">
+                                <label alignment="center" id="YV0-Ga-4dz">
                                     <fontDescription key="font" type="system" pointSize="30"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="26"/>
                                     </variation>
                                 </label>
-                                <label alignment="right" text="Label" id="oEG-1v-IuD"/>
+                                <label alignment="right" id="oEG-1v-IuD"/>
                             </items>
                         </group>
                         <group width="1" alignment="left" id="nJH-yY-zdH">
                             <items>
-                                <label alignment="left" text="0 min ago" textAlignment="center" id="IwJ-4k-L7w">
+                                <label alignment="left" text="Perceptus.org" textAlignment="center" id="IwJ-4k-L7w">
                                     <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="9"/>
                                     </variation>
                                 </label>
-                                <label alignment="right" text="- 5.0 mg/dl" id="drV-DZ-SeX">
+                                <label alignment="right" text="   NightScout.org" id="drV-DZ-SeX">
                                     <fontDescription key="font" type="system" pointSize="10"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
@@ -60,7 +64,7 @@
                         </imageView>
                         <group width="1" alignment="left" id="LxB-Yd-NVT">
                             <items>
-                                <label alignment="center" text="IOB 16.2 10 min ago Res 300" id="Vcl-QY-KNQ">
+                                <label alignment="center" id="Vcl-QY-KNQ">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
@@ -70,7 +74,7 @@
                         </group>
                         <group width="1" alignment="center" id="kTC-wL-SQ9">
                             <items>
-                                <label alignment="center" text="BGI 100 : 1.25 U/hr : EBat99%" id="8Qo-he-BQ1">
+                                <label alignment="center" id="8Qo-he-BQ1">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
