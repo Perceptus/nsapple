@@ -45,10 +45,11 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var hourSlider: WKInterfaceSlider!
     @IBOutlet var statusOverride: WKInterfaceLabel!
     @IBOutlet var loopStatus2: WKInterfaceLabel!
-    @IBOutlet var loopStatus1: WKInterfaceLabel!
+    @IBOutlet var pumpStatus: WKInterfaceLabel!
     @IBOutlet weak var prediction: WKInterfaceLabel!
     @IBOutlet weak var velocity: WKInterfaceLabel!
     @IBOutlet var errorDisplay: WKInterfaceLabel!
+    @IBOutlet var basalDisplay: WKInterfaceLabel!
     var graphLength:Int=3
 
 
@@ -82,12 +83,14 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is no longer visible
         colorBGStatus(color: UIColor.gray)
         colorLoopStatus(color: UIColor.gray)
+        minAgo.setTextColor(UIColor.gray)
         if consoleLogging == true {print("in deactivate")}
         //to do add blank image and set on sleep
         super.didDeactivate()
     }
     
-////////////////////////////////////////
+///////////////////////////////////////
+// - Mark
     
     func loadData (urlUser: String, mmol:Bool) {
         if consoleLogging == true {print("in load BG")}
@@ -95,6 +98,7 @@ class InterfaceController: WKInterfaceController {
         if urlUser == "No User URL" {
             colorLoopStatus(color: UIColor.red)
             colorBGStatus(color: UIColor.red)
+            self.pumpStatus.setText("Scroll Down for Error Info")
             self.errorDisplay.setText("Cannot Read User NS URL.  Check Setup Of Defaults in iOS Watch App")
             return
         }
@@ -149,8 +153,8 @@ class InterfaceController: WKInterfaceController {
         
         guard let urlLoop = URL(string: escapedAddress!) else {
             self.colorLoopStatus(color: UIColor.red)
-            loopStatus1.setText("")
-            loopStatus1.setText("Loop URL ERROR")
+            pumpStatus.setText("")
+            pumpStatus.setText("Loop URL ERROR")
             return
         }
         
@@ -159,13 +163,13 @@ class InterfaceController: WKInterfaceController {
             if consoleLogging == true {print("in update loop")}
             guard error == nil else {
                 self.colorLoopStatus(color: UIColor.red)
-                self.loopStatus1.setText("NS Error See Error Display")
+                self.pumpStatus.setText("NS Error See Error Display")
                 self.errorDisplay.setText(error?.localizedDescription)
                 return
             }
             guard let data = data else {
                 self.colorLoopStatus(color: UIColor.red)
-                self.loopStatus1.setText("Loop Data is Empty")
+                self.pumpStatus.setText("Loop Data is Empty")
                 return
             }
             
@@ -183,8 +187,8 @@ class InterfaceController: WKInterfaceController {
                 
             {
                 self.colorLoopStatus(color: UIColor.red)
-                self.loopStatus1.setText("")
-                self.loopStatus1.setText("Pump Stat Decoding Error")
+                self.pumpStatus.setText("")
+                self.pumpStatus.setText("Pump Stat Decoding Error")
                 return
             }
             if consoleLogging == true {print("finish pump update")}
@@ -201,7 +205,7 @@ class InterfaceController: WKInterfaceController {
         if consoleLogging == true {print("in updatePump")}
        
         if json.count == 0 {
-                self.loopStatus1.setText("No Records")
+                self.pumpStatus.setText("No Records")
             colorLoopStatus(color: UIColor.red)
                 return}
         //only grabbing one record since ns sorts by {created_at : -1}
@@ -217,7 +221,7 @@ class InterfaceController: WKInterfaceController {
             let lastPump = lastData?["pump"] as! [String : AnyObject]?
             if lastPump != nil {
                 if let pumpTime = formatter.date(from: (lastPump?["clock"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.loopStatus1, timeSince: pumpTime)
+                    labelColor(label: self.pumpStatus, timeSince: pumpTime)
                     if let res = lastPump?["reservoir"] as? Double
                     {
                         pstatus = pstatus + String(format:"%.0f", res)
@@ -233,7 +237,7 @@ class InterfaceController: WKInterfaceController {
                         let upbat = uploader["battery"] as! Double
                         pstatus = pstatus + " UpBat " + String(format:"%.0f", upbat)
                     }
-                    
+                    self.pumpStatus.setText(pstatus)
                     //add back if loop ever uploads again
                     //                        if let riley = lastpump["radioAdapter"] as? [String:AnyObject] {
                     //                            if let rrssi = riley["RSSI"] as? Int {
@@ -257,11 +261,13 @@ class InterfaceController: WKInterfaceController {
             var pstatus2:String = " IOB "
             if lastLoop != nil {
                 if let looptime = formatter.date(from: (lastLoop?["timestamp"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.loopStatus2, timeSince: looptime)
+                    labelColor(label: self.loopStatus2, timeSince: looptime)
                     if let failure = lastLoop?["failureReason"] {
-                        self.loopStatus1.setText(pstatus)
-                        colorLoopStatus(color: UIColor.red)
+                        self.pumpStatus.setText(pstatus)
+                        //colorLoopStatus(color: UIColor.red)
+                      self.loopStatus2.setTextColor(UIColor.red)
                         pstatus2 = "Loop Failure - See Error Detail"
+                        self.loopStatus2.setText(pstatus2)
                         self.errorDisplay.setTextColor(UIColor.red)
                         self.errorDisplay.setText(failure as? String)
 
@@ -269,11 +275,11 @@ class InterfaceController: WKInterfaceController {
                     else
                     {
                         self.errorDisplay.setText("")
-                       // colorLoopStatus(color: UIColor.green)
+                       colorLoopStatus(color: UIColor.green)
                         if let enacted = lastLoop?["enacted"] as? [String:AnyObject] {
                             if let tempbasal = enacted["rate"] as? Double {
-                                pstatus = pstatus + " Basal " + String(format:"%.1f", tempbasal)
-                                self.loopStatus1.setText(pstatus)
+                                let basalStatus = " Basal " + String(format:"%.1f", tempbasal)
+                                self.basalDisplay.setText(basalStatus)
                             }
                         }
                         if let iobdata = lastLoop?["iob"] as? [String:AnyObject] {
@@ -284,7 +290,7 @@ class InterfaceController: WKInterfaceController {
                         }
                         if let predictdata = lastLoop?["predicted"] as? [String:AnyObject] {
                             let prediction = predictdata["values"] as! [Double]
-                            pstatus2 = pstatus2 +  " EBG " + self.bgOutput(bg: prediction.last!, mmol: mmol)
+                            pstatus2 = pstatus2 +  " EBG " + bgOutput(bg: prediction.last!, mmol: mmol)
                         }
                         
                     }
@@ -304,16 +310,18 @@ class InterfaceController: WKInterfaceController {
             
             //overrides
             var pstatus3 = "" as String
+            self.statusOverride.setHidden(true)
             if let lastOverride = lastData?["override"] as! [String : AnyObject]? {
                 if let overridetime = formatter.date(from: (lastOverride["timestamp"] as! String))?.timeIntervalSince1970  {
-                    self.labelColor(label: self.statusOverride, timeSince: overridetime)
+                   labelColor(label: self.statusOverride, timeSince: overridetime)
                 } //finish color
                 if lastOverride["active"] as! Bool {
+                     self.statusOverride.setHidden(false)
                     let currentCorrection  = lastOverride["currentCorrectionRange"] as! [String: AnyObject]
                     pstatus3 = "BGTargets("
                     let minValue = currentCorrection["minValue"] as! Double
                     let maxValue = currentCorrection["maxValue"] as! Double
-                    pstatus3 = pstatus3 + self.bgOutput(bg: minValue, mmol: mmol) + ":" + self.bgOutput(bg: maxValue, mmol: mmol) + ") M:"
+                    pstatus3 = pstatus3 + bgOutput(bg: minValue, mmol: mmol) + ":" + bgOutput(bg: maxValue, mmol: mmol) + ") M:"
                     let multiplier = lastOverride["multiplier"] as! Double
                     pstatus3 = pstatus3 + String(format:"%.1f", multiplier)
                 }
@@ -360,24 +368,24 @@ class InterfaceController: WKInterfaceController {
                     
                 {
              
-                    self.labelColor(label: self.minAgo, timeSince: lastBGTime)
+                   labelColor(label: self.minAgo, timeSince: lastBGTime)
                     self.primaryBG.setTextColor(bgcolor(currentBG))
-                    self.primaryBG.setText(self.bgOutput(bg: Double(currentBG), mmol: mmol))
+                    self.primaryBG.setText(bgOutput(bg: Double(currentBG), mmol: mmol))
                     self.bgDirection.setText(dirgraphics(direction))
                     self.bgDirection.setTextColor(bgcolor(currentBG))
                     let velocity=velocity_cf(entries) as Double
                     let prediction=velocity*30.0+Double(currentBG)
                     self.deltaBG.setTextColor(UIColor.white)
                     if deltaBG < 0 {
-                        self.deltaBG.setText(self.bgOutput(bg: Double(deltaBG), mmol: mmol) + " mg/dl")
+                        self.deltaBG.setText(bgOutput(bg: Double(deltaBG), mmol: mmol) + " mg/dl")
                     }
                     else
                     {
-                        self.deltaBG.setText("+"+self.bgOutput(bg: Double(deltaBG), mmol: mmol)+" mg/dl")
+                        self.deltaBG.setText("+"+bgOutput(bg: Double(deltaBG), mmol: mmol)+" mg/dl")
                     }
                     
-                    self.velocity.setText(self.velocityOutput(v: velocity, mmol: mmol))
-                    self.prediction.setText(self.bgOutput(bg: prediction, mmol: mmol))
+                    self.velocity.setText(velocityOutput(v: velocity, mmol: mmol))
+                    self.prediction.setText(bgOutput(bg: prediction, mmol: mmol))
                     
                 }
                 
@@ -395,6 +403,7 @@ class InterfaceController: WKInterfaceController {
             }
         
         createGraph(hours: self.graphLength, bghist: entries, mmol: mmol)
+        self.graphHours.setText(String(self.graphLength) + " Hour Graph")
    
             if consoleLogging == true {print("end update bg")}
     }
@@ -491,9 +500,9 @@ class InterfaceController: WKInterfaceController {
         //round to 5's or mgdl, 0.2 for mmol/L
         var rounder : Double = 5
         if mmol {rounder = 0.2}
-        self.drawText(context: context, text: self.bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
-        self.drawText(context: context, text: self.bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
-        self.drawText(context: context, text: self.bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height/2)
+        self.drawText(context: context, text: bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
+        self.drawText(context: context, text: bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
+        self.drawText(context: context, text: bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height/2)
         
         
         
@@ -618,19 +627,9 @@ class InterfaceController: WKInterfaceController {
         return sgvColor
     }
     
-    func errorcode(_ value:Int)->String {
-        
-       let errormap=["EC0 UNKNOWN","EC1 SENSOR NOT ACTIVE","EC2 MINIMAL DEVIATION","EC3 NO ANTENNA","EC4 UNKNOWN","EC5 SENSOR CALIBRATION","EC6 COUNT DEVIATION","EC7 UNKNOWN","EC8 UNKNWON","EC9 HOURGLASS DEVIATION","EC10 ??? POWER DEVIATION","EC11 UNKNOWN","EC12 BAD RF","EC13 MH"]
-
-        return errormap[value]
-    }
     
-    func dirgraphics(_ value:String)->String {
-         let graphics:[String:String]=["Flat":"\u{2192}","DoubleUp":"\u{21C8}","SingleUp":"\u{2191}","FortyFiveUp":"\u{2197}\u{FE0E}","FortyFiveDown":"\u{2198}\u{FE0E}","SingleDown":"\u{2193}","DoubleDown":"\u{21CA}","None":"-","NOT COMPUTABLE":"-","RATE OUT OF RANGE":"-"]
-        
-        
-        return graphics[value]!
-    }
+    
+    
     
     func bgScaling(_ hours:Int,bgHist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double) {
 
@@ -707,64 +706,18 @@ class InterfaceController: WKInterfaceController {
     }
     
     func colorLoopStatus (color: UIColor) {
-        self.loopStatus1.setTextColor(color)
+        self.pumpStatus.setTextColor(color)
         self.loopStatus2.setTextColor(color)
         self.statusOverride.setTextColor(color)
+        self.basalDisplay.setTextColor(color)
     }
     
     
-    func bgOutput(bg: Double, mmol: Bool) -> String {
-        if !mmol {
-            return String(format:"%.0f", bg)
-        }
-        else
-        {
-            return String(format:"%.1f", bg / 18.6)
-        }
-    }
-    
-    func velocityOutput(v: Double, mmol: Bool) -> String {
-        if !mmol {
-            return String(format:"%.1f", v)
-        }
-        else
-        {
-            return String(format:"%.1f", v / 18.6)
-        }
-    }
-    
-    func labelColor(label: WKInterfaceLabel, timeSince: TimeInterval) {
-        let ct=TimeInterval(Date().timeIntervalSince1970)
-        let deltat=(ct-timeSince)/60
-     
-        if deltat<6
-        {label.setTextColor(UIColor.green)}
-        else
-            if deltat<14
-            {label.setTextColor(UIColor.yellow)}
-            else
-            {label.setTextColor(UIColor.red)}
-            
-        
-        
-        return
-    }
     
     
-    struct sgvData: Codable {
-        var sgv: String
-        var datetime: TimeInterval
-        var direction: String
-    }
-    struct dataPebble: Codable{
-        var bgs: [sgvData]
-        
-    }
-    struct entriesData: Codable {
-        var sgv: Int
-        var date: TimeInterval
-        var direction: String
-    }
+    
+    
+  
     
     
     }

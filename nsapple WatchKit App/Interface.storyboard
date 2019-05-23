@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
-    <device id="watch38" orientation="portrait">
+    <device id="watch42" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -27,7 +27,7 @@
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
                                 <label alignment="left" id="1cw-2v-v8O"/>
-                                <label alignment="center" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
+                                <label alignment="center" text="#WeAreNotWaiting" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" weight="thin" pointSize="28"/>
@@ -44,14 +44,14 @@
                         </group>
                         <group width="1" alignment="left" id="nJH-yY-zdH">
                             <items>
-                                <label alignment="left" text="Perceptus.org" textAlignment="center" id="IwJ-4k-L7w">
+                                <label alignment="left" text="Loop" textAlignment="center" id="IwJ-4k-L7w">
                                     <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="9"/>
                                     </variation>
                                 </label>
-                                <label alignment="right" text="   NightScout.org" id="drV-DZ-SeX">
+                                <label alignment="right" text="Nightscout" id="drV-DZ-SeX">
                                     <fontDescription key="font" type="system" pointSize="10"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
@@ -70,6 +70,12 @@
                                         <fontDescription key="font" type="system" pointSize="8"/>
                                     </variation>
                                 </label>
+                                <label alignment="center" id="akL-EX-Tng" userLabel="Basal">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="9"/>
+                                    </variation>
+                                </label>
                             </items>
                         </group>
                         <group width="1" alignment="center" id="kTC-wL-SQ9">
@@ -84,14 +90,14 @@
                         </group>
                         <group width="1" alignment="left" id="NRW-oT-jdu">
                             <items>
-                                <label alignment="center" text="System Status" id="LnC-ig-q4J">
+                                <label alignment="center" id="LnC-ig-q4J">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                 </label>
                             </items>
                         </group>
                         <group width="1" alignment="left" id="all-5Y-wf2">
                             <items>
-                                <label alignment="center" text="3 Hour Graph" id="oz4-fb-Ktb">
+                                <label alignment="center" id="oz4-fb-Ktb">
                                     <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
                                 </label>
                             </items>
@@ -106,17 +112,18 @@
                         </label>
                     </items>
                     <connections>
+                        <outlet property="basalDisplay" destination="akL-EX-Tng" id="Scc-XY-UO0"/>
                         <outlet property="bgDirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgGraph" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
                         <outlet property="deltaBG" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="errorDisplay" destination="o6T-Uw-G7S" id="IdW-IR-f7Z"/>
                         <outlet property="graphHours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourSlider" destination="t7h-De-bBi" id="66r-Am-noX"/>
-                        <outlet property="loopStatus1" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
                         <outlet property="loopStatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
                         <outlet property="minAgo" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
                         <outlet property="prediction" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
                         <outlet property="primaryBG" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
+                        <outlet property="pumpStatus" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
                         <outlet property="statusOverride" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
                         <outlet property="velocity" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>

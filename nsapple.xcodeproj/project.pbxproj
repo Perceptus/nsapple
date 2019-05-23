@@ -18,6 +18,7 @@
 		1119BA251B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA241B4F04FC00046ABF /* Images.xcassets */; };
 		1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA321B4F04FC00046ABF /* Images.xcassets */; };
 		1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA3E1B4F05A000046ABF /* Interface.storyboard */; };
+		1132525E2296F379001E299C /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1132525D2296F379001E299C /* Models.swift */; };
 		114199AE200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
 		114199AF200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
 		114199B0200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
@@ -97,6 +98,7 @@
 		1119BA2E1B4F04FC00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1119BA321B4F04FC00046ABF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1119BA3E1B4F05A000046ABF /* Interface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Interface.storyboard; sourceTree = "<group>"; };
+		1132525D2296F379001E299C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		114199A62009CA61007AD506 /* nsapple WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "nsapple WatchKit App.entitlements"; sourceTree = "<group>"; };
 		114199AD200ADAB1007AD506 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = "Settings-Watch.bundle"; sourceTree = "<group>"; };
 		11832FFD1B5F4794005E3536 /* ViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */,
+				1132525D2296F379001E299C /* Models.swift */,
 				1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */,
 				1119BA241B4F04FC00046ABF /* Images.xcassets */,
 				1119BA1B1B4F04FC00046ABF /* Supporting Files */,
@@ -473,6 +476,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1119BA1F1B4F04FC00046ABF /* InterfaceController.swift in Sources */,
+				1132525E2296F379001E299C /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
