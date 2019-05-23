@@ -15,7 +15,6 @@
 		1119BA001B4F046E00046ABF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1119B9FE1B4F046E00046ABF /* LaunchScreen.xib */; };
 		1119BA0C1B4F046E00046ABF /* nsappleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA0B1B4F046E00046ABF /* nsappleTests.swift */; };
 		1119BA1F1B4F04FC00046ABF /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */; };
-		1119BA211B4F04FC00046ABF /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119BA201B4F04FC00046ABF /* NotificationController.swift */; };
 		1119BA251B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA241B4F04FC00046ABF /* Images.xcassets */; };
 		1119BA331B4F04FC00046ABF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA321B4F04FC00046ABF /* Images.xcassets */; };
 		1119BA3F1B4F05A000046ABF /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1119BA3E1B4F05A000046ABF /* Interface.storyboard */; };
@@ -93,7 +92,6 @@
 		1119BA1C1B4F04FC00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1119BA1D1B4F04FC00046ABF /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
-		1119BA201B4F04FC00046ABF /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		1119BA241B4F04FC00046ABF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nsapple WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1119BA2E1B4F04FC00046ABF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -203,7 +201,6 @@
 			children = (
 				11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */,
 				1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */,
-				1119BA201B4F04FC00046ABF /* NotificationController.swift */,
 				1119BA241B4F04FC00046ABF /* Images.xcassets */,
 				1119BA1B1B4F04FC00046ABF /* Supporting Files */,
 			);
@@ -475,7 +472,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1119BA211B4F04FC00046ABF /* NotificationController.swift in Sources */,
 				1119BA1F1B4F04FC00046ABF /* InterfaceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
