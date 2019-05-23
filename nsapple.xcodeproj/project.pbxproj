@@ -23,7 +23,7 @@
 		114199AF200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
 		114199B0200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
 		114199B1200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
-		11832FFE1B5F4794005E3536 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11832FFD1B5F4794005E3536 /* ViewController2.swift */; };
+		11832FFE1B5F4794005E3536 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11832FFD1B5F4794005E3536 /* ViewController.swift */; };
 		1189EA9A1E7987C400B11975 /* nsapple WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1189EA9D1E7987C400B11975 /* nsapple WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */; };
 /* End PBXBuildFile section */
@@ -101,7 +101,7 @@
 		1132525D2296F379001E299C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		114199A62009CA61007AD506 /* nsapple WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "nsapple WatchKit App.entitlements"; sourceTree = "<group>"; };
 		114199AD200ADAB1007AD506 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = "Settings-Watch.bundle"; sourceTree = "<group>"; };
-		11832FFD1B5F4794005E3536 /* ViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
+		11832FFD1B5F4794005E3536 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		118FA3E920805EB000757121 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "nsapple WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		11C9660B1B5FDA87007C5B1E /* nsapple.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = nsapple.entitlements; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 				1119B9F51B4F046E00046ABF /* MasterViewController.swift */,
 				1119B9F71B4F046E00046ABF /* DetailViewController.swift */,
 				1119B9F91B4F046E00046ABF /* Main.storyboard */,
-				11832FFD1B5F4794005E3536 /* ViewController2.swift */,
+				11832FFD1B5F4794005E3536 /* ViewController.swift */,
 				1119B9FC1B4F046E00046ABF /* Images.xcassets */,
 				1119B9FE1B4F046E00046ABF /* LaunchScreen.xib */,
 				1119B9F11B4F046E00046ABF /* Supporting Files */,
@@ -457,7 +457,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1119B9F81B4F046E00046ABF /* DetailViewController.swift in Sources */,
-				11832FFE1B5F4794005E3536 /* ViewController2.swift in Sources */,
+				11832FFE1B5F4794005E3536 /* ViewController.swift in Sources */,
 				1119B9F61B4F046E00046ABF /* MasterViewController.swift in Sources */,
 				1119B9F41B4F046E00046ABF /* AppDelegate.swift in Sources */,
 			);
