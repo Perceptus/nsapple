@@ -14,6 +14,7 @@ var mmol = defaults?.bool(forKey: "mmol") ?? false
 var urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
 
 let consoleLogging = true
+var lastBGUpdate = 0 as TimeInterval
 
 class InterfaceController: WKInterfaceController {
    
@@ -56,15 +57,27 @@ class InterfaceController: WKInterfaceController {
         //reread defaults
         mmol = defaults?.bool(forKey: "mmol") ?? false
         urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
-        loadData(urlUser: urlUser, mmol: mmol)
+        //polling frequency
+        let deltaTime = (TimeInterval(Date().timeIntervalSince1970) - lastBGUpdate) / 60
+        if consoleLogging == true {(deltaTime)}
+        if deltaTime > 5 {
+            if consoleLogging == true {print("inside load")}
+            if consoleLogging == true {print(deltaTime)}
+            loadData(urlUser: urlUser, mmol: mmol)
+        }
+        else
+        {
+            self.minAgo.setText(String(Int(deltaTime))+" min ago")
+            labelColor(label: self.minAgo, timeSince: lastBGUpdate)
+        }
   
     }
 
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
-        colorBGStatus(color: UIColor.gray)
-        colorLoopStatus(color: UIColor.gray)
-        minAgo.setTextColor(UIColor.gray)
+//        colorBGStatus(color: UIColor.gray)
+//        colorLoopStatus(color: UIColor.gray)
+//        minAgo.setTextColor(UIColor.gray)
         if consoleLogging == true {print("in deactivate")}
         //to do add blank image and set on sleep
         super.didDeactivate()
@@ -94,8 +107,9 @@ class InterfaceController: WKInterfaceController {
             self.deltaBG.setText("NS URL Not Valid")
             return
         }
-        
-        let getBGTask = URLSession.shared.dataTask(with: url2) { data, response, error in
+        var request = URLRequest(url: url2)
+        request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+        let getBGTask = URLSession.shared.dataTask(with: request) { data, response, error in
             
             if consoleLogging == true {print("start bg url")}
             guard error == nil else {
@@ -140,7 +154,9 @@ class InterfaceController: WKInterfaceController {
         }
         
         if consoleLogging == true {print("entered 2nd task")}
-        let loopTask = URLSession.shared.dataTask(with: urlLoop) { data, response, error in
+        var requestLoop = URLRequest(url: urlLoop)
+        requestLoop.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+        let loopTask = URLSession.shared.dataTask(with: requestLoop) { data, response, error in
             if consoleLogging == true {print("in update loop")}
             guard error == nil else {
                 self.colorLoopStatus(color: UIColor.red)
@@ -336,11 +352,12 @@ class InterfaceController: WKInterfaceController {
                 let red=UIColor.red as UIColor
                 let deltaTime=(TimeInterval(Date().timeIntervalSince1970)-lastBGTime/1000)/60
                 self.minAgo.setText(String(Int(deltaTime))+" min ago")
+                lastBGUpdate = lastBGTime/1000
                
                 
                 if (currentBG<40) {
                     self.primaryBG.setTextColor(red)
-                    self.primaryBG.setText(errorcode(currentBG))
+                    self.primaryBG.setText(bgErrorCode(currentBG))
                     self.bgDirection.setText("")
                     self.deltaBG.setText("")
                 }
@@ -349,10 +366,10 @@ class InterfaceController: WKInterfaceController {
                     
                 {
              
-                   labelColor(label: self.minAgo, timeSince: lastBGTime)
+                   labelColor(label: self.minAgo, timeSince: lastBGTime/1000)
                     self.primaryBG.setTextColor(bgcolor(currentBG))
                     self.primaryBG.setText(bgOutput(bg: Double(currentBG), mmol: mmol))
-                    self.bgDirection.setText(dirgraphics(direction))
+                    self.bgDirection.setText(bgDirection(direction))
                     self.bgDirection.setTextColor(bgcolor(currentBG))
                     let velocity=velocity_cf(entries) as Double
                     let prediction=velocity*30.0+Double(currentBG)

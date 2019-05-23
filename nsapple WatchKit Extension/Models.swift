@@ -45,14 +45,14 @@ func velocityOutput(v: Double, mmol: Bool) -> String {
     }
 }
 
-func errorcode(_ value:Int)->String {
+func bgErrorCode(_ value:Int)->String {
     
     let errormap=["EC0 UNKNOWN","EC1 SENSOR NOT ACTIVE","EC2 MINIMAL DEVIATION","EC3 NO ANTENNA","EC4 UNKNOWN","EC5 SENSOR CALIBRATION","EC6 COUNT DEVIATION","EC7 UNKNOWN","EC8 UNKNWON","EC9 HOURGLASS DEVIATION","EC10 ??? POWER DEVIATION","EC11 UNKNOWN","EC12 BAD RF","EC13 MH"]
     
     return errormap[value]
 }
 
-func dirgraphics(_ value:String)->String {
+func bgDirection(_ value:String)->String {
     let graphics:[String:String]=["Flat":"\u{2192}","DoubleUp":"\u{21C8}","SingleUp":"\u{2191}","FortyFiveUp":"\u{2197}\u{FE0E}","FortyFiveDown":"\u{2198}\u{FE0E}","SingleDown":"\u{2193}","DoubleDown":"\u{21CA}","None":"-","NOT COMPUTABLE":"-","RATE OUT OF RANGE":"-"]
     
     
@@ -82,13 +82,13 @@ func bgcolor(_ value:Int)->UIColor
 }
 
 func labelColor(label: WKInterfaceLabel, timeSince: TimeInterval) {
-    let ct=TimeInterval(Date().timeIntervalSince1970)
-    let deltat=(ct-timeSince)/60
+    let currentTime=TimeInterval(Date().timeIntervalSince1970)
+    let deltaTime=(currentTime-timeSince)/60
     
-    if deltat<6
+    if deltaTime<7
     {label.setTextColor(UIColor.green)}
     else
-        if deltat<14
+        if deltaTime<14
         {label.setTextColor(UIColor.yellow)}
         else
         {label.setTextColor(UIColor.red)}
