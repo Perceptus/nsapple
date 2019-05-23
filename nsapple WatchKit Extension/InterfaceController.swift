@@ -369,7 +369,7 @@ class InterfaceController: WKInterfaceController {
                    labelColor(label: self.minAgo, timeSince: lastBGTime/1000)
                     self.primaryBG.setTextColor(bgcolor(currentBG))
                     self.primaryBG.setText(bgOutput(bg: Double(currentBG), mmol: mmol))
-                    self.bgDirection.setText(bgDirection(direction))
+                    self.bgDirection.setText(bgDirectionGraphic(direction))
                     self.bgDirection.setTextColor(bgcolor(currentBG))
                     let velocity=velocity_cf(entries) as Double
                     let prediction=velocity*30.0+Double(currentBG)
