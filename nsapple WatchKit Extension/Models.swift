@@ -98,3 +98,79 @@ func labelColor(label: WKInterfaceLabel, timeSince: TimeInterval) {
     return
 }
 
+public struct watch {
+    
+    public static var screenWidth: CGFloat {
+        return WKInterfaceDevice.current().screenBounds.width
+    }
+    
+    public static var is38: Bool {
+        return screenWidth == 136
+    }
+    
+    public static var is42: Bool {
+        return screenWidth == 156
+    }
+}
+
+func velocity_cf(_ bgs:[entriesData])->Double {
+    //linear fit to 3 data points get slope (ie velocity)
+    var v=0 as Double
+    var n=0 as Int
+    var i=0 as Int
+    let ONE_MINUTE=60000.0 as Double
+    var bgsgv = [Double](repeating: 0.0, count: 4)
+    var date = [Double](repeating: 0.0, count: 4)
+    
+    
+    i=0
+    while i<4 {
+        date[i] = bgs[i].date
+        bgsgv[i] = Double(bgs[i].sgv)
+        i=i+1
+        
+    }
+    
+    
+    if ((date[0]-date[3])/ONE_MINUTE < 15.1) {n=4}
+        
+    else
+        
+        if ((date[0]-date[2])/ONE_MINUTE < 10.1) {n=3}
+        else
+            
+            if ((date[0]-date[1])/ONE_MINUTE<10.1) {n=2}
+            else {n=0}
+    
+    var xm=0.0 as Double
+    var ym=0.0 as Double
+    if (n>0) {
+        var j=0;
+        while j<n {
+            
+            xm = xm + date[j]/ONE_MINUTE
+            ym = ym + bgsgv[j]
+            j=j+1
+        }
+        xm=xm/Double(n)
+        ym=ym/Double(n)
+        var c1=0.0 as Double
+        var c2=0.0 as Double
+        var t=0.0 as Double
+        j=0
+        while (j<n) {
+            
+            t=date[j]/ONE_MINUTE
+            c1=c1+(t-xm)*(bgsgv[j]-ym)
+            c2=c2+(t-xm)*(t-xm)
+            j=j+1
+        }
+        v=c1/c2
+        
+    }
+        //need to decide what to return if there isnt enough data
+        
+    else {v=0}
+    
+    return v
+}
