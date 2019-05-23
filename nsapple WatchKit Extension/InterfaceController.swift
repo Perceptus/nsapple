@@ -63,14 +63,14 @@ class InterfaceController: WKInterfaceController {
 
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
-        if consoleLogging == true {("in awake")}
+        if consoleLogging == true {print("in awake")}
     }
     
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
         
         super.willActivate()
-        if consoleLogging == true {("in will")}
+        if consoleLogging == true {print("in will")}
         //reread defaults
         mmol = defaults?.bool(forKey: "mmol") ?? false
         urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
@@ -82,7 +82,7 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is no longer visible
         colorBGStatus(color: UIColor.gray)
         colorLoopStatus(color: UIColor.gray)
-        if consoleLogging == true {("in deactivate")}
+        if consoleLogging == true {print("in deactivate")}
         //to do add blank image and set on sleep
         super.didDeactivate()
     }
@@ -90,7 +90,7 @@ class InterfaceController: WKInterfaceController {
 ////////////////////////////////////////
     
     func loadData (urlUser: String, mmol:Bool) {
-        if consoleLogging == true {("in load BG")}
+        if consoleLogging == true {print("in load BG")}
         
         if urlUser == "No User URL" {
             colorLoopStatus(color: UIColor.red)
@@ -112,7 +112,7 @@ class InterfaceController: WKInterfaceController {
         
         let getBGTask = URLSession.shared.dataTask(with: url2) { data, response, error in
             
-            if consoleLogging == true {("start bg url")}
+            if consoleLogging == true {print("start bg url")}
             guard error == nil else {
                 self.colorBGStatus(color: UIColor.red)
                 self.primaryBG.setText("")
@@ -154,9 +154,9 @@ class InterfaceController: WKInterfaceController {
             return
         }
         
-        if consoleLogging == true {("entered 2nd task")}
+        if consoleLogging == true {print("entered 2nd task")}
         let loopTask = URLSession.shared.dataTask(with: urlLoop) { data, response, error in
-            if consoleLogging == true {("in update loop")}
+            if consoleLogging == true {print("in update loop")}
             guard error == nil else {
                 self.colorLoopStatus(color: UIColor.red)
                 self.loopStatus1.setText("NS Error See Error Display")
@@ -187,7 +187,7 @@ class InterfaceController: WKInterfaceController {
                 self.loopStatus1.setText("Pump Stat Decoding Error")
                 return
             }
-            if consoleLogging == true {("finish pump update")}
+            if consoleLogging == true {print("finish pump update")}
             
         }
         loopTask.resume()
@@ -198,7 +198,7 @@ class InterfaceController: WKInterfaceController {
     
     func updateLoopStatus(json: [[String:AnyObject]], mmol: Bool) {
         
-        if consoleLogging == true {("in updatePump")}
+        if consoleLogging == true {print("in updatePump")}
        
         if json.count == 0 {
                 self.loopStatus1.setText("No Records")
@@ -323,11 +323,11 @@ class InterfaceController: WKInterfaceController {
             
             self.statusOverride.setText(pstatus3)
  
-        if consoleLogging == true {("end updatePump")}
+        if consoleLogging == true {print("end updatePump")}
     }
     
     func updateBG (pebbleResponse: dataPebble, mmol: Bool) {
-        if consoleLogging == true {("in update BG")}
+        if consoleLogging == true {print("in update BG")}
 
             var entries = [entriesData]()
             var j: Int = 0
@@ -396,7 +396,7 @@ class InterfaceController: WKInterfaceController {
         
         createGraph(hours: self.graphLength, bghist: entries, mmol: mmol)
    
-            if consoleLogging == true {("end update bg")}
+            if consoleLogging == true {print("end update bg")}
     }
 
     
