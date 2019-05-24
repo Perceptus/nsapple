@@ -12,6 +12,8 @@ import Foundation
 let defaults = UserDefaults(suiteName:"group.com.nsapple")
 var mmol = defaults?.bool(forKey: "mmol") ?? false
 var urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
+var token = defaults?.string(forKey: "token") ?? ""
+
 
 let consoleLogging = true
 var lastBGUpdate = 0 as TimeInterval
@@ -53,16 +55,19 @@ class InterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         
         super.willActivate()
+        
         if consoleLogging == true {print("in will")}
         //reread defaults
         mmol = defaults?.bool(forKey: "mmol") ?? false
         urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
+        token = defaults?.string(forKey: "token") ?? ""
+        
         //polling frequency
         let deltaTime = (TimeInterval(Date().timeIntervalSince1970) - lastBGUpdate) / 60
-        if consoleLogging == true {(deltaTime)}
         if deltaTime > 5 {
             if consoleLogging == true {print("inside load")}
             if consoleLogging == true {print(deltaTime)}
+            self.errorDisplay.setHidden(true)
             loadData(urlUser: urlUser, mmol: mmol)
         }
         else
@@ -86,14 +91,17 @@ class InterfaceController: WKInterfaceController {
 ///////////////////////////////////////
 // - Mark
     
+ 
+    
     func loadData (urlUser: String, mmol:Bool) {
         if consoleLogging == true {print("in load BG")}
         
         if urlUser == "No User URL" {
             colorLoopStatus(color: UIColor.red)
             colorBGStatus(color: UIColor.red)
-            self.pumpStatus.setText("Scroll Down for Error Info")
-            self.errorDisplay.setText("Cannot Read User NS URL.  Check Setup Of Defaults in iOS Watch App")
+            self.pumpStatus.setText("")
+            self.loopStatus2.setText("")
+            errorMessage(message: "Cannot Read User NS URL.  Check Setup Of Defaults in iOS Watch App")
             return
         }
         
@@ -104,7 +112,7 @@ class InterfaceController: WKInterfaceController {
         guard let url2 = URL(string: urlPath) else {
             colorBGStatus(color: UIColor.red)
             self.primaryBG.setText("")
-            self.deltaBG.setText("NS URL Not Valid")
+            errorMessage(message: "NS URL Not Valid")
             return
         }
         var request = URLRequest(url: url2)
@@ -115,14 +123,13 @@ class InterfaceController: WKInterfaceController {
             guard error == nil else {
                 self.colorBGStatus(color: UIColor.red)
                 self.primaryBG.setText("")
-                self.deltaBG.setText("NS Error See Display")
-                self.errorDisplay.setText(error?.localizedDescription)
+                self.errorMessage(message: error?.localizedDescription ?? "Server Error")
                 return
             }
             guard let data = data else {
                 self.colorBGStatus(color: UIColor.red)
                 self.primaryBG.setText("")
-                self.deltaBG.setText("No Data")
+                self.errorMessage(message: "No Data")
                 return
             }
             let decoder = JSONDecoder()
@@ -136,20 +143,24 @@ class InterfaceController: WKInterfaceController {
             {
                 self.primaryBG.setText("")
                 self.colorBGStatus(color: UIColor.red)
-                self.deltaBG.setText("BG Decoding Error")
+                self.errorMessage(message: "BG Decoding Error")
                 return
             }
         }
         getBGTask.resume()
         
+     
+        var urlPath2 = urlUser + "/api/v1/devicestatus.json?count=1"
+        if token != "" {
+            urlPath2 = urlUser + "/api/v1/devicestatus.json?token=" + token + "&count=1"
+        }
         
-        let urlPath2 = urlUser + "/api/v1/devicestatus.json?count=1"
         let escapedAddress = urlPath2.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let urlLoop = URL(string: escapedAddress!) else {
             self.colorLoopStatus(color: UIColor.red)
             pumpStatus.setText("")
-            pumpStatus.setText("Loop URL ERROR")
+            self.errorMessage(message: "Loop URL ERROR")
             return
         }
         
@@ -160,13 +171,13 @@ class InterfaceController: WKInterfaceController {
             if consoleLogging == true {print("in update loop")}
             guard error == nil else {
                 self.colorLoopStatus(color: UIColor.red)
-                self.pumpStatus.setText("NS Error See Error Display")
-                self.errorDisplay.setText(error?.localizedDescription)
+                self.pumpStatus.setText("")
+                self.errorMessage(message: error?.localizedDescription ?? "Server Error")
                 return
             }
             guard let data = data else {
                 self.colorLoopStatus(color: UIColor.red)
-                self.pumpStatus.setText("Loop Data is Empty")
+                self.errorMessage(message: "Loop Data is Empty")
                 return
             }
             
@@ -185,7 +196,7 @@ class InterfaceController: WKInterfaceController {
             {
                 self.colorLoopStatus(color: UIColor.red)
                 self.pumpStatus.setText("")
-                self.pumpStatus.setText("Pump Stat Decoding Error")
+                self.errorMessage(message: "Device Status Decoding Error")
                 return
             }
             if consoleLogging == true {print("finish pump update")}
@@ -202,9 +213,11 @@ class InterfaceController: WKInterfaceController {
         if consoleLogging == true {print("in updatePump")}
        
         if json.count == 0 {
-                self.pumpStatus.setText("No Records")
+            self.errorMessage(message: "No Records")
             colorLoopStatus(color: UIColor.red)
-                return}
+            return
+            
+        }
         //only grabbing one record since ns sorts by {created_at : -1}
         let lastData = json[0] as [String : AnyObject]?
   
@@ -263,15 +276,14 @@ class InterfaceController: WKInterfaceController {
                         self.pumpStatus.setText(pstatus)
                         //colorLoopStatus(color: UIColor.red)
                       self.loopStatus2.setTextColor(UIColor.red)
-                        pstatus2 = "Loop Failure - See Error Detail"
+                        pstatus2 = "Loop Failure "
                         self.loopStatus2.setText(pstatus2)
-                        self.errorDisplay.setTextColor(UIColor.red)
-                        self.errorDisplay.setText(failure as? String)
+                        self.errorMessage(message: failure as? String ?? "Unknown Failure")
 
                     }
                     else
                     {
-                        self.errorDisplay.setText("")
+                        //self.errorDisplay.setText("")
                        colorLoopStatus(color: UIColor.green)
                         if let enacted = lastLoop?["enacted"] as? [String:AnyObject] {
                             if let tempbasal = enacted["rate"] as? Double {
@@ -348,11 +360,11 @@ class InterfaceController: WKInterfaceController {
                 let priorBG = entries[1].sgv
                 let direction=entries[0].direction
                 let deltaBG = currentBG - priorBG as Int
-                let lastBGTime=entries[0].date
+                let lastBGTime=entries[0].date / 1000 //NS has different units
                 let red=UIColor.red as UIColor
-                let deltaTime=(TimeInterval(Date().timeIntervalSince1970)-lastBGTime/1000)/60
+                let deltaTime=(TimeInterval(Date().timeIntervalSince1970)-lastBGTime)/60
                 self.minAgo.setText(String(Int(deltaTime))+" min ago")
-                lastBGUpdate = lastBGTime/1000
+                lastBGUpdate = lastBGTime
                
                 
                 if (currentBG<40) {
@@ -366,7 +378,7 @@ class InterfaceController: WKInterfaceController {
                     
                 {
              
-                   labelColor(label: self.minAgo, timeSince: lastBGTime/1000)
+                   labelColor(label: self.minAgo, timeSince: lastBGTime)
                     self.primaryBG.setTextColor(bgcolor(currentBG))
                     self.primaryBG.setText(bgOutput(bg: Double(currentBG), mmol: mmol))
                     self.bgDirection.setText(bgDirectionGraphic(direction))
@@ -394,7 +406,7 @@ class InterfaceController: WKInterfaceController {
             else
             {
                
-                noBGConnection()
+               self.errorMessage(message: "Didnt Receive BG Data")
                 colorLoopStatus(color: UIColor.red)
                 //to do add output to error window?
                 return
@@ -648,6 +660,12 @@ class InterfaceController: WKInterfaceController {
         self.loopStatus2.setTextColor(color)
         self.statusOverride.setTextColor(color)
         self.basalDisplay.setTextColor(color)
+    }
+    
+    func errorMessage(message: String) {
+        self.errorDisplay.setHidden(false)
+        self.errorDisplay.setTextColor(UIColor.red)
+        self.errorDisplay.setText(message)
     }
     
     

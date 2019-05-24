@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
-    <device id="watch42" orientation="portrait">
+    <device id="watch44" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -27,10 +27,13 @@
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
                                 <label alignment="left" id="1cw-2v-v8O"/>
-                                <label alignment="center" text="#WeAreNotWaiting" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
+                                <label alignment="center" verticalAlignment="center" text="#WeAreNotWaiting" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" weight="thin" pointSize="28"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" weight="thin" pointSize="35"/>
                                     </variation>
                                 </label>
                                 <label alignment="center" id="YV0-Ga-4dz">
@@ -44,14 +47,14 @@
                         </group>
                         <group width="1" alignment="left" id="nJH-yY-zdH">
                             <items>
-                                <label alignment="left" text="Loop" textAlignment="center" id="IwJ-4k-L7w">
+                                <label alignment="left" textAlignment="center" id="IwJ-4k-L7w">
                                     <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="9"/>
                                     </variation>
                                 </label>
-                                <label alignment="right" text="Nightscout" id="drV-DZ-SeX">
+                                <label alignment="right" id="drV-DZ-SeX">
                                     <fontDescription key="font" type="system" pointSize="10"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
@@ -65,6 +68,9 @@
                         <label alignment="center" id="oz4-fb-Ktb">
                             <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
                         </label>
+                        <label alignment="center" hidden="YES" text="Error Messages" textAlignment="left" numberOfLines="0" id="o6T-Uw-G7S">
+                            <fontDescription key="font" type="system" pointSize="11"/>
+                        </label>
                         <group width="1" alignment="left" id="LxB-Yd-NVT">
                             <items>
                                 <label alignment="center" id="Vcl-QY-KNQ">
@@ -72,11 +78,17 @@
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
                                     </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" pointSize="13"/>
+                                    </variation>
                                 </label>
                                 <label alignment="center" id="akL-EX-Tng" userLabel="Basal">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="9"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" pointSize="13"/>
                                     </variation>
                                 </label>
                             </items>
@@ -87,6 +99,9 @@
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                     <variation key="device=watch38mm">
                                         <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" pointSize="13"/>
                                     </variation>
                                 </label>
                             </items>
@@ -108,9 +123,6 @@
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
                         </slider>
-                        <label alignment="center" text="Error Messages" textAlignment="left" numberOfLines="0" id="o6T-Uw-G7S">
-                            <fontDescription key="font" type="system" pointSize="11"/>
-                        </label>
                     </items>
                     <connections>
                         <outlet property="basalDisplay" destination="akL-EX-Tng" id="Scc-XY-UO0"/>
