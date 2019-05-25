@@ -16,10 +16,10 @@
                     <items>
                         <group width="1" alignment="center" id="0XS-Xb-x7m">
                             <items>
-                                <label alignment="left" id="1qW-8W-XE3">
+                                <label alignment="left" text=" V / min" id="1qW-8W-XE3">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
-                                <label alignment="right" id="wWp-A4-E1K">
+                                <label alignment="right" text="30 min Pred " id="wWp-A4-E1K">
                                     <fontDescription key="font" type="system" pointSize="8"/>
                                 </label>
                             </items>
