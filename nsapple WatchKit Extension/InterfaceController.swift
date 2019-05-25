@@ -9,7 +9,11 @@
 import WatchKit
 import Foundation
 
-let defaults = UserDefaults(suiteName:"group.com.nsapple")
+let defaults = UserDefaults(suiteName:"group.replace-me.nsapple")
+
+
+
+
 var mmol = defaults?.bool(forKey: "mmol") ?? false
 var urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
 var token = defaults?.string(forKey: "token") ?? ""
