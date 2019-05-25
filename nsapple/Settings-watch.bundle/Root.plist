@@ -44,6 +44,6 @@
 		</dict>
 	</array>
 	<key>ApplicationGroupContainerIdentifier</key>
-	<string>com.nsapple</string>
+	<string>com.nsapple.$(unique_id)</string>
 </dict>
 </plist>
