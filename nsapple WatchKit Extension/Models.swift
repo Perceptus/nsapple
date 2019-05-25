@@ -174,3 +174,10 @@ func velocity_cf(_ bgs:[entriesData])->Double {
     
     return v
 }
+
+func infoBundle(_ key: String) -> String? {
+    return (Bundle.main.infoDictionary?[key] as? String)?
+        .replacingOccurrences(of: "\\", with: "")
+}
+
+

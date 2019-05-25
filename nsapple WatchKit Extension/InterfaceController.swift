@@ -9,14 +9,10 @@
 import WatchKit
 import Foundation
 
-let defaults = UserDefaults(suiteName:"group.com.nsapple")
-var mmol = defaults?.bool(forKey: "mmol") ?? false
-var urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
-var token = defaults?.string(forKey: "token") ?? ""
 
 
-let consoleLogging = true
-var lastBGUpdate = 0 as TimeInterval
+
+
 
 class InterfaceController: WKInterfaceController {
    
@@ -35,6 +31,12 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet var errorDisplay: WKInterfaceLabel!
     @IBOutlet var basalDisplay: WKInterfaceLabel!
     var graphLength:Int=3
+    var mmol = false as Bool
+    var urlUser = "No User URL" as String
+    var token = "" as String
+    var defaults : UserDefaults?
+    let consoleLogging = true
+    var lastBGUpdate = 0 as TimeInterval
 
 
    
@@ -49,7 +51,26 @@ class InterfaceController: WKInterfaceController {
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         if consoleLogging == true {print("in awake")}
-    }
+        
+
+        
+        let bundle = infoBundle("CFBundleIdentifier")
+        if let bundle = bundle {
+            let unique_id = bundle.components(separatedBy: ".")
+            let name : String = "group.com.nsapple." + unique_id[0]
+            defaults = UserDefaults(suiteName: name)
+        }
+       
+        else
+        {
+            self.errorDisplay.setTextColor(UIColor.red)
+            self.errorDisplay.setText("Could Not Read Bundle Idenifier")
+        }
+        
+            
+        }
+        
+    
     
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
@@ -139,7 +160,7 @@ class InterfaceController: WKInterfaceController {
         request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
         let getBGTask = URLSession.shared.dataTask(with: request) { data, response, error in
             
-            if consoleLogging == true {print("start bg url")}
+            if self.consoleLogging == true {print("start bg url")}
             guard error == nil else {
                 self.colorBGStatus(color: UIColor.red)
                 self.primaryBG.setText("")
@@ -188,7 +209,7 @@ class InterfaceController: WKInterfaceController {
         var requestLoop = URLRequest(url: urlLoop)
         requestLoop.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
         let loopTask = URLSession.shared.dataTask(with: requestLoop) { data, response, error in
-            if consoleLogging == true {print("in update loop")}
+            if self.consoleLogging == true {print("in update loop")}
             guard error == nil else {
                 self.colorLoopStatus(color: UIColor.red)
                 self.pumpStatus.setText("")
@@ -219,7 +240,7 @@ class InterfaceController: WKInterfaceController {
                 self.errorMessage(message: "Device Status Decoding Error")
                 return
             }
-            if consoleLogging == true {print("finish pump update")}
+            if self.consoleLogging == true {print("finish pump update")}
             
         }
         loopTask.resume()
