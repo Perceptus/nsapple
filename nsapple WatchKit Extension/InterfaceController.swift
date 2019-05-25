@@ -184,7 +184,7 @@ class InterfaceController: WKInterfaceController {
             {
                 self.primaryBG.setText("")
                 self.colorBGStatus(color: UIColor.red)
-                self.errorMessage(message: "BG Decoding Error")
+                self.errorMessage(message: "BG Decoding Error.  Check NightScout URL. ")
                 return
             }
         }
@@ -237,7 +237,7 @@ class InterfaceController: WKInterfaceController {
             {
                 self.colorLoopStatus(color: UIColor.red)
                 self.pumpStatus.setText("")
-                self.errorMessage(message: "Device Status Decoding Error")
+                self.errorMessage(message: "Device Status Decoding Error.  Check Nightscout URL.")
                 return
             }
             if self.consoleLogging == true {print("finish pump update")}
