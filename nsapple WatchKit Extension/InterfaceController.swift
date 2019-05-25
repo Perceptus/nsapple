@@ -64,6 +64,17 @@ class InterfaceController: WKInterfaceController {
         
         //polling frequency
         let deltaTime = (TimeInterval(Date().timeIntervalSince1970) - lastBGUpdate) / 60
+        
+        //if data very old grey it out on wakeup
+        if deltaTime > 16 {
+             DispatchQueue.main.async {
+            self.colorBGStatus(color: UIColor.gray)
+            self.colorLoopStatus(color: UIColor.gray)
+            self.bgGraph.setTintColor(UIColor.gray)
+            self.primaryBG.setTextColor(UIColor.gray)
+            }
+        }
+        
         if deltaTime > 5 {
             if consoleLogging == true {print("inside load")}
             if consoleLogging == true {print(deltaTime)}
@@ -284,11 +295,12 @@ class InterfaceController: WKInterfaceController {
                     else
                     {
                         //self.errorDisplay.setText("")
-                       colorLoopStatus(color: UIColor.green)
+                     //  colorLoopStatus(color: UIColor.green)
                         if let enacted = lastLoop?["enacted"] as? [String:AnyObject] {
                             if let tempbasal = enacted["rate"] as? Double {
                                 let basalStatus = " Basal " + String(format:"%.1f", tempbasal)
                                 self.basalDisplay.setText(basalStatus)
+                                labelColor(label: self.basalDisplay, timeSince: looptime)
                             }
                         }
                         if let iobdata = lastLoop?["iob"] as? [String:AnyObject] {
@@ -301,6 +313,8 @@ class InterfaceController: WKInterfaceController {
                             let prediction = predictdata["values"] as! [Double]
                             pstatus2 = pstatus2 +  " EBG " + bgOutput(bg: prediction.last!, mmol: mmol)
                         }
+                        self.loopStatus2.setText(pstatus2)
+                        labelColor(label: self.loopStatus2, timeSince: looptime)
                         
                     }
                 }
@@ -313,9 +327,10 @@ class InterfaceController: WKInterfaceController {
             {
                 pstatus2 = "Loop Record Error"
                 colorLoopStatus(color: UIColor.red)
+                self.loopStatus2.setText(pstatus2)
             }
             
-            self.loopStatus2.setText(pstatus2)
+
             
             //overrides
             var pstatus3 = "" as String

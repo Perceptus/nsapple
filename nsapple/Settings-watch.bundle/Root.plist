@@ -34,6 +34,14 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Token (Default is Blank)</string>
+			<key>Key</key>
+			<string>token</string>
+		</dict>
 	</array>
 	<key>ApplicationGroupContainerIdentifier</key>
 	<string>com.nsapple</string>
