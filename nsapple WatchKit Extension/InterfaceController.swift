@@ -118,8 +118,17 @@ class InterfaceController: WKInterfaceController {
         
         let points = String(self.graphLength * 12 + 1)
         
+        var urlPath: String = urlUser + "/pebble?"
+        if token == "" {
+            urlPath = urlPath + "count=" + points
+        }
         
-        let urlPath: String = urlUser + "/pebble?count=" + points
+        else
+        
+        {
+            urlPath = urlPath + "token=" + token + "&count=" + points
+        }
+        
         guard let url2 = URL(string: urlPath) else {
             colorBGStatus(color: UIColor.red)
             self.primaryBG.setText("")
