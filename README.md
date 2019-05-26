@@ -18,6 +18,7 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * User Data Setup in ios Watch App 
 ![image](https://user-images.githubusercontent.com/8536751/58384377-26e42100-7faf-11e9-8b69-c7b6d5f58177.png)
 * Support for mmol and for Nightscout Tokens
+* Support for Overrides in the "JoJo" Loop Branch
 * Code - Some Rebasing, Improved Variable Naming, Better Error Handling.  This was a first step and it needs a lot more work.
 * Vastly Improved App Setup in Xcode - See Details Below
 
