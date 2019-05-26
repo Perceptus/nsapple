@@ -57,7 +57,7 @@ class InterfaceController: WKInterfaceController {
         let bundle = infoBundle("CFBundleIdentifier")
         if let bundle = bundle {
             let unique_id = bundle.components(separatedBy: ".")
-            let name : String = "group.com.nsapple." + unique_id[0]
+            let name : String = "group.com." + unique_id[0] + ".nsapple"
             defaults = UserDefaults(suiteName: name)
         }
        
