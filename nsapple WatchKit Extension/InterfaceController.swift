@@ -10,10 +10,6 @@ import WatchKit
 import Foundation
 
 
-
-
-
-
 class InterfaceController: WKInterfaceController {
    
     @IBOutlet weak var bgGraph: WKInterfaceImage!
@@ -21,7 +17,7 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var bgDirection: WKInterfaceLabel!
     @IBOutlet weak var deltaBG: WKInterfaceLabel!
     @IBOutlet weak var minAgo: WKInterfaceLabel!
-    @IBOutlet weak var graphHours: WKInterfaceLabel!
+    @IBOutlet weak var graphHoursDisplay: WKInterfaceLabel!
     @IBOutlet weak var hourSlider: WKInterfaceSlider!
     @IBOutlet var statusOverride: WKInterfaceLabel!
     @IBOutlet var loopStatus2: WKInterfaceLabel!
@@ -30,7 +26,7 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var velocity: WKInterfaceLabel!
     @IBOutlet var errorDisplay: WKInterfaceLabel!
     @IBOutlet var basalDisplay: WKInterfaceLabel!
-    var graphLength:Int=3
+    var graphHours:Int=3
     var mmol = false as Bool
     var urlUser = "No User URL" as String
     var token = "" as String
@@ -43,7 +39,7 @@ class InterfaceController: WKInterfaceController {
     @IBAction func hourslidervalue(_ value: Float) {
         let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let sliderValue=Int(round(value*1000)/1000)
-        graphLength=sliderMap[sliderValue]!
+        graphHours=sliderMap[sliderValue]!
         loadData(urlUser:urlUser, mmol: mmol)
         
     }
@@ -60,13 +56,11 @@ class InterfaceController: WKInterfaceController {
             let name : String = "group.com." + unique_id[0] + ".nsapple"
             defaults = UserDefaults(suiteName: name)
         }
-       
         else
         {
             self.errorDisplay.setTextColor(UIColor.red)
             self.errorDisplay.setText("Could Not Read Bundle Idenifier")
-        }
-        
+        }        
             
         }
         
@@ -137,9 +131,9 @@ class InterfaceController: WKInterfaceController {
             return
         }
         
-        let points = String(self.graphLength * 12 + 1)
+        let points = String(self.graphHours * 12 + 1)
         
-        var urlPath: String = urlUser + "/pebble?"
+        var urlPath: String = urlUser + "/api/v1/entries.json?"
         if token == "" {
             urlPath = urlPath + "count=" + points
         }
@@ -174,10 +168,11 @@ class InterfaceController: WKInterfaceController {
                 return
             }
             let decoder = JSONDecoder()
-            let pebbleResponse = try? decoder.decode(dataPebble.self, from: data)
-            if let pebbleResponse = pebbleResponse {
+            
+            let entriesResponse = try? decoder.decode([sgvData].self, from: data)
+            if let entriesResponse = entriesResponse {
                  DispatchQueue.main.async {
-                self.updateBG(pebbleResponse: pebbleResponse, mmol:mmol)
+                self.updateBG(entriesResponse: entriesResponse, mmol:mmol)
                 }
             }
             else
@@ -388,18 +383,11 @@ class InterfaceController: WKInterfaceController {
         if consoleLogging == true {print("end updatePump")}
     }
     
-    func updateBG (pebbleResponse: dataPebble, mmol: Bool) {
+    func updateBG (entriesResponse: [sgvData], mmol: Bool) {
         if consoleLogging == true {print("in update BG")}
 
-            var entries = [entriesData]()
-            var j: Int = 0
-            //cast string sgvs to int
-            //to do there must be a simpler way ......
-            while j < pebbleResponse.bgs.count {
-                entries.append(entriesData(sgv: Int(pebbleResponse.bgs[j].sgv) ?? 0, date: pebbleResponse.bgs[j].datetime, direction: pebbleResponse.bgs[j].direction ))
-                j=j+1
-            }
-            //successfully received pebble end point data
+            var entries = entriesResponse
+
             if entries.count > 0 {
                 let currentBG=entries[0].sgv
                 let priorBG = entries[1].sgv
@@ -457,14 +445,14 @@ class InterfaceController: WKInterfaceController {
                 return
             }
         
-        createGraph(hours: self.graphLength, bghist: entries, mmol: mmol)
-        self.graphHours.setText(String(self.graphLength) + " Hour Graph")
+        createGraph(hours: self.graphHours, bghist: entries, mmol: mmol)
+        self.graphHoursDisplay.setText(String(self.graphHours) + " Hour Graph")
    
             if consoleLogging == true {print("end update bg")}
     }
 
     
-    func createGraph(hours:Int, bghist:[entriesData], mmol: Bool) {
+    func createGraph(hours:Int, bghist:[sgvData], mmol: Bool) {
         // create graph
         
         // Create a graphics context
@@ -626,7 +614,7 @@ class InterfaceController: WKInterfaceController {
     
     
     
-    func bgScaling(_ hours:Int,bgHist:[entriesData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double) {
+    func bgScaling(_ hours:Int,bgHist:[sgvData], width: CGFloat)-> ([Double], [Double], [UIColor], Double, Double) {
 
 
         let ct2=NSInteger(Date().timeIntervalSince1970)

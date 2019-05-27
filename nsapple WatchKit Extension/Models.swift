@@ -11,15 +11,6 @@ import WatchKit
 
 
 struct sgvData: Codable {
-    var sgv: String
-    var datetime: TimeInterval
-    var direction: String
-}
-struct dataPebble: Codable{
-    var bgs: [sgvData]
-    
-}
-struct entriesData: Codable {
     var sgv: Int
     var date: TimeInterval
     var direction: String
@@ -113,7 +104,7 @@ public struct watch {
     }
 }
 
-func velocity_cf(_ bgs:[entriesData])->Double {
+func velocity_cf(_ bgs:[sgvData])->Double {
     //linear fit to 3 data points get slope (ie velocity)
     var v=0 as Double
     var n=0 as Int

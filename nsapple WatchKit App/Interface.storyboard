@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
-    <device id="watch44" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
-        <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
     </dependencies>
@@ -130,7 +126,7 @@
                         <outlet property="bgGraph" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
                         <outlet property="deltaBG" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="errorDisplay" destination="o6T-Uw-G7S" id="IdW-IR-f7Z"/>
-                        <outlet property="graphHours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
+                        <outlet property="graphHoursDisplay" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourSlider" destination="t7h-De-bBi" id="66r-Am-noX"/>
                         <outlet property="loopStatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
                         <outlet property="minAgo" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
