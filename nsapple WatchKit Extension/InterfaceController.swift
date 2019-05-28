@@ -39,15 +39,19 @@ class InterfaceController: WKInterfaceController {
         let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let sliderValue=Int(round(value*1000)/1000)
         graphHours=sliderMap[sliderValue]!
-        loadData(urlUser:urlUser)
+        loadBGandDeviceStatus(urlUser:urlUser)
         
     }
-
+    
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
+        //TODO change console logginh to true ios logging
         if consoleLogging == true {print("in awake")}
         self.errorDisplay.setTextColor(UIColor.red)
-      
+        setupUserDefaults()
+        }
+    
+    func setupUserDefaults() {
         let bundle = infoBundle("CFBundleIdentifier")
         if let bundle = bundle {
             let unique_id = bundle.components(separatedBy: ".")
@@ -56,50 +60,51 @@ class InterfaceController: WKInterfaceController {
         }
         else
         {
-
             self.errorDisplay.setText("Could Not Read Bundle Idenifier")
-        }        
-            
         }
+    }
     
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
-        
         super.willActivate()
-        
         if consoleLogging == true {print("in will")}
+        readUserDefaults()
+        pollForNewData()
+    }
+    
+    func readUserDefaults() {
         //reread defaults
+        //TODO setup reread on a notification from a change not every time
         mmol = defaults?.bool(forKey: "mmol") ?? false
         urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
         token = defaults?.string(forKey: "token") ?? ""
-        
-        //polling frequency
-        let deltaTimeFromLastBGData = (TimeInterval(Date().timeIntervalSince1970) - timeofLastBGUpdate) / 60
-        
-        //if data very old grey it out on wakeup
-        if deltaTimeFromLastBGData > 16 {
-             DispatchQueue.main.async {
-            self.colorBGStatus(color: UIColor.gray)
-            self.colorLoopStatus(color: UIColor.gray)
-            self.bgGraph.setTintColor(UIColor.gray)
-            self.primaryBGDisplay.setTextColor(UIColor.gray)
+    }
+    
+    func pollForNewData() {
+
+        let deltaTimeFromLastBG = (TimeInterval(Date().timeIntervalSince1970) - timeofLastBGUpdate) / 60
+        if deltaTimeFromLastBG > 16 {
+            DispatchQueue.main.async {
+                self.primaryBGDisplay.setTextColor(UIColor.gray)
+                self.colorBGStatus(color: UIColor.gray)
+                self.colorLoopStatus(color: UIColor.gray)
+                self.bgGraph.setTintColor(UIColor.gray)
+                self.primaryBGDisplay.setTextColor(UIColor.gray)
             }
         }
-        
-        if deltaTimeFromLastBGData > 5 {
+        if deltaTimeFromLastBG > 5 {
             if consoleLogging == true {print("inside load")}
-            if consoleLogging == true {print(deltaTimeFromLastBGData)}
+            if consoleLogging == true {print(deltaTimeFromLastBG)}
             self.errorDisplay.setHidden(true)
-            loadData(urlUser: urlUser)
+            loadBGandDeviceStatus(urlUser: urlUser)
         }
         else
         {
-            self.minAgo.setText(String(Int(deltaTimeFromLastBGData))+" min ago")
+            self.minAgo.setText(String(Int(deltaTimeFromLastBG))+" min ago")
             labelColor(label: self.minAgo, timeSince: timeofLastBGUpdate)
         }
-  
     }
-
+    
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         if consoleLogging == true {print("in deactivate")}
@@ -107,10 +112,7 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
     
-///////////////////////////////////////
-// - Mark
-    
-    func loadData (urlUser: String) {
+    func loadBGandDeviceStatus (urlUser: String) {
         if consoleLogging == true {print("in load BG")}
         self.errorDisplay.setText("")
         
@@ -156,8 +158,8 @@ class InterfaceController: WKInterfaceController {
                 self.errorMessage(message: "No Data")
                 return
             }
+
             let decoder = JSONDecoder()
-            
             let entriesResponse = try? decoder.decode([sgvData].self, from: data)
             if let entriesResponse = entriesResponse {
                 DispatchQueue.main.async {
@@ -198,13 +200,13 @@ class InterfaceController: WKInterfaceController {
             guard error == nil else {
                 self.clearLoopDisplay()
                 self.clearPumpDisplay()
-                self.errorMessage(message: error?.localizedDescription ?? "Server Error")
+                self.errorMessage(message: error?.localizedDescription ?? "Server Error.")
                 return
             }
             guard let data = data else {
                 self.clearLoopDisplay()
                 self.clearPumpDisplay()
-                self.errorMessage(message: "Devicce Status Data is Empty.")
+                self.errorMessage(message: "Device Status Data is Empty.")
                 return
             }
             
@@ -215,9 +217,7 @@ class InterfaceController: WKInterfaceController {
                     self.updateDeviceStatus(jsonDeviceStatus: json, mmol: mmol)
                 }
             }
-                
-            else
-                
+            else                
             {
                 self.clearLoopDisplay()
                 self.clearPumpDisplay()
@@ -545,8 +545,8 @@ class InterfaceController: WKInterfaceController {
     }
     
     
-    func bgScaling(_ hours:Int,bgHist:[sgvData], width: CGFloat)-> ([ScaledBGData], Double, Double) {
-
+    func bgScaling(_ graphHours:Int,bgHist:[sgvData], width: CGFloat)-> ([ScaledBGData], Double, Double) {
+        //TODO refactor
         var scaledBGData = [ScaledBGData]()
         let currentTime=NSInteger(Date().timeIntervalSince1970)
         var maxy=0
@@ -556,19 +556,19 @@ class InterfaceController: WKInterfaceController {
         let bgHighLine=180
         let bgLowLine=80
         var bgTimes = [Int]()
-        let minutes=hours*60
+        let minutes=graphHours*60
         var inc:Int=1
-        if (hours==3||hours==1) {inc=1} else
-            if hours==6 {inc=2} else
-                if hours==12 {inc=3} else
+        if (graphHours==3||graphHours==1) {inc=1} else
+            if graphHours==6 {inc=2} else
+                if graphHours==12 {inc=3} else
                 {inc=5}
        
         //find max and min time, min and max bg
         var i=0 as Int;
 
         while (i<bgHist.count) {
-            let curDate: Double = (bgHist[i].date)/1000
-            bgTimes.append(Int((Double(minutes)-(Double(currentTime)-curDate)/(60.0))))
+            let bgDate: Double = (bgHist[i].date)/1000
+            bgTimes.append(Int((Double(minutes)-(Double(currentTime)-bgDate)/(60.0))))
 
             if (bgTimes[i]>=0) {
                 if (bgTimes[i]>maxx) {maxx=bgTimes[i]}
