@@ -18,15 +18,15 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * User Data Setup in ios Watch App 
 * Support for mmol and for Nightscout Tokens
 * Support for Overrides in the "JoJo" Loop Branch
+* Runs on cellular, wi-fi, or connected to your phone. 
 * Code - Some Rebasing, Improved Variable Naming, Better Error Handling.  This was a first step but needs more work.
 * Vastly Improved App Install in Xcode - No More Editing !
 
 # Setup
 * Simply click on the blue nsapple project file in the top left corner to show the general tab (see below).
 * Then for each of the four targets, click on the team dialog and choose your development team.  Everthing else is auto generated now, just like Loop.  
-* Then, atfer choosing your phone and watch combination to build too, click the play button and install.  
-* After the software installs on the phone and watch, go to the Watch App on your phone and input your site name, unit preference, and tokens (if needed).
-* Now nsapple can run independently from the phone on newer watches!  
+* Then, after choosing your phone and watch combination to build too, click the play button and install.  
+* After the software installs on the phone and watch, go to the Watch App on your phone and click on the nsapple symbol in the list of apps installed on your phone.  Then input your site name, unit preference, and tokens (if needed). 
 * Note - the ios App called nsapple is required but it doesn't actually do anything. 
 
 ![image](https://user-images.githubusercontent.com/8536751/58512523-4b84f800-816b-11e9-8a87-fbe3842e1e3a.png)
