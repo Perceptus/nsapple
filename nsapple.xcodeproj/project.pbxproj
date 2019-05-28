@@ -23,6 +23,8 @@
 		114199AF200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
 		114199B0200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
 		114199B1200ADAB1007AD506 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 114199AD200ADAB1007AD506 /* Settings-Watch.bundle */; };
+		1156885F229DB4C400ACA1A2 /* nsappleUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1156885E229DB4C400ACA1A2 /* nsappleUI.swift */; };
+		11568861229DD6A100ACA1A2 /* ScatterGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11568860229DD6A100ACA1A2 /* ScatterGraph.swift */; };
 		11832FFE1B5F4794005E3536 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11832FFD1B5F4794005E3536 /* ViewController.swift */; };
 		1189EA9A1E7987C400B11975 /* nsapple WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1119BA191B4F04FC00046ABF /* nsapple WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1189EA9D1E7987C400B11975 /* nsapple WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1119BA281B4F04FC00046ABF /* nsapple WatchKit App.app */; };
@@ -102,6 +104,8 @@
 		1132525D2296F379001E299C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		114199A62009CA61007AD506 /* nsapple WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "nsapple WatchKit App.entitlements"; sourceTree = "<group>"; };
 		114199AD200ADAB1007AD506 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = "Settings-Watch.bundle"; sourceTree = "<group>"; };
+		1156885E229DB4C400ACA1A2 /* nsappleUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nsappleUI.swift; sourceTree = "<group>"; };
+		11568860229DD6A100ACA1A2 /* ScatterGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScatterGraph.swift; sourceTree = "<group>"; };
 		11832FFD1B5F4794005E3536 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		118B5CC022980F5100E5A8CE /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		118FA3E920805EB000757121 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
@@ -204,8 +208,10 @@
 			isa = PBXGroup;
 			children = (
 				11C9660A1B5FD701007C5B1E /* nsapple WatchKit Extension.entitlements */,
-				1132525D2296F379001E299C /* Models.swift */,
 				1119BA1E1B4F04FC00046ABF /* InterfaceController.swift */,
+				1156885E229DB4C400ACA1A2 /* nsappleUI.swift */,
+				11568860229DD6A100ACA1A2 /* ScatterGraph.swift */,
+				1132525D2296F379001E299C /* Models.swift */,
 				1119BA241B4F04FC00046ABF /* Images.xcassets */,
 				1119BA1B1B4F04FC00046ABF /* Supporting Files */,
 				118B5CC022980F5100E5A8CE /* ExtensionDelegate.swift */,
@@ -478,6 +484,8 @@
 				1119BA1F1B4F04FC00046ABF /* InterfaceController.swift in Sources */,
 				1132525E2296F379001E299C /* Models.swift in Sources */,
 				118B5CC122980F5100E5A8CE /* ExtensionDelegate.swift in Sources */,
+				1156885F229DB4C400ACA1A2 /* nsappleUI.swift in Sources */,
+				11568861229DD6A100ACA1A2 /* ScatterGraph.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
