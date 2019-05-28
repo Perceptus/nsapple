@@ -16,11 +16,10 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * Error Messages - vastly improved error messaging, including the details of Loop failures.
 ![image](https://user-images.githubusercontent.com/8536751/58513147-d4e8fa00-816c-11e9-92ab-718d94dc64cd.png)
 * User Data Setup in ios Watch App 
-![image](https://user-images.githubusercontent.com/8536751/58384377-26e42100-7faf-11e9-8b69-c7b6d5f58177.png)
 * Support for mmol and for Nightscout Tokens
 * Support for Overrides in the "JoJo" Loop Branch
 * Code - Some Rebasing, Improved Variable Naming, Better Error Handling.  This was a first step but needs more work.
-* Vastly Improved App Setup in Xcode - No More Editing !
+* Vastly Improved App Install in Xcode - No More Editing !
 
 # Setup
 * Simply click on the blue nsapple project file in the top left corner to show the general tab (see below).
@@ -31,6 +30,7 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * Note - the ios App called nsapple is required but it doesn't actually do anything. 
 
 ![image](https://user-images.githubusercontent.com/8536751/58512523-4b84f800-816b-11e9-8a87-fbe3842e1e3a.png)
+![image](https://user-images.githubusercontent.com/8536751/58384377-26e42100-7faf-11e9-8b69-c7b6d5f58177.png)
 
 # Future Work
 This really depends on how many people find nsapple useful.  
