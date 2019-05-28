@@ -14,7 +14,7 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * Faster Performance - graphs are now built in Core Graphics directly on the watch versus using an offline graph creater (required by Watch os1).  
 * Data Polling - data is only pulled from Nightscout when the time since the last BG reading is greater then 6 minutes.  Each time the watch is engaged, if the time is over 6 minutes all data is reloaded.  This leads to lower consumption of battery and data, and the UI looks a lot smoother.
 * Error Messages - vastly improved error messaging, including the details of Loop failures.
-![image](https://user-images.githubusercontent.com/8536751/58384357-e8e6fd00-7fae-11e9-8579-801c6a81361b.png)
+![image](https://user-images.githubusercontent.com/8536751/58513147-d4e8fa00-816c-11e9-92ab-718d94dc64cd.png)
 * User Data Setup in ios Watch App 
 ![image](https://user-images.githubusercontent.com/8536751/58384377-26e42100-7faf-11e9-8b69-c7b6d5f58177.png)
 * Support for mmol and for Nightscout Tokens
@@ -24,9 +24,9 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 
 # Setup
 * Simply click on the blue nsapple project file in the top left corner to show the general tab (see below).
-* Then for each of the four targets, click on the team diablog and choose your development team.  Everthing else is auto generated now, just like Loop.  
-* Then, ater choosing your phone and watch combination to build too, click the play button and install.  
-* After the software installs on the phone and watch, go to the Watch App on your phone and input your site name, unit preference, and toekns (if needed).
+* Then for each of the four targets, click on the team dialog and choose your development team.  Everthing else is auto generated now, just like Loop.  
+* Then, atfer choosing your phone and watch combination to build too, click the play button and install.  
+* After the software installs on the phone and watch, go to the Watch App on your phone and input your site name, unit preference, and tokens (if needed).
 * Now nsapple can run independently from the phone on newer watches!  
 * Note - the ios App called nsapple is required but it doesn't actually do anything. 
 
