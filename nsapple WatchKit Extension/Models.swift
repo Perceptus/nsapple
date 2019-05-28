@@ -9,7 +9,11 @@
 import Foundation
 import WatchKit
 
-
+struct ScaledBGData {
+    var xdata: Double
+    var ydata: Double
+    var dataColor: UIColor
+}
 struct sgvData: Codable {
     var sgv: Int
     var date: TimeInterval

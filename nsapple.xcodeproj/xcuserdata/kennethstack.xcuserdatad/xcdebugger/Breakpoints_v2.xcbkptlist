@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.836951"
+            timestampString = "580694599.342852"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "715"
-            endingLineNumber = "715">
+            startingLineNumber = "685"
+            endingLineNumber = "685">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -24,11 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.837641"
+            timestampString = "580694599.343334"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "464"
-            endingLineNumber = "464"
+            startingLineNumber = "419"
+            endingLineNumber = "419"
             landmarkName = "createGraph(hours:bghist:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -40,11 +40,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.838143"
+            timestampString = "580694599.343712"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "461"
-            endingLineNumber = "461"
+            startingLineNumber = "416"
+            endingLineNumber = "416"
             landmarkName = "createGraph(hours:bghist:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -56,11 +56,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.838587"
+            timestampString = "580694599.344066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "425"
-            endingLineNumber = "425"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "updateBG(entriesResponse:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -72,12 +72,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.838998"
+            timestampString = "580694599.34442"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "360"
-            endingLineNumber = "360"
-            landmarkName = "updateLoopStatus(json:mmol:)"
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "updateDeviceStatus(json:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -88,12 +88,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.839368"
+            timestampString = "580694599.344777"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
-            landmarkName = "updateLoopStatus(json:mmol:)"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
+            landmarkName = "updateDeviceStatus(json:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -104,12 +104,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.840124"
+            timestampString = "580694599.345127"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "364"
-            endingLineNumber = "364"
-            landmarkName = "updateLoopStatus(json:mmol:)"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
+            landmarkName = "updateDeviceStatus(json:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -120,43 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.840716"
+            timestampString = "580694599.345475"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
-            landmarkName = "updateLoopStatus(json:mmol:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.841103"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "367"
-            endingLineNumber = "367"
-            landmarkName = "updateLoopStatus(json:mmol:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.841469"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
             landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
@@ -168,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.841843"
+            timestampString = "580694599.345818"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -184,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.84217"
+            timestampString = "580694599.346162"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -200,11 +168,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.842478"
+            timestampString = "580694599.3465019"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -216,11 +184,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.8427891"
+            timestampString = "580694599.346843"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -232,11 +200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.843096"
+            timestampString = "580694599.3471839"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -248,11 +216,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.843401"
+            timestampString = "580694599.3475209"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -264,11 +232,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.843706"
+            timestampString = "580694599.3478611"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -280,27 +248,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.84401"
+            timestampString = "580694599.348202"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
-            landmarkName = "updateBG(entriesResponse:mmol:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.844311"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "InterfaceController"
             landmarkType = "3">
          </BreakpointContent>
@@ -312,11 +264,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.844613"
+            timestampString = "580694599.348543"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
             landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
@@ -328,11 +280,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.84492"
+            timestampString = "580694599.348889"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
@@ -344,11 +296,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.845228"
+            timestampString = "580694599.349231"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
@@ -360,119 +312,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.845535"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.845835"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.846136"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.846449"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.8467489"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.847049"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.84735"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "willActivate()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.847652"
+            timestampString = "580694599.3495719"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "83"
@@ -488,12 +328,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.847954"
+            timestampString = "580694599.349911"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
-            landmarkName = "loadData(urlUser:mmol:)"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -504,12 +344,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.848254"
+            timestampString = "580694599.35025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "147"
-            endingLineNumber = "147"
-            landmarkName = "loadData(urlUser:mmol:)"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -520,12 +360,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.848554"
+            timestampString = "580694599.350589"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
-            landmarkName = "loadData(urlUser:mmol:)"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -536,27 +376,75 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.848848"
+            timestampString = "580694599.35093"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
-            landmarkName = "loadData(urlUser:mmol:)"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "willActivate()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.849135"
+            timestampString = "580694599.35127"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "387"
-            endingLineNumber = "387"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
+            landmarkName = "willActivate()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
+            timestampString = "580694599.351759"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "willActivate()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
+            timestampString = "580694599.352319"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "willActivate()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
+            timestampString = "580694599.352742"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
             landmarkName = "updateBG(entriesResponse:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -564,15 +452,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.849412"
+            timestampString = "580694599.353398"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "400"
-            endingLineNumber = "400"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "updateBG(entriesResponse:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -580,15 +468,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.84969"
+            timestampString = "580694599.35391"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "389"
-            endingLineNumber = "389"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
             landmarkName = "updateBG(entriesResponse:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -596,16 +484,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nsapple WatchKit Extension/InterfaceController.swift"
-            timestampString = "580679419.849967"
+            timestampString = "580694599.3549629"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
+            startingLineNumber = "359"
+            endingLineNumber = "359"
             landmarkName = "updateBG(entriesResponse:mmol:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
+            timestampString = "580694599.355644"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "626"
+            endingLineNumber = "626"
+            landmarkName = "bgScaling(_:bgHist:width:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nsapple WatchKit Extension/InterfaceController.swift"
+            timestampString = "580694599.3560719"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "437"
+            endingLineNumber = "437"
+            landmarkName = "createGraph(hours:bghist:mmol:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

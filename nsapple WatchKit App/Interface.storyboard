@@ -122,19 +122,19 @@
                     </items>
                     <connections>
                         <outlet property="basalDisplay" destination="akL-EX-Tng" id="Scc-XY-UO0"/>
-                        <outlet property="bgDirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
+                        <outlet property="bgDirectionDisplay" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
                         <outlet property="bgGraph" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
-                        <outlet property="deltaBG" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
+                        <outlet property="deltaBGDisplay" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
                         <outlet property="errorDisplay" destination="o6T-Uw-G7S" id="IdW-IR-f7Z"/>
                         <outlet property="graphHoursDisplay" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
                         <outlet property="hourSlider" destination="t7h-De-bBi" id="66r-Am-noX"/>
-                        <outlet property="loopStatus2" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
+                        <outlet property="loopStatusDisplay" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
                         <outlet property="minAgo" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
-                        <outlet property="prediction" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
-                        <outlet property="primaryBG" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
-                        <outlet property="pumpStatus" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
-                        <outlet property="statusOverride" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
-                        <outlet property="velocity" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
+                        <outlet property="predictionDisplay" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
+                        <outlet property="primaryBGDisplay" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
+                        <outlet property="pumpDataDisplay" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
+                        <outlet property="statusOverrideDisplay" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
+                        <outlet property="velocityDisplay" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>
                 </controller>
             </objects>
