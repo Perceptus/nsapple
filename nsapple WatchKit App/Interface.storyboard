@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
+        <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
     </dependencies>
@@ -66,6 +70,12 @@
                         </label>
                         <label alignment="center" hidden="YES" text="Error Messages" textAlignment="left" numberOfLines="0" id="o6T-Uw-G7S">
                             <fontDescription key="font" type="system" pointSize="11"/>
+                            <variation key="device=watch38mm">
+                                <fontDescription key="font" type="system" pointSize="9"/>
+                            </variation>
+                            <variation key="device=watch42mm">
+                                <fontDescription key="font" type="system" pointSize="10"/>
+                            </variation>
                         </label>
                         <group width="1" alignment="left" id="LxB-Yd-NVT">
                             <items>
