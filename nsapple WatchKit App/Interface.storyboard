@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
     </dependencies>
     <scenes>
         <!--Interface Controller-->
@@ -10,89 +10,135 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="nsapple_WatchKit_App" customModuleProvider="target">
                     <items>
+                        <group width="1" alignment="center" id="0XS-Xb-x7m">
+                            <items>
+                                <label alignment="left" text=" V / min" id="1qW-8W-XE3">
+                                    <fontDescription key="font" type="system" pointSize="8"/>
+                                </label>
+                                <label alignment="right" text="30 min Pred " id="wWp-A4-E1K">
+                                    <fontDescription key="font" type="system" pointSize="8"/>
+                                </label>
+                            </items>
+                        </group>
                         <group width="1" height="32" alignment="left" id="Mak-4o-hyQ">
                             <items>
-                                <label alignment="center" text="N/A" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
+                                <label alignment="left" id="1cw-2v-v8O"/>
+                                <label alignment="center" verticalAlignment="center" text="#WeAreNotWaiting" textAlignment="center" minimumScaleFactor="0.10000000000000014" id="vGM-hd-W1b">
                                     <fontDescription key="font" type="system" weight="thin" pointSize="33"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" weight="thin" pointSize="28"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" weight="thin" pointSize="35"/>
+                                    </variation>
                                 </label>
-                                <label alignment="center" text="-" id="YV0-Ga-4dz">
+                                <label alignment="center" id="YV0-Ga-4dz">
                                     <fontDescription key="font" type="system" pointSize="30"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="26"/>
+                                    </variation>
+                                </label>
+                                <label alignment="right" id="oEG-1v-IuD"/>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="nJH-yY-zdH">
+                            <items>
+                                <label alignment="left" textAlignment="center" id="IwJ-4k-L7w">
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="9"/>
+                                    </variation>
+                                </label>
+                                <label alignment="right" id="drV-DZ-SeX">
+                                    <fontDescription key="font" type="system" pointSize="10"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
                                 </label>
                             </items>
                         </group>
-                        <label alignment="center" text="- 5.0 mg/dl" id="drV-DZ-SeX">
-                            <fontDescription key="font" type="system" pointSize="10"/>
+                        <imageView width="1" height="70" alignment="right" id="v8P-Xw-gHJ">
+                            <variation key="device=watch38mm" height="60"/>
+                        </imageView>
+                        <label alignment="center" id="oz4-fb-Ktb">
+                            <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
                         </label>
-                        <group width="1" alignment="left" id="D2S-gh-qaj">
+                        <label alignment="center" hidden="YES" text="Error Messages" textAlignment="left" numberOfLines="0" id="o6T-Uw-G7S">
+                            <fontDescription key="font" type="system" pointSize="11"/>
+                        </label>
+                        <group width="1" alignment="left" id="LxB-Yd-NVT">
                             <items>
-                                <label alignment="left" text="N/A" id="piM-ym-Ukt">
-                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
+                                <label alignment="center" id="Vcl-QY-KNQ">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" pointSize="13"/>
+                                    </variation>
                                 </label>
-                                <label alignment="center" verticalAlignment="center" text="min ago" textAlignment="center" id="IwJ-4k-L7w">
-                                    <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                <label alignment="center" id="akL-EX-Tng" userLabel="Basal">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="9"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" pointSize="13"/>
+                                    </variation>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="center" id="kTC-wL-SQ9">
+                            <items>
+                                <label alignment="center" id="8Qo-he-BQ1">
+                                    <fontDescription key="font" type="system" pointSize="11"/>
+                                    <variation key="device=watch38mm">
+                                        <fontDescription key="font" type="system" pointSize="8"/>
+                                    </variation>
+                                    <variation key="device=watch44mm">
+                                        <fontDescription key="font" type="system" pointSize="13"/>
+                                    </variation>
+                                </label>
+                            </items>
+                        </group>
+                        <group width="1" alignment="left" id="NRW-oT-jdu">
+                            <items>
+                                <label alignment="center" id="LnC-ig-q4J">
                                     <fontDescription key="font" type="system" pointSize="11"/>
                                 </label>
-                                <label alignment="right" text="N/A" textAlignment="center" numberOfLines="2" id="Ehr-1Q-tJ0">
-                                    <fontDescription key="font" type="system" weight="thin" pointSize="16"/>
-                                </label>
                             </items>
                         </group>
-                        <group width="1" alignment="left" id="all-5Y-wf2">
+                        <group width="1" alignment="left" id="hRm-FM-y4c">
                             <items>
-                                <label alignment="left" text=" Raw" id="sUx-e6-wQe">
-                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
-                                </label>
-                                <label alignment="center" text="3 Hour Graph" id="oz4-fb-Ktb">
-                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
-                                </label>
-                                <label alignment="right" text="Battery" id="Izd-lg-G55">
-                                    <fontDescription key="font" type="system" weight="ultraLight" pointSize="8"/>
-                                </label>
+                                <label alignment="center" text="          " id="Gq1-C9-7sH"/>
                             </items>
                         </group>
-                        <imageView alignment="center" id="v8P-Xw-gHJ"/>
                         <slider width="1" alignment="left" value="4" minimum="1" maximum="5" steps="4" id="t7h-De-bBi">
                             <connections>
                                 <action selector="hourslidervalue:" destination="AgC-eL-Hgc" id="DLu-de-uQe"/>
                             </connections>
                         </slider>
-                        <switch width="1" alignment="center" value="YES" title="Chart Raw" id="mh8-ja-2bc">
-                            <connections>
-                                <action selector="chartraw:" destination="AgC-eL-Hgc" id="PEs-MP-MW0"/>
-                            </connections>
-                        </switch>
                     </items>
                     <connections>
-                        <outlet property="battery" destination="Ehr-1Q-tJ0" id="9QT-Q7-w05"/>
-                        <outlet property="bgdirection" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
-                        <outlet property="bgimage" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
-                        <outlet property="chartraw" destination="mh8-ja-2bc" id="uFY-FI-cXC"/>
-                        <outlet property="deltabg" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
-                        <outlet property="graphhours" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
-                        <outlet property="hourslider" destination="t7h-De-bBi" id="66r-Am-noX"/>
-                        <outlet property="minago" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
-                        <outlet property="primarybg" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
-                        <outlet property="secondarybg" destination="piM-ym-Ukt" id="NQ9-D7-oTk"/>
-                        <outlet property="secondarybgname" destination="sUx-e6-wQe" id="KOf-B7-ShR"/>
+                        <outlet property="basalDisplay" destination="akL-EX-Tng" id="Scc-XY-UO0"/>
+                        <outlet property="bgDirectionDisplay" destination="YV0-Ga-4dz" id="Q1b-cW-AzS"/>
+                        <outlet property="bgGraphDisplay" destination="v8P-Xw-gHJ" id="3FM-44-uu6"/>
+                        <outlet property="deltaBGDisplay" destination="drV-DZ-SeX" id="hVe-q7-5Oy"/>
+                        <outlet property="errorDisplay" destination="o6T-Uw-G7S" id="IdW-IR-f7Z"/>
+                        <outlet property="graphHoursDisplay" destination="oz4-fb-Ktb" id="lCb-Bl-oFm"/>
+                        <outlet property="hourSlider" destination="t7h-De-bBi" id="66r-Am-noX"/>
+                        <outlet property="loopStatusDisplay" destination="8Qo-he-BQ1" id="Xcb-1B-meO"/>
+                        <outlet property="minAgoBGDisplay" destination="IwJ-4k-L7w" id="2kZ-8q-Xj1"/>
+                        <outlet property="predictionDisplay" destination="oEG-1v-IuD" id="r3u-OE-VCH"/>
+                        <outlet property="primaryBGDisplay" destination="vGM-hd-W1b" id="JHs-Iu-TH9"/>
+                        <outlet property="pumpDataDisplay" destination="Vcl-QY-KNQ" id="se4-gs-3I7"/>
+                        <outlet property="statusOverrideDisplay" destination="LnC-ig-q4J" id="LAO-xn-O8n"/>
+                        <outlet property="velocityDisplay" destination="1cw-2v-v8O" id="7vr-6h-WDn"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="413" y="213.5"/>
-        </scene>
-        <!--Static Notification Interface Controller-->
-        <scene sceneID="1Px-nn-dlv">
-            <objects>
-                <notificationController id="8WY-QB-WNU">
-                    <items>
-                        <label alignment="left" text="Alert Label" id="cdq-IX-JgV"/>
-                    </items>
-                    <notificationCategory key="notificationCategory" id="34I-Y4-Zns"/>
-                    <connections>
-                        <outlet property="notificationAlertLabel" destination="cdq-IX-JgV" id="YN2-7e-NpL"/>
-                    </connections>
-                </notificationController>
-            </objects>
-            <point key="canvasLocation" x="712.5" y="267"/>
+            <point key="canvasLocation" x="412.35897435897436" y="212.2820512820513"/>
         </scene>
     </scenes>
 </document>

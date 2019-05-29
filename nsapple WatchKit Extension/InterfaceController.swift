@@ -9,476 +9,407 @@
 import WatchKit
 import Foundation
 
-//
-
-public extension WKInterfaceImage {
-    
-    public func setImageWithUrl(url:String) -> WKInterfaceImage? {
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            if let url = NSURL(string: url) {
-                if let data = NSData(contentsOfURL: url) { // may return nil, too
-                    // do something with data
-                    var placeholder = UIImage(data: data)!
-                    dispatch_async(dispatch_get_main_queue()) {
-                                        self.setImage(placeholder)
-                                    }
-                    
-                }
-            }
-            
-        }
-        
-        return self
-    }
-    
-}
 
 class InterfaceController: WKInterfaceController {
-    @IBOutlet weak var bgimage: WKInterfaceImage!
-    @IBOutlet weak var primarybg: WKInterfaceLabel!
-    @IBOutlet weak var bgdirection: WKInterfaceLabel!
-    @IBOutlet weak var deltabg: WKInterfaceLabel!
-    @IBOutlet weak var battery: WKInterfaceLabel!
-    @IBOutlet weak var minago: WKInterfaceLabel!
-    @IBOutlet weak var secondarybg: WKInterfaceLabel!
-    @IBOutlet weak var graphhours: WKInterfaceLabel!
-    @IBOutlet weak var hourslider: WKInterfaceSlider!
-    @IBOutlet weak var chartraw: WKInterfaceSwitch!
-   //@IBOutlet weak var primarybg: WKInterfaceLabel!
-   //@IBOutlet weak var secondarybg: WKInterfaceLabel!
     
-    @IBOutlet weak var secondarybgname: WKInterfaceLabel!
-    var graphlength:Int=3
-    var bghistread=true as Bool
-    var bghist=[] as NSArray
-    var cals=[] as NSArray
-    var craw=true as Bool
-    //
+    @IBOutlet weak var bgGraphDisplay: WKInterfaceImage!
+    @IBOutlet weak var primaryBGDisplay: WKInterfaceLabel!
+    @IBOutlet weak var bgDirectionDisplay: WKInterfaceLabel!
+    @IBOutlet weak var deltaBGDisplay: WKInterfaceLabel!
+    @IBOutlet weak var minAgoBGDisplay: WKInterfaceLabel!
+    @IBOutlet weak var graphHoursDisplay: WKInterfaceLabel!
+    @IBOutlet weak var hourSlider: WKInterfaceSlider!
+    @IBOutlet var statusOverrideDisplay: WKInterfaceLabel!
+    @IBOutlet var loopStatusDisplay: WKInterfaceLabel!
+    @IBOutlet var pumpDataDisplay: WKInterfaceLabel!
+    @IBOutlet weak var predictionDisplay: WKInterfaceLabel!
+    @IBOutlet weak var velocityDisplay: WKInterfaceLabel!
+    @IBOutlet var errorDisplay: WKInterfaceLabel!
+    @IBOutlet var basalDisplay: WKInterfaceLabel!
+    var graphHours:Int=3
+    var mmol = false as Bool
+    var urlUser = "No User URL" as String
+    var token = "" as String
+    var defaults : UserDefaults?
+    let consoleLogging = true
+    var timeofLastBGUpdate = 0 as TimeInterval
     
-    @IBAction func hourslidervalue(value: Float) {
-        let slidermap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
-        let slidervalue=Int(round(value*1000)/1000)
-        graphlength=slidermap[slidervalue]!
-        willActivate()
+    
+    @IBAction func hourslidervalue(_ value: Float) {
+        let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
+        let sliderValue=Int(round(value*1000)/1000)
+        graphHours=sliderMap[sliderValue]!
+        loadBGandDeviceStatus(urlUser:urlUser)
         
     }
-
     
-    @IBAction func chartraw(value: Bool) {
-        craw=value
-        willActivate()
-    }
-    
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
-        
-        // Configure interface objects here.
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
+        //TODO change console logginh to true ios logging
+        if consoleLogging == true {print("in awake")}
+        self.errorDisplay.setTextColor(UIColor.red)
+        setupUserDefaults()
     }
     
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
-        updatecore()
-        let google=bggraph(graphlength)!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
-        if (bghistread==true)&&(google != "NoData") {
-            graphhours.setTextColor(UIColor.whiteColor())
-            graphhours.setText("Last "+String(graphlength)+" Hours")
-            bgimage.setHidden(false)
-            chartraw.setHidden(false)
-            bgimage.setImageWithUrl(google)
-        }
-        else {
-            //need to create no data image
-            graphhours.setTextColor(UIColor.redColor())
-            graphhours.setText("No Chart Data")
-            bgimage.setHidden(true)
-            chartraw.setHidden(true)
-        }
-        
-        
+        if consoleLogging == true {print("in will")}
+        //TODO setup reload user defaults on a notification from a change not every time
+        readUserDefaults()
+        pollForNewData()
     }
-
+    
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
+        if consoleLogging == true {print("in deactivate")}
         super.didDeactivate()
     }
     
-
+    //////////////////////////
+    // Mark
     
-    func updatecore() {
- 
-     //get pebble data
-  //    var dexprimary=false as Bool
-        //add retrieve urlfrom user storage
-        var defaults: NSUserDefaults = NSUserDefaults(suiteName: "group.perceptus.nsapple")!
-        let url=defaults.objectForKey("pebbleurl") as! String
-        var dexprimary=true as Bool
-        if defaults.objectForKey("primarydisplay") as! String == "dex" {dexprimary=true} else {dexprimary=false}
-      
-       
-        
-        let urlPath: String = "https://"+url+"/pebble?count=576"
-        println("in watchkit")
-        println(urlPath)
-        var responseDict:AnyObject=""
-        if let url = NSURL(string: urlPath) {
-            if let data = NSData(contentsOfURL: url, options: .allZeros, error: nil) {
-                println(data)
-                
-                //from Nightscouter - fix for apple json issues
-                var dataConvertedToString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                // Apple's JSON Serializer has a problem with + notation for large numbers. I've observed this happening in intercepts.
-                dataConvertedToString = dataConvertedToString?.stringByReplacingOccurrencesOfString("+", withString: "")
-                
-                // Converting string back into data so it can be processed into JSON.
-                if let newData: NSData = dataConvertedToString?.dataUsingEncoding(NSUTF8StringEncoding) {
-                    var jsonErrorOptional: NSError?
-                    responseDict = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)!
-                    
-                    // if there was an error parsing the JSON send it back
-             
-                
-                
-                
-                
-                
-                
-                }
-                
-            
-            
-                
-                
-             //  responseDict  = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)!
+    func setupUserDefaults() {
+        let bundle = infoBundle("CFBundleIdentifier")
+        if let bundle = bundle {
+            let unique_id = bundle.components(separatedBy: ".")
+            let appGroup : String = "group.com." + unique_id[0] + ".nsapple"
+            defaults = UserDefaults(suiteName: appGroup)
+        }
+        else
+        {
+            self.errorDisplay.setText("Could Not Read Bundle Idenifier.")
+        }
+    }
+    
+    func readUserDefaults() {
+        //reread defaults
+        mmol = defaults?.bool(forKey: "mmol") ?? false
+        urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
+        token = defaults?.string(forKey: "token") ?? ""
+    }
+    
+    func pollForNewData() {
+        let deltaTimeFromLastBG = (TimeInterval(Date().timeIntervalSince1970) - timeofLastBGUpdate) / 60
+        if deltaTimeFromLastBG > 16 {
+            DispatchQueue.main.async {
+                self.primaryBGDisplay.setTextColor(UIColor.gray)
+                self.colorBGStatus(color: UIColor.gray)
+                self.colorLoopStatus(color: UIColor.gray)
+                self.bgGraphDisplay.setTintColor(UIColor.gray)
+                self.primaryBGDisplay.setTextColor(UIColor.gray)
             }
         }
+        if deltaTimeFromLastBG > 5 {
+            if consoleLogging == true {print("inside load")}
+            if consoleLogging == true {print(deltaTimeFromLastBG)}
+            self.errorDisplay.setHidden(true)
+            loadBGandDeviceStatus(urlUser: urlUser)
+        }
+        else
+        {
+            self.minAgoBGDisplay.setText(String(Int(deltaTimeFromLastBG))+" min ago")
+            labelColor(label: self.minAgoBGDisplay, timeSince: timeofLastBGUpdate)
+        }
+    }
+    
+    
+    
+    func loadBGandDeviceStatus (urlUser: String) {
+        if consoleLogging == true {print("in load BG")}
+        self.errorDisplay.setText("")
         
- 
+        if urlUser == "No User URL" {
+            self.clearBGDisplay()
+            self.clearLoopDisplay()
+            errorMessage(message: "Cannot Read User NS URL.  Check Setup Of Defaults in iOS Watch App")
+            return
+        }
         
-       
-  //successfully received pebble end point data
-        if let bgs=responseDict["bgs"] as? NSArray {
-        bghistread=true
-        var rawavailable=false as Bool
-        var slope=0.0 as Double
-        var intercept=0.0 as Double
-        var scale=0.0 as Double
-        let cbg=bgs[0]["sgv"] as! String
-        let direction=bgs[0]["direction"] as! String
-        let unfilt=bgs[0]["unfiltered"] as! Double
-        let filt=bgs[0]["filtered"] as! Double
-        let bat=bgs[0]["battery"] as! String
-        let dbg=bgs[0]["bgdelta"] as! Int
-        let bgtime=bgs[0]["datetime"] as! NSTimeInterval
-        var red=UIColor.redColor() as UIColor
-        var green=UIColor.greenColor() as UIColor
-        var yellow=UIColor.yellowColor() as UIColor
-        var rawcolor="green" as String
-        //save as global variables
-         cals=responseDict["cals"] as! NSArray
-            bghist=bgs
-        //calculate text colors for sgv,direction
-        var lmh=2
-        var rawv=0 as Int
-        let sgvi=cbg.toInt()
-        let sgv=Double(sgvi!)
-       // let sgvcolor=bgcolor(sgvi!) as String
-            
-
-//check to see if cal data is available - if so we can calc raw
-
+        loadBGData(urlUser: urlUser)
+        loadDeviceStatus(urlUser: urlUser)
+    }
+    
+    func loadBGData(urlUser: String) {
+        let points = String(self.graphHours * 12 + 1)
+        var urlBGDataPath: String = urlUser + "/api/v1/entries.json?"
+        if token == "" {
+            urlBGDataPath = urlBGDataPath + "count=" + points
+        }
+        else
+        {
+            urlBGDataPath = urlBGDataPath + "token=" + token + "&count=" + points
+        }
+        guard let urlBGData = URL(string: urlBGDataPath) else {
+            clearBGDisplay()
+            errorMessage(message: "NS URL Not Valid")
+            return
+        }
+        var request = URLRequest(url: urlBGData)
+        request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
         
-            if (cals.count>0) {
-                rawavailable=true
-                slope=cals[0]["slope"] as! Double
-           scale=cals[0]["scale"] as! Double
-             intercept=cals[0]["intercept"] as! Double
+        let getBGTask = URLSession.shared.dataTask(with: request) { data, response, error in
             
-            rawv=calcraw(sgv,filt: filt,unfilt: unfilt,slope: slope,intercept: intercept,scale: scale)
+            if self.consoleLogging == true {print("start bg url")}
+            guard error == nil else {
+                self.clearBGDisplay()
+                self.errorMessage(message: error?.localizedDescription ?? "Server Error")
+                return
+            }
+            guard let data = data else {
+                self.clearBGDisplay()
+                self.errorMessage(message: "No Data")
+                return
+            }
             
-                }
-//        else
-//        {rawbg.setTextColor(rawcolor)
-//            rawbg.setText("N/A")
-//        }
-        // display pebble data to watch
-            
-        //color for battery
-        if bat.toInt()<20 {battery.setTextColor(UIColor.redColor())} else
-            if bat.toInt()<40 {battery.setTextColor(UIColor.yellowColor())} else
-            {battery.setTextColor(UIColor.greenColor())}
-         battery.setText(bat+"%")
-        //set time
-            let ct=NSTimeInterval(NSDate().timeIntervalSince1970)
-            let deltat=(ct-bgtime/1000)/60
-            if deltat<10 {minago.setTextColor(UIColor.greenColor())} else
-                if deltat<20 {minago.setTextColor(UIColor.yellowColor())} else {minago.setTextColor(UIColor.redColor())}
-            minago.setText(String(Int(deltat))+" min ago")
-            secondarybgname.setText("Raw")
-            if (sgvi<40) {
-//display error code as primary and raw as secondary
-               // currentbg.setAttributedText(size)
-                primarybg.setTextColor(red)
-                primarybg.setText(errorcode(sgvi!))
-                bgdirection.setText("")
-                deltabg.setText("")
-                if (rawavailable==true) {
-                    secondarybg.setText(String(rawv))
-                    secondarybg.setTextColor(bgcolor(rawv))
-                }
-                else
-                {
-                    secondarybg.setText("N/A")
-                    secondarybg.setTextColor(red)
+            let decoder = JSONDecoder()
+            let entriesResponse = try? decoder.decode([sgvData].self, from: data)
+            if let entriesResponse = entriesResponse {
+                DispatchQueue.main.async {
+                    self.updateBG(entries: entriesResponse)
                 }
             }
- //if raw doesnt exist or dex is primary
             else
-                if (dexprimary==true || rawavailable==false)
             {
-        //display dex as primary
-        primarybg.setText(cbg)
-        primarybg.setTextColor(bgcolor(cbg.toInt()!))
-        deltabg.setTextColor(UIColor.whiteColor())
-        if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
-        bgdirection.setText(dirgraphics(direction))
-                bgdirection.setTextColor(bgcolor(cbg.toInt()!))
-                if (rawavailable==true) {
-                    secondarybg.setText(String(rawv))
-                    secondarybg.setTextColor(bgcolor(rawv))
-                }
-                else
-                {
-                    secondarybg.setText("N/A")
-                    secondarybg.setTextColor(red)
+                self.clearBGDisplay()
+                self.errorMessage(message: "BG Decoding Error.  Check NightScout URL. ")
+                return
+            }
+        }
+        getBGTask.resume()
+        
+    }
+    
+    func loadDeviceStatus(urlUser: String) {
+        var urlStringDeviceStatus = urlUser + "/api/v1/devicestatus.json?count=1"
+        if token != "" {
+            urlStringDeviceStatus = urlUser + "/api/v1/devicestatus.json?token=" + token + "&count=1"
+        }
+        
+        let escapedAddress = urlStringDeviceStatus.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+        
+        guard let urlDeviceStatus = URL(string: escapedAddress!) else {
+            self.clearLoopDisplay()
+            self.clearPumpDisplay()
+            self.errorMessage(message: "Loop URL ERROR.")
+            return
+        }
+        
+        if consoleLogging == true {print("entered 2nd task.")}
+        var requestDeviceStatus = URLRequest(url: urlDeviceStatus)
+        requestDeviceStatus.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+        let deviceStatusTask = URLSession.shared.dataTask(with: requestDeviceStatus) { data, response, error in
+            if self.consoleLogging == true {print("in update loop.")}
+            guard error == nil else {
+                self.clearLoopDisplay()
+                self.clearPumpDisplay()
+                self.errorMessage(message: error?.localizedDescription ?? "Server Error.")
+                return
+            }
+            guard let data = data else {
+                self.clearLoopDisplay()
+                self.clearPumpDisplay()
+                self.errorMessage(message: "Device Status Data is Empty.")
+                return
+            }
+            
+            let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
+            
+            if let json = json {
+                DispatchQueue.main.async {
+                    self.updateDeviceStatusDisplay(jsonDeviceStatus: json)
                 }
             }
             else
-    //raw must be primary and available
+            {
+                self.clearLoopDisplay()
+                self.clearPumpDisplay()
+                self.errorMessage(message: "Device Status Decoding Error.  Check Nightscout URL.")
+                return
+            }
+            if self.consoleLogging == true {print("finish pump update")}
+        }
+        deviceStatusTask.resume()
+    }
+    
+    func updateDeviceStatusDisplay(jsonDeviceStatus: [[String:AnyObject]]) {
+        
+        if consoleLogging == true {print("in updatePump")}
+        
+        if jsonDeviceStatus.count == 0 {
+            self.errorMessage(message: "No Device Status Records.")
+            clearPumpDisplay()
+            clearLoopDisplay()
+            return
+            
+        }
+        //only grabbing one record since ns sorts by {created_at : -1}
+        let lastDeviceStatus = jsonDeviceStatus[0] as [String : AnyObject]?
+        
+        //pump and uploader
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate,
+                                   .withTime,
+                                   .withDashSeparatorInDate,
+                                   .withColonSeparatorInTime]
+        var pumpStatusString:String = "Res "
+        let lastPumpRecord = lastDeviceStatus?["pump"] as! [String : AnyObject]?
+        if lastPumpRecord != nil {
+            if let lastPumpTime = formatter.date(from: (lastPumpRecord?["clock"] as! String))?.timeIntervalSince1970  {
+                labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
+                if let reservoirData = lastPumpRecord?["reservoir"] as? Double
+                {
+                    pumpStatusString += String(format:"%.0f", reservoirData)
+                }
+                    
+                else
                     
                 {
-                    primarybg.setText(String(rawv))
-                    primarybg.setTextColor(bgcolor(rawv))
-                //calculate raw delta
-                    let cbgo=bgs[1]["sgv"] as! String
-                    let unfilto=bgs[1]["unfiltered"] as! Double
-                    let filto=bgs[1]["filtered"] as! Double
-                    //let t2=test(filto,b:unfilto)
-                    let rawvo=calcraw(Double(cbgo.toInt()!),filt:filto,unfilt:unfilto,slope: slope,intercept: intercept,scale: scale) as Int
-                    let dbg=(rawv-rawvo) as Int
-                    deltabg.setTextColor(UIColor.whiteColor())
-                    if (dbg<0) {deltabg.setText(String(dbg)+" mg/dl")} else {deltabg.setText("+"+String(dbg)+" mg/dl")}
-                    //calculate raw direction
-                   let bgtimeo=bgs[1]["datetime"] as! NSTimeInterval
-                    let dt=round((bgtime-bgtimeo)/60000.0) as Double
-                    println(dt)
-                    let velocity=Double(dbg)/dt
-                    bgdirection.setTextColor(bgcolor(rawv))
-                    bgdirection.setText(dirgraphics(rawdir(velocity,dt: dt)))
-                    
-
-
-                    //display raw direction and delta
-                    secondarybg.setText(cbg)
-                    secondarybg.setTextColor(bgcolor(sgvi!))
-                    secondarybgname.setText("Dex")
-                    
-                    
-            }
-
-         } //end bgs !=nil
-            
-        //did not get pebble endpoint data
-        else
-        {
-            bghistread=false
-            noconnection()
-        }
-
-    }
-    
-    
-    func noconnection() {
-        deltabg.setTextColor(UIColor.redColor())
-        deltabg.setText("No Data")
-        
-    }
-    
-    func bgcolor(value:Int)->UIColor
-    {
-        
-        var red=UIColor.redColor() as UIColor
-        var green=UIColor.greenColor() as UIColor
-        var yellow=UIColor.yellowColor() as UIColor
-        var sgvcolor=green as UIColor
-        
-        if (value<65) {sgvcolor=red}
-        else
-            if(value<80) {sgvcolor=yellow}
+                    pumpStatusString += "N/A"
+                }
                 
-            else
-                if (value<180) {sgvcolor=green}
-                    
+                if let uploader = lastDeviceStatus?["uploader"] as? [String:AnyObject] {
+                    let upbat = uploader["battery"] as! Double
+                    pumpStatusString += " UpBat " + String(format:"%.0f", upbat)
+                }
+                self.pumpDataDisplay.setText(pumpStatusString)
+            }
+            
+        } //finish pump data
+            
+        else
+            
+        {
+            clearPumpDisplay()
+            self.errorMessage(message: "Device Status Error - No Pump Field.")
+            //TODO have errormessages add, end all with period versus always reset
+        }
+        
+        //loop
+        let lastLoopRecord = lastDeviceStatus?["loop"] as! [String : AnyObject]?
+        var loopStatusText:String = " IOB "
+        if lastLoopRecord != nil {
+            if let lastLoopTime = formatter.date(from: (lastLoopRecord?["timestamp"] as! String))?.timeIntervalSince1970  {
+                labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
+                if let failure = lastLoopRecord?["failureReason"] {
+                    clearLoopDisplay()
+                    //TODO WHY was this here???      self.pumpDataDisplay.setText(pstatus)
+                    self.loopStatusDisplay.setTextColor(UIColor.red)
+                    loopStatusText = "Loop Failure "
+                    self.loopStatusDisplay.setText(loopStatusText)
+                    self.errorMessage(message: failure as? String ?? "Unknown Failure")
+                }
                 else
-                    if (value<250) {sgvcolor=yellow}
-                    else
-                    {sgvcolor=red}
-        return sgvcolor
-    }
-    
-    func errorcode(value:Int)->String {
-        
-       let errormap=["EC0 UNKNOWN","EC1 SENSOR NOT ACTIVE","EC2 MINIMAL DEVIATION","EC3 NO ANTENNA","EC4 UNKNOWN","EC5 SENSOR CALIBRATION","EC6 COUNT DEVIATION","EC7 UNKNOWN","EC8 UNKNWON","EC9 HOURGLASS DEVIATION","EC10 ??? POWER DEVIATION","EC11 UNKNOWN","EC12 BAD RF","EC13 MH"]
-
-        return errormap[value]
-    }
-    
-    func dirgraphics(value:String)->String {
-         let graphics:[String:String]=["Flat":"\u{2192}","DoubleUp":"\u{21C8}","SingleUp":"\u{2191}","FortyFiveUp":"\u{2197}\u{FE0E}","FortyFiveDown":"\u{2198}\u{FE0E}","SingleDown":"\u{2193}","DoubleDown":"\u{21CA}","None":"-","NOT COMPUTABLE":"-","RATE OUT OF RANGE":"-"]
-        
-        
-        return graphics[value]!
-    }
-    
-    func rawdir(velocity:Double,dt:Double) ->String {
-        var direction="NONE" as String
-        if (dt>10.1) {direction="NOT COMPUTABLE"} else
-            if (velocity <= -3.0) {direction="DoubleDown"} else
-                if (velocity > -3.0 && velocity <= -2.0) {direction="SingleDown"} else
-                    if (velocity > -2.0 && velocity <= -1.0) {direction="FortyFiveDown"} else
-        if (velocity > -1.0 && velocity <= 1.0) {direction="Flat"} else
-        if (velocity > 1.0 && velocity <= 2.0) {direction="FortyFiveUp"} else
-        if (velocity > 2.0 && velocity <= 3.0) {direction="SingleUp"} else
-            if (velocity > 3.0) {direction="DoubleUp"} else
-            {direction="RATE OUT OF RANGE"}
-       
-        
-    return direction
-    }
-    
-    func test(a:Double,b:Double) ->Int {
-        return Int(a+b)
-    }
-    
-    func calcraw(sgv:Double,filt:Double,unfilt:Double, slope:Double, intercept:Double, scale:Double) -> Int
-    
-    {
-        var rawv=0 as Int
-        if(sgv<40) {
-            rawv = Int(scale*(unfilt-intercept)/slope)
+                {
+                    if let enacted = lastLoopRecord?["enacted"] as? [String:AnyObject] {
+                        if let lastTempBasal = enacted["rate"] as? Double {
+                            let lateBasalStatus = " Basal " + String(format:"%.1f", lastTempBasal)
+                            self.basalDisplay.setText(lateBasalStatus)
+                            labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
+                        }
+                    }
+                    if let iobdata = lastLoopRecord?["iob"] as? [String:AnyObject] {
+                        loopStatusText +=  String(format:"%.1f", (iobdata["iob"] as! Double))
+                    }
+                    if let cobdata = lastLoopRecord?["cob"] as? [String:AnyObject] {
+                        loopStatusText += "  COB " + String(format:"%.0f", cobdata["cob"] as! Double)
+                    }
+                    if let predictdata = lastLoopRecord?["predicted"] as? [String:AnyObject] {
+                        let prediction = predictdata["values"] as! [Double]
+                        loopStatusText += " EBG " + bgOutput(bg: prediction.last!, mmol: mmol)
+                    }
+                    self.loopStatusDisplay.setText(loopStatusText)
+                    labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
+                    
+                }
+            }
+            
         }
         else
         {
-            rawv = Int((unfilt-intercept)/(filt-intercept)*Double(sgv))
+            clearLoopDisplay()
+            self.errorMessage(message: "Loop Record Error.")
+        }
+        
+        var overrideText = "" as String
+        self.statusOverrideDisplay.setHidden(true)
+        if let lastOverride = lastDeviceStatus?["override"] as! [String : AnyObject]? {
+            if let lastOverrideTime = formatter.date(from: (lastOverride["timestamp"] as! String))?.timeIntervalSince1970  {
+                labelColor(label: self.statusOverrideDisplay, timeSince: lastOverrideTime)
+            }
+            if lastOverride["active"] as! Bool {
+                self.statusOverrideDisplay.setHidden(false)
+                let lastCorrection  = lastOverride["currentCorrectionRange"] as! [String: AnyObject]
+                overrideText = "BGTargets("
+                let minValue = lastCorrection["minValue"] as! Double
+                let maxValue = lastCorrection["maxValue"] as! Double
+                overrideText += bgOutput(bg: minValue, mmol: mmol) + ":" + bgOutput(bg: maxValue, mmol: mmol) + ") M:"
+                let multiplier = lastOverride["multiplier"] as! Double
+                overrideText = overrideText + String(format:"%.1f", multiplier)
+                self.statusOverrideDisplay.setText(overrideText)
+            }
+        }
+        
+        if consoleLogging == true {print("end updatePump")}
+    }
+    
+    func updateBG (entries: [sgvData]) {
+        if consoleLogging == true {print("in update BG")}
+        
+        if entries.count > 0 {
+            let latestBG = entries[0].sgv
+            let priorBG = entries[1].sgv
+            let directionBG = entries[0].direction
+            let deltaBG = latestBG - priorBG as Int
+            let lastBGTime = entries[0].date / 1000 //NS has different units
+            let red = UIColor.red as UIColor
+            let deltaTime = (TimeInterval(Date().timeIntervalSince1970)-lastBGTime)/60
+            self.minAgoBGDisplay.setText(String(Int(deltaTime))+" min ago")
+            timeofLastBGUpdate = lastBGTime
+            if (latestBG<40) {
+                self.primaryBGDisplay.setTextColor(red)
+                self.primaryBGDisplay.setText(bgErrorCode(latestBG))
+                self.bgDirectionDisplay.setText("")
+                self.deltaBGDisplay.setText("")
+            }
+            else
+            {
+                labelColor(label: self.minAgoBGDisplay, timeSince: lastBGTime)
+                self.primaryBGDisplay.setTextColor(bgcolor(latestBG))
+                self.primaryBGDisplay.setText(bgOutput(bg: Double(latestBG), mmol: mmol))
+                self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
+                self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
+                let velocity=velocity_cf(entries) as Double
+                let prediction=velocity*30.0+Double(latestBG)
+                self.deltaBGDisplay.setTextColor(UIColor.white)
+                
+                if deltaBG < 0 {
+                    self.deltaBGDisplay.setText(bgOutput(bg: Double(deltaBG), mmol: mmol) + " mg/dl")
+                }
+                else
+                {
+                    self.deltaBGDisplay.setText("+"+bgOutput(bg: Double(deltaBG), mmol: mmol)+" mg/dl")
+                }
+                self.velocityDisplay.setText(velocityOutput(v: velocity, mmol: mmol))
+                self.predictionDisplay.setText(bgOutput(bg: prediction, mmol: mmol))
+            }
             
+        } //end bgs !=nil
+        else
+        {
+            self.errorMessage(message: "Didnt Receive BG Data.")
+            clearBGDisplay()
+            return
         }
-        return rawv
+        
+        createGraph(hours: self.graphHours, bghist: entries)
+        self.graphHoursDisplay.setText(String(self.graphHours) + " Hour Graph")
+        
+        if consoleLogging == true {print("end update bg")}
     }
     
-    func bggraph(hours:Int)-> String? {
-        
-        
-        //get bghistory
-        //grabbing double the data in case of gap sync issues
-          var google="" as String
-        var ct2=NSInteger(NSDate().timeIntervalSince1970)
-                var xg="" as String
-        var yg="" as String
-        var rg="" as String
-        var pc="&chco=" as String
-        var maxy=0
-        var maxx=0
-        var miny=1000
-        var bgoffset=40
-        var bgth=180
-        var bgtl=80
-        let numbg=577 as Int
-        var slope=0 as Double
-        var scale=0 as Double
-        var gpoints=0 as Int
-        var intercept=0  as Double
-        var bgtimes = [Int](count: numbg+1, repeatedValue: 0)
-        var rawv=[Int](count:numbg+1, repeatedValue: 0)
-        let minutes=hours*60
-        var inc:Int=1
-        if (hours==3||hours==1) {inc=1} else
-            if hours==6 {inc=2} else
-            if hours==12 {inc=3} else
-                {inc=5}
-        if cals.count>0 && craw==true {
-            slope=cals[0]["slope"] as! Double
-            scale=cals[0]["scale"] as! Double
-            intercept=cals[0]["intercept"] as! Double
-        }
-        
-  
-        //find max time, min and max bg
-        for var i=0; i<bghist.count; i=i+1 {
-            bgtimes[i]=minutes-(((ct2*1000-(bghist[i]["datetime"] as! Int))/1000)/(60) as Int)
-            println(bgtimes[i])
-            if (bgtimes[i]>=0) {
-                gpoints++
-            if (bgtimes[i]>maxx) { maxx=bgtimes[i]}
-            if ((bghist[i]["sgv"] as! String).toInt()>maxy) {maxy=(bghist[i]["sgv"] as! String).toInt()!}
-            if ((bghist[i]["sgv"] as! String).toInt()<miny) {miny=(bghist[i]["sgv"] as! String).toInt()!}
-                //calculate raw values, include in min max calc
-                if cals.count>0 && craw==true {
-                    let sgvd=Double((bghist[i]["sgv"] as! String).toInt()!)
-                    let unfilt=bghist[i]["unfiltered"] as! Double
-                    let filt=bghist[i]["filtered"] as! Double
-                    rawv[i]=calcraw(sgvd,filt: filt,unfilt: unfilt,slope: slope,intercept: intercept,scale: scale)
-                    if rawv[i]>maxy {maxy=rawv[i]}
-                    if rawv[i]<miny {miny=rawv[i]}
-                    
-                }
-            }
-        }
-        if gpoints < 1 {return "NoData"}
-        if maxy<bgth {maxy=bgth}
-        if miny>bgtl {miny=bgtl}
-
-        //create strings of data points xg (time) and yg (bg) and string of colors pc
-        for var i=0; i<bghist.count; i=i+inc {
-            if (bgtimes[i]>=0) {
-                //scale time values
-                xg=xg+String(bgtimes[i]*100/minutes)+","
-                var sgv:Int=((bghist[i]["sgv"] as! String).toInt()!)
-                if sgv<60 {pc=pc+"FF0000|"} else
-                    if sgv<80 {pc=pc+"FFFF00|"} else
-                        if sgv<180 {pc=pc+"00FF00|"} else
-                            if sgv<260 {pc=pc+"FFFF00|"} else
-                            {pc=pc+"FF0000|"}
-                //scale bg data to 100 is the max
-                sgv=(sgv-miny)*100/(maxy-miny)
-                yg=yg+String(sgv)+","
-                //add raw points on the fly if cal available
-                if cals.count>0 && craw==true {
-                    let rawscaled=(rawv[i]-miny)*100/(maxy-miny)
-                    xg=xg+String(bgtimes[i]*100/minutes)+".05,"
-                    yg=yg+String(rawscaled)+","
-                    pc=pc+"FFFFFF|"
-                }
-            }
-        }
-        
-        xg=(dropLast(xg))
-        yg=(dropLast(yg))
-        pc=(dropLast(pc))
-        var low:Double=Double(bgtl-miny)/Double(maxy-miny)
-        var high:Double=Double(bgth-miny)/Double(maxy-miny)
-        //create string for google chart api
-        //bands are at 80,180, vertical lines for hours
-        var band1="&chm=r,FFFFFF,0,"+String(format:"%.2f",high-0.01)+","+String(format:"%.3f",high)
-        var band2="|r,FFFFFF,0,"+String(format:"%.2f",(low))+","+String(format:"%.3f",low+0.01)
-        let h:String=String(stringInterpolationSegment: 100.0/Double(hours))
-        let hourlyverticals="&chg="+h+",0"
-        google="https://chart.googleapis.com/chart?cht=s:nda&chxt=y&chxr=0,"+String(miny)+","+String(maxy)+"&chs=180x100"+"&chf=bg,s,000000&chls=3&chd=t:"+xg+"|"+yg+"|20"+pc+"&chxs=0,FFFFFF"+band1+band2+hourlyverticals
-            return google
-   
     
-    }
-    
-    }
+       
+}
 
 
