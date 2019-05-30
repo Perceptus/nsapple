@@ -33,6 +33,15 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 ![image](https://user-images.githubusercontent.com/8536751/58512523-4b84f800-816b-11e9-8a87-fbe3842e1e3a.png)
 ![image](https://user-images.githubusercontent.com/8536751/58384377-26e42100-7faf-11e9-8b69-c7b6d5f58177.png)
 
+# Display Legend
+
+![image](https://user-images.githubusercontent.com/8536751/58603162-b7e02400-825d-11e9-87ed-7df99cde1e91.png)
+
+Colors Vary Depending on the Parameter Being Displayed 
+* For the Dexcom BG, Color Indicates Level of BG.  Green 80-180, Yellow 65-80 or 180-250, Red <65 or > 250 mg/dL (or mmol / L equivalents)
+* For "min ago" and the Loop / Pump Information, Color Represents Time Since Last Update from Loop.  Green 6 min or less, Yellow 6 to 15 min, and Red > 15 min.
+
+
 # Future Work
 This really depends on how many people find nsapple useful.  
 * Rebase code to MVC versus prior hacks.  This code was my first attempt at a watchos/ios app in 2015, and its been suffering from a poor start :)
