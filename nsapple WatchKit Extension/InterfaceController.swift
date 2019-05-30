@@ -359,11 +359,15 @@ class InterfaceController: WKInterfaceController {
         if entries.count > 0 {
             let latestBG = entries[0].sgv
             let priorBG = entries[1].sgv
-            let directionBG = entries[0].direction
             let deltaBG = latestBG - priorBG as Int
             let lastBGTime = entries[0].date / 1000 //NS has different units
             let red = UIColor.red as UIColor
             let deltaTime = (TimeInterval(Date().timeIntervalSince1970)-lastBGTime)/60
+            var userUnit = " mg/dL"
+            if mmol {
+                userUnit = " mmol/L"
+                
+            }
             self.minAgoBGDisplay.setText(String(Int(deltaTime))+" min ago")
             timeofLastBGUpdate = lastBGTime
             if (latestBG<40) {
@@ -377,18 +381,25 @@ class InterfaceController: WKInterfaceController {
                 labelColor(label: self.minAgoBGDisplay, timeSince: lastBGTime)
                 self.primaryBGDisplay.setTextColor(bgcolor(latestBG))
                 self.primaryBGDisplay.setText(bgOutput(bg: Double(latestBG), mmol: mmol))
-                self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
-                self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
+                if let directionBG = entries[0].direction {
+                    self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
+                    self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
+                }
+                else
+                {
+                    self.bgDirectionDisplay.setText("")
+                }
                 let velocity=velocity_cf(entries) as Double
                 let prediction=velocity*30.0+Double(latestBG)
                 self.deltaBGDisplay.setTextColor(UIColor.white)
                 
+               
                 if deltaBG < 0 {
-                    self.deltaBGDisplay.setText(bgOutput(bg: Double(deltaBG), mmol: mmol) + " mg/dl")
+                    self.deltaBGDisplay.setText(bgOutput(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
                 else
                 {
-                    self.deltaBGDisplay.setText("+"+bgOutput(bg: Double(deltaBG), mmol: mmol)+" mg/dl")
+                    self.deltaBGDisplay.setText("+"+bgOutput(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
                 self.velocityDisplay.setText(velocityOutput(v: velocity, mmol: mmol))
                 self.predictionDisplay.setText(bgOutput(bg: prediction, mmol: mmol))

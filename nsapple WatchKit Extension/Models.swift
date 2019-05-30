@@ -21,7 +21,7 @@ struct ScaledBGData {
 struct sgvData: Codable {
     var sgv: Int
     var date: TimeInterval
-    var direction: String
+    var direction: String?
 }
 
 func bgErrorCode(_ value:Int)->String {
