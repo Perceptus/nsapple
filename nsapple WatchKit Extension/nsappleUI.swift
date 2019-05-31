@@ -16,7 +16,7 @@ extension InterfaceController {
         }
         else
         {
-            return String(format:"%.1f", bg / 18.6)
+            return String(format:"%.1f", bg / 18.0)
         }
     }
     
@@ -26,7 +26,7 @@ extension InterfaceController {
         }
         else
         {
-            return String(format:"%.1f", v / 18.6)
+            return String(format:"%.1f", v / 18.0)
         }
     }
     
