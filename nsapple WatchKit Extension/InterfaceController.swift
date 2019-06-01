@@ -316,7 +316,7 @@ class InterfaceController: WKInterfaceController {
                     }
                     if let predictdata = lastLoopRecord["predicted"] as? [String:AnyObject] {
                         let prediction = predictdata["values"] as! [Double]
-                        loopStatusText += " EBG " + bgOutput(bg: prediction.last!, mmol: mmol)
+                        loopStatusText += " EBG " + bgOutputFormat(bg: prediction.last!, mmol: mmol)
                     }
                     self.loopStatusDisplay.setText(loopStatusText)
                     labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
@@ -343,7 +343,7 @@ class InterfaceController: WKInterfaceController {
                 overrideText = "BGTargets("
                 let minValue = lastCorrection["minValue"] as! Double
                 let maxValue = lastCorrection["maxValue"] as! Double
-                overrideText += bgOutput(bg: minValue, mmol: mmol) + ":" + bgOutput(bg: maxValue, mmol: mmol) + ") M:"
+                overrideText += bgOutputFormat(bg: minValue, mmol: mmol) + ":" + bgOutputFormat(bg: maxValue, mmol: mmol) + ") M:"
                 if let multiplier = lastOverride["multiplier"] as? Double {
                     overrideText += String(format:"%.1f", multiplier)
                 }
@@ -371,7 +371,6 @@ class InterfaceController: WKInterfaceController {
             var userUnit = " mg/dL"
             if mmol {
                 userUnit = " mmol/L"
-                
             }
             self.minAgoBGDisplay.setText(String(Int(deltaTime))+" min ago")
             timeofLastBGUpdate = lastBGTime
@@ -385,7 +384,7 @@ class InterfaceController: WKInterfaceController {
             {
                 labelColor(label: self.minAgoBGDisplay, timeSince: lastBGTime)
                 self.primaryBGDisplay.setTextColor(bgcolor(latestBG))
-                self.primaryBGDisplay.setText(bgOutput(bg: Double(latestBG), mmol: mmol))
+                self.primaryBGDisplay.setText(bgOutputFormat(bg: Double(latestBG), mmol: mmol))
                 if let directionBG = entries[0].direction {
                     self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
                     self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
@@ -400,14 +399,14 @@ class InterfaceController: WKInterfaceController {
                 
                
                 if deltaBG < 0 {
-                    self.deltaBGDisplay.setText(bgOutput(bg: Double(deltaBG), mmol: mmol) + userUnit)
+                    self.deltaBGDisplay.setText(bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
                 else
                 {
-                    self.deltaBGDisplay.setText("+"+bgOutput(bg: Double(deltaBG), mmol: mmol) + userUnit)
+                    self.deltaBGDisplay.setText("+" + bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
-                self.velocityDisplay.setText(velocityOutput(v: velocity, mmol: mmol))
-                self.predictionDisplay.setText(bgOutput(bg: prediction, mmol: mmol))
+                self.velocityDisplay.setText(velocityOutputFormat(v: velocity, mmol: mmol))
+                self.predictionDisplay.setText(bgOutputFormat(bg: prediction, mmol: mmol))
             }
             
         } //end bgs !=nil

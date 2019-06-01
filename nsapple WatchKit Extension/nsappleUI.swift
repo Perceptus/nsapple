@@ -10,7 +10,7 @@ import Foundation
 import WatchKit
 
 extension InterfaceController {
-    func bgOutput(bg: Double, mmol: Bool) -> String {
+    func bgOutputFormat(bg: Double, mmol: Bool) -> String {
         if !mmol {
             return String(format:"%.0f", bg)
         }
@@ -20,7 +20,7 @@ extension InterfaceController {
         }
     }
     
-    func velocityOutput(v: Double, mmol: Bool) -> String {
+    func velocityOutputFormat(v: Double, mmol: Bool) -> String {
         if !mmol {
             return String(format:"%.1f", v)
         }
