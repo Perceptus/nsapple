@@ -132,7 +132,7 @@ class InterfaceController: WKInterfaceController {
     
     func loadBGData(urlUser: String) {
         let points = String(self.graphHours * 12 + 1)
-        var urlBGDataPath: String = urlUser + "/api/v1/entries.json?"
+        var urlBGDataPath: String = urlUser + "/api/v1/entries/sgv.json?"
         if token == "" {
             urlBGDataPath = urlBGDataPath + "count=" + points
         }
