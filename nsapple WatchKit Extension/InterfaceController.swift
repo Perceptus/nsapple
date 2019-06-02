@@ -132,7 +132,7 @@ class InterfaceController: WKInterfaceController {
     
     func loadBGData(urlUser: String) {
         let points = String(self.graphHours * 12 + 1)
-        var urlBGDataPath: String = urlUser + "/api/v1/entries.json?"
+        var urlBGDataPath: String = urlUser + "/api/v1/entries/sgv.json?"
         if token == "" {
             urlBGDataPath = urlBGDataPath + "count=" + points
         }
@@ -232,9 +232,12 @@ class InterfaceController: WKInterfaceController {
         deviceStatusTask.resume()
     }
     
+    
+    
     func updateDeviceStatusDisplay(jsonDeviceStatus: [[String:AnyObject]]) {
         
         if consoleLogging == true {print("in updatePump")}
+        
         
         if jsonDeviceStatus.count == 0 {
             self.errorMessage(message: "No Device Status Records.")
@@ -253,11 +256,10 @@ class InterfaceController: WKInterfaceController {
                                    .withDashSeparatorInDate,
                                    .withColonSeparatorInTime]
         var pumpStatusString:String = "Res "
-        let lastPumpRecord = lastDeviceStatus?["pump"] as! [String : AnyObject]?
-        if lastPumpRecord != nil {
-            if let lastPumpTime = formatter.date(from: (lastPumpRecord?["clock"] as! String))?.timeIntervalSince1970  {
+        if let lastPumpRecord = lastDeviceStatus?["pump"] as! [String : AnyObject]? {
+            if let lastPumpTime = formatter.date(from: (lastPumpRecord["clock"] as! String))?.timeIntervalSince1970  {
                 labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
-                if let reservoirData = lastPumpRecord?["reservoir"] as? Double
+                if let reservoirData = lastPumpRecord["reservoir"] as? Double
                 {
                     pumpStatusString += String(format:"%.0f", reservoirData)
                 }
@@ -286,14 +288,12 @@ class InterfaceController: WKInterfaceController {
         }
         
         //loop
-        let lastLoopRecord = lastDeviceStatus?["loop"] as! [String : AnyObject]?
         var loopStatusText:String = " IOB "
-        if lastLoopRecord != nil {
-            if let lastLoopTime = formatter.date(from: (lastLoopRecord?["timestamp"] as! String))?.timeIntervalSince1970  {
+        if let lastLoopRecord = lastDeviceStatus?["loop"] as! [String : AnyObject]? {
+            if let lastLoopTime = formatter.date(from: (lastLoopRecord["timestamp"] as! String))?.timeIntervalSince1970  {
                 labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
-                if let failure = lastLoopRecord?["failureReason"] {
+                if let failure = lastLoopRecord["failureReason"] {
                     clearLoopDisplay()
-                    //TODO WHY was this here???      self.pumpDataDisplay.setText(pstatus)
                     self.loopStatusDisplay.setTextColor(UIColor.red)
                     loopStatusText = "Loop Failure "
                     self.loopStatusDisplay.setText(loopStatusText)
@@ -301,22 +301,22 @@ class InterfaceController: WKInterfaceController {
                 }
                 else
                 {
-                    if let enacted = lastLoopRecord?["enacted"] as? [String:AnyObject] {
+                    if let enacted = lastLoopRecord["enacted"] as? [String:AnyObject] {
                         if let lastTempBasal = enacted["rate"] as? Double {
                             let lateBasalStatus = " Basal " + String(format:"%.1f", lastTempBasal)
                             self.basalDisplay.setText(lateBasalStatus)
                             labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
                         }
                     }
-                    if let iobdata = lastLoopRecord?["iob"] as? [String:AnyObject] {
+                    if let iobdata = lastLoopRecord["iob"] as? [String:AnyObject] {
                         loopStatusText +=  String(format:"%.1f", (iobdata["iob"] as! Double))
                     }
-                    if let cobdata = lastLoopRecord?["cob"] as? [String:AnyObject] {
+                    if let cobdata = lastLoopRecord["cob"] as? [String:AnyObject] {
                         loopStatusText += "  COB " + String(format:"%.0f", cobdata["cob"] as! Double)
                     }
-                    if let predictdata = lastLoopRecord?["predicted"] as? [String:AnyObject] {
+                    if let predictdata = lastLoopRecord["predicted"] as? [String:AnyObject] {
                         let prediction = predictdata["values"] as! [Double]
-                        loopStatusText += " EBG " + bgOutput(bg: prediction.last!, mmol: mmol)
+                        loopStatusText += " EBG " + bgOutputFormat(bg: prediction.last!, mmol: mmol)
                     }
                     self.loopStatusDisplay.setText(loopStatusText)
                     labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
@@ -343,9 +343,14 @@ class InterfaceController: WKInterfaceController {
                 overrideText = "BGTargets("
                 let minValue = lastCorrection["minValue"] as! Double
                 let maxValue = lastCorrection["maxValue"] as! Double
-                overrideText += bgOutput(bg: minValue, mmol: mmol) + ":" + bgOutput(bg: maxValue, mmol: mmol) + ") M:"
-                let multiplier = lastOverride["multiplier"] as! Double
-                overrideText = overrideText + String(format:"%.1f", multiplier)
+                overrideText += bgOutputFormat(bg: minValue, mmol: mmol) + ":" + bgOutputFormat(bg: maxValue, mmol: mmol) + ") M:"
+                if let multiplier = lastOverride["multiplier"] as? Double {
+                    overrideText += String(format:"%.1f", multiplier)
+                }
+                else
+                {
+                    overrideText += String(format:"%.1f", 1.0)
+                }
                 self.statusOverrideDisplay.setText(overrideText)
             }
         }
@@ -359,11 +364,14 @@ class InterfaceController: WKInterfaceController {
         if entries.count > 0 {
             let latestBG = entries[0].sgv
             let priorBG = entries[1].sgv
-            let directionBG = entries[0].direction
             let deltaBG = latestBG - priorBG as Int
             let lastBGTime = entries[0].date / 1000 //NS has different units
             let red = UIColor.red as UIColor
-            let deltaTime = (TimeInterval(Date().timeIntervalSince1970)-lastBGTime)/60
+            let deltaTime = (TimeInterval(Date().timeIntervalSince1970)-lastBGTime) / 60
+            var userUnit = " mg/dL"
+            if mmol {
+                userUnit = " mmol/L"
+            }
             self.minAgoBGDisplay.setText(String(Int(deltaTime))+" min ago")
             timeofLastBGUpdate = lastBGTime
             if (latestBG<40) {
@@ -376,22 +384,29 @@ class InterfaceController: WKInterfaceController {
             {
                 labelColor(label: self.minAgoBGDisplay, timeSince: lastBGTime)
                 self.primaryBGDisplay.setTextColor(bgcolor(latestBG))
-                self.primaryBGDisplay.setText(bgOutput(bg: Double(latestBG), mmol: mmol))
-                self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
-                self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
+                self.primaryBGDisplay.setText(bgOutputFormat(bg: Double(latestBG), mmol: mmol))
+                if let directionBG = entries[0].direction {
+                    self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
+                    self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
+                }
+                else
+                {
+                    self.bgDirectionDisplay.setText("")
+                }
                 let velocity=velocity_cf(entries) as Double
                 let prediction=velocity*30.0+Double(latestBG)
                 self.deltaBGDisplay.setTextColor(UIColor.white)
                 
+               
                 if deltaBG < 0 {
-                    self.deltaBGDisplay.setText(bgOutput(bg: Double(deltaBG), mmol: mmol) + " mg/dl")
+                    self.deltaBGDisplay.setText(bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
                 else
                 {
-                    self.deltaBGDisplay.setText("+"+bgOutput(bg: Double(deltaBG), mmol: mmol)+" mg/dl")
+                    self.deltaBGDisplay.setText("+" + bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
-                self.velocityDisplay.setText(velocityOutput(v: velocity, mmol: mmol))
-                self.predictionDisplay.setText(bgOutput(bg: prediction, mmol: mmol))
+                self.velocityDisplay.setText(velocityOutputFormat(v: velocity, mmol: mmol))
+                self.predictionDisplay.setText(bgOutputFormat(bg: prediction, mmol: mmol))
             }
             
         } //end bgs !=nil

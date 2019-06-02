@@ -92,9 +92,9 @@ extension InterfaceController {
         //round to 5's or mgdl, 0.2 for mmol/L
         var rounder : Double = 5
         if mmol {rounder = 0.2}
-        self.drawGraphLabels(context: context, text: bgOutput(bg: round(miny/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
-        self.drawGraphLabels(context: context, text: bgOutput(bg: round(maxy/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
-        self.drawGraphLabels(context: context, text: bgOutput(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height/2)
+        self.drawGraphLabels(context: context, text: bgOutputFormat(bg: round(miny/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height - ybuffer)
+        self.drawGraphLabels(context: context, text: bgOutputFormat(bg: round(maxy/rounder) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: ybuffer + 1 )
+        self.drawGraphLabels(context: context, text: bgOutputFormat(bg: round((maxy + miny) / (2.0 * rounder)) * rounder, mmol: mmol ) as NSString, centreX: 0 + xbuffer, centreY: height/2)
     
         let cgimage = context!.makeImage();
         let uiimage = UIImage(cgImage: cgimage!)
