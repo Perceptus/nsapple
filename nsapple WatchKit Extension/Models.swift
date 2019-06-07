@@ -13,6 +13,112 @@ extension InterfaceController {
    
 }
 
+struct Properties: Codable {
+    let upbat: UpBattery?
+    let iob: IOBLevel2?
+    let cob: COBLevel2?
+    let pump: PumpLevel2?
+    let loop: DeviceStatusLoop?
+    let basal: Basal?
+}
+
+struct PumpLevel2: Codable {
+    let createdAt: String
+    let pump: PumpLevel3
+    enum CodingKeys: String, CodingKey {
+        case pump
+        case createdAt = "created_at"
+    }
+}
+
+struct PumpLevel3: Codable {
+    let bolusing: Bool?
+    let reservoir: Double?
+}
+
+struct UpBattery: Codable {
+    let display: String?
+}
+
+struct Basal: Codable {
+    let current: Current
+}
+
+struct Current: Codable {
+    let basal: Double
+}
+
+struct COBLevel2: Codable {
+    let cob: Double
+}
+
+struct IOBLevel2: Codable {
+    let iob: Double
+}
+
+struct DeviceStatusLoop: Codable {
+    let lastLoop: LastLoopClass?
+    let lastEnacted: Enacted?
+    let lastPredicted: LastPredictedClass?
+    let lastOverride: Override?
+}
+
+struct Enacted: Codable {
+    let duration: Int
+    let received: Bool
+    let rate: Double
+    let timestamp: String
+}
+
+struct LastLoopClass: Codable {
+    let timestamp: String
+    let predicted: LastPredictedClass?
+    let failureReason: String?
+}
+
+struct LastLoopCob: Codable {
+    let timestamp: String
+    let cob: Double
+}
+
+struct LastLoopIob: Codable {
+    let timestamp: String
+    let iob: Double
+}
+
+struct LastPredictedClass: Codable {
+    let values: [Int]
+    let startDate: String
+}
+
+struct Override: Codable {
+    let active: Bool
+    let timestamp: String
+    let moment: String
+    let currentCorrectionRange: CurrentCorrectionRange?
+    let multiplier: Double?
+    let duration: Int?
+}
+
+struct CurrentCorrectionRange: Codable {
+    let minValue: Int
+    let maxValue: Int
+}
+
+struct DeviceStatusPump: Codable {
+    let pump: PumpLevel2
+    let createdAt: String
+    enum CodingKeys: String, CodingKey {
+        case pump
+        case createdAt = "created_at"
+    }
+}
+
+struct PumpBattery: Codable {
+    let percent: Int
+}
+
+
 struct ScaledBGData {
     var xdata: Double
     var ydata: Double

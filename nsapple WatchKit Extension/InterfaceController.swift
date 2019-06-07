@@ -127,7 +127,7 @@ class InterfaceController: WKInterfaceController {
         }
         
         loadBGData(urlUser: urlUser)
-        loadDeviceStatus(urlUser: urlUser)
+        loadProperties(urlUser: urlUser)
     }
     
     func loadBGData(urlUser: String) {
@@ -180,10 +180,10 @@ class InterfaceController: WKInterfaceController {
         
     }
     
-    func loadDeviceStatus(urlUser: String) {
-        var urlStringDeviceStatus = urlUser + "/api/v1/devicestatus.json?count=1"
+    func loadProperties(urlUser: String) {
+        var urlStringDeviceStatus = urlUser + "/api/v2/properties"
         if token != "" {
-            urlStringDeviceStatus = urlUser + "/api/v1/devicestatus.json?token=" + token + "&count=1"
+            urlStringDeviceStatus = urlUser + "/api/v2/properties?token=" + token
         }
         
         let escapedAddress = urlStringDeviceStatus.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
@@ -191,7 +191,7 @@ class InterfaceController: WKInterfaceController {
         guard let urlDeviceStatus = URL(string: escapedAddress!) else {
             self.clearLoopDisplay()
             self.clearPumpDisplay()
-            self.errorMessage(message: "Loop URL ERROR.")
+            self.errorMessage(message: "URL ERROR.")
             return
         }
         
@@ -213,41 +213,93 @@ class InterfaceController: WKInterfaceController {
                 return
             }
             
-            let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
-            
-            if let json = json {
+            do {
+                let decoder = JSONDecoder()
+                let json = try decoder.decode(Properties.self, from: data)
                 DispatchQueue.main.async {
-                    self.updateDeviceStatusDisplay(jsonDeviceStatus: json)
+                    self.updatePropertiesDisplay(properties: json)
                 }
             }
-            else
-            {
+            
+            catch let jsonError {
+                
                 self.clearLoopDisplay()
                 self.clearPumpDisplay()
-                self.errorMessage(message: "Device Status Decoding Error.  Check Nightscout URL.")
+                self.errorMessage(message: "Error Decoding Properties. " + jsonError.localizedDescription)
                 return
+                
             }
+            
+ //           let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
+            
+//            if let json = json {
+//                DispatchQueue.main.async {
+//                    self.updateDeviceStatusDisplay(jsonDeviceStatus: json)
+//                }
+//            }
+//            else
+//            {
+//                self.clearLoopDisplay()
+//                self.clearPumpDisplay()
+//                self.errorMessage(message: "Device Status Decoding Error.  Check Nightscout URL.")
+//                return
+//            }
             if self.consoleLogging == true {print("finish pump update")}
         }
         deviceStatusTask.resume()
     }
     
+    func determineBasal (properties: Properties) -> Double? {
+        //if last enacted doesnt exist, we dont know the basal rate so return nil
+        //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
+        //if enacted exists and has ended, then basal has reverted to profile basal
+        //if enacted exists and hasnt ended, last enacted is the current rate
+        //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties
+        
+        guard let profileBasalRate = properties.basal?.current.basal else {
+            return nil
+        }
+        guard let lastEnactedRate = properties.loop?.lastEnacted?.rate else {
+            return nil
+        }
+        guard let lastEnactedDuration = properties.loop?.lastEnacted?.duration else {
+            return nil
+        }
+        guard let lastEnactedTimeStamp = properties.loop?.lastEnacted?.timestamp else {
+            return nil
+        }
+        if lastEnactedDuration == 0 {
+            return profileBasalRate
+        }
+        
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate,
+                                   .withTime,
+                                   .withDashSeparatorInDate,
+                                   .withColonSeparatorInTime]
+        
+        guard let lastEnactedDate = formatter.date(from: lastEnactedTimeStamp)?.timeIntervalSince1970 else {
+            return nil
+        }
+        let currentDate = Date()
+        
+        if (lastEnactedDate + Double(lastEnactedDuration)) > currentDate.timeIntervalSince1970 {
+            return profileBasalRate
+        }
+        
+        else
+            
+        {
+            return lastEnactedRate
+        }
+        
+    }
     
     
-    func updateDeviceStatusDisplay(jsonDeviceStatus: [[String:AnyObject]]) {
+    
+    func updatePropertiesDisplay(properties: Properties) {
         
         if consoleLogging == true {print("in updatePump")}
-        
-        
-        if jsonDeviceStatus.count == 0 {
-            self.errorMessage(message: "No Device Status Records.")
-            clearPumpDisplay()
-            clearLoopDisplay()
-            return
-            
-        }
-        //only grabbing one record since ns sorts by {created_at : -1}
-        let lastDeviceStatus = jsonDeviceStatus[0] as [String : AnyObject]?
         
         //pump and uploader
         let formatter = ISO8601DateFormatter()
@@ -256,67 +308,58 @@ class InterfaceController: WKInterfaceController {
                                    .withDashSeparatorInDate,
                                    .withColonSeparatorInTime]
         var pumpStatusString:String = "Res "
-        if let lastPumpRecord = lastDeviceStatus?["pump"] as! [String : AnyObject]? {
-            if let lastPumpTime = formatter.date(from: (lastPumpRecord["clock"] as! String))?.timeIntervalSince1970  {
+        
+        if let lastReservoir = properties.pump?.pump.reservoir {
+            if let lastPumpTime = formatter.date(from: properties.pump?.createdAt ?? "1970-06-03T01:51:21Z")?.timeIntervalSince1970 {
                 labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
-                if let reservoirData = lastPumpRecord["reservoir"] as? Double
-                {
-                    pumpStatusString += String(format:"%.0f", reservoirData)
+                    pumpStatusString += String(format:"%.0f", lastReservoir)
                 }
-                    
                 else
-                    
                 {
                     pumpStatusString += "N/A"
                 }
-                
-                if let uploader = lastDeviceStatus?["uploader"] as? [String:AnyObject] {
-                    let upbat = uploader["battery"] as! Double
-                    pumpStatusString += " UpBat " + String(format:"%.0f", upbat)
-                }
-                self.pumpDataDisplay.setText(pumpStatusString)
-            }
-            
-        } //finish pump data
-            
-        else
-            
-        {
-            clearPumpDisplay()
-            self.errorMessage(message: "Device Status Error - No Pump Field.")
-            //TODO have errormessages add, end all with period versus always reset
         }
         
+        if let uploaderString = properties.upbat?.display {
+            pumpStatusString += " UpBat " + uploaderString
+        }
+        else
+        {
+            pumpStatusString += " UpBat N/A"
+        }
+        
+        //TODO move to end and put on main queue***************
+                self.pumpDataDisplay.setText(pumpStatusString)
         //loop
-        var loopStatusText:String = " IOB "
-        if let lastLoopRecord = lastDeviceStatus?["loop"] as! [String : AnyObject]? {
-            if let lastLoopTime = formatter.date(from: (lastLoopRecord["timestamp"] as! String))?.timeIntervalSince1970  {
+
+        if let lastLoop = properties.loop?.lastLoop {
+            if let lastLoopTime = formatter.date(from: lastLoop.timestamp)?.timeIntervalSince1970  {
                 labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
-                if let failure = lastLoopRecord["failureReason"] {
+                if let failure = lastLoop.failureReason {
                     clearLoopDisplay()
-                    self.loopStatusDisplay.setTextColor(UIColor.red)
-                    loopStatusText = "Loop Failure "
-                    self.loopStatusDisplay.setText(loopStatusText)
-                    self.errorMessage(message: failure as? String ?? "Unknown Failure")
+                    self.errorMessage(message: failure)
                 }
                 else
                 {
-                    if let enacted = lastLoopRecord["enacted"] as? [String:AnyObject] {
-                        if let lastTempBasal = enacted["rate"] as? Double {
-                            let lateBasalStatus = " Basal " + String(format:"%.1f", lastTempBasal)
-                            self.basalDisplay.setText(lateBasalStatus)
+                    if let lastBasalRate = determineBasal(properties: properties) {
+                            let lastBasalStatus = " Basal " + String(format:"%.1f", lastBasalRate)
+                            self.basalDisplay.setText(lastBasalStatus)
                             labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
-                        }
                     }
-                    if let iobdata = lastLoopRecord["iob"] as? [String:AnyObject] {
-                        loopStatusText +=  String(format:"%.1f", (iobdata["iob"] as! Double))
+                    else
+                    {
+                        self.basalDisplay.setText("")
                     }
-                    if let cobdata = lastLoopRecord["cob"] as? [String:AnyObject] {
-                        loopStatusText += "  COB " + String(format:"%.0f", cobdata["cob"] as! Double)
+                    
+                    var loopStatusText:String = " IOB "
+                    if let lastIOB = properties.iob?.iob {
+                        loopStatusText +=  String(format:"%.1f", lastIOB)
                     }
-                    if let predictdata = lastLoopRecord["predicted"] as? [String:AnyObject] {
-                        let prediction = predictdata["values"] as! [Double]
-                        loopStatusText += " EBG " + bgOutputFormat(bg: prediction.last!, mmol: mmol)
+                    if let lastCOB = properties.cob?.cob {
+                        loopStatusText += "  COB " + String(format:"%.0f", lastCOB)
+                    }
+                    if let lastEBG = properties.loop?.lastPredicted?.values.last {
+                        loopStatusText += " EBG " + bgOutputFormat(bg: Double(lastEBG), mmol: mmol)
                     }
                     self.loopStatusDisplay.setText(loopStatusText)
                     labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
@@ -333,18 +376,18 @@ class InterfaceController: WKInterfaceController {
         
         var overrideText = "" as String
         self.statusOverrideDisplay.setHidden(true)
-        if let lastOverride = lastDeviceStatus?["override"] as! [String : AnyObject]? {
-            if let lastOverrideTime = formatter.date(from: (lastOverride["timestamp"] as! String))?.timeIntervalSince1970  {
+        if let lastOverride = properties.loop?.lastOverride {
+            if let lastOverrideTime = formatter.date(from: lastOverride.timestamp)?.timeIntervalSince1970  {
                 labelColor(label: self.statusOverrideDisplay, timeSince: lastOverrideTime)
             }
-            if lastOverride["active"] as! Bool {
+            if lastOverride.active {
                 self.statusOverrideDisplay.setHidden(false)
-                let lastCorrection  = lastOverride["currentCorrectionRange"] as! [String: AnyObject]
+                let lastCorrectionRange  = lastOverride.currentCorrectionRange
                 overrideText = "BGTargets("
-                let minValue = lastCorrection["minValue"] as! Double
-                let maxValue = lastCorrection["maxValue"] as! Double
+                let minValue = Double(lastCorrectionRange?.minValue ?? 0)
+                let maxValue = Double(lastCorrectionRange?.maxValue ?? 0)
                 overrideText += bgOutputFormat(bg: minValue, mmol: mmol) + ":" + bgOutputFormat(bg: maxValue, mmol: mmol) + ") M:"
-                if let multiplier = lastOverride["multiplier"] as? Double {
+                if let multiplier = lastOverride.multiplier {
                     overrideText += String(format:"%.1f", multiplier)
                 }
                 else
