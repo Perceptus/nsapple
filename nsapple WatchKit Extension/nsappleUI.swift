@@ -80,6 +80,7 @@ extension InterfaceController {
         self.basalDisplay.setTextColor(color)
     }
     
+    
     func errorMessage(message: String) {
         self.errorDisplay.setHidden(false)
         self.errorDisplay.setText(message)

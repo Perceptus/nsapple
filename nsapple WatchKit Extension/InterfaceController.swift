@@ -120,7 +120,9 @@ class InterfaceController: WKInterfaceController {
     
     func loadBGandProperties (urlUser: String) {
         if consoleLogging == true {print("in load BG")}
-        self.errorDisplay.setText("")
+        DispatchQueue.main.async{
+            self.errorDisplay.setText("")
+        }
         
         if urlUser == "No User URL" {
             self.clearEntireDisplay()
@@ -160,7 +162,7 @@ class InterfaceController: WKInterfaceController {
             }
             guard let data = data else {
                 self.clearBGDisplay()
-                self.errorMessage(message: "No Data")
+                self.errorMessage(message: "No BG Data")
                 return
             }
             
@@ -192,7 +194,7 @@ class InterfaceController: WKInterfaceController {
         
         guard let urlDeviceStatus = URL(string: escapedAddress!) else {
             self.clearPumpLoopDisplay()
-            self.errorMessage(message: "URL ERROR.")
+            self.errorMessage(message: "URL Syntax Error.")
             return
         }
         
@@ -208,7 +210,7 @@ class InterfaceController: WKInterfaceController {
             }
             guard let data = data else {
                 self.clearPumpLoopDisplay()
-                self.errorMessage(message: "Device Status Data is Empty.")
+                self.errorMessage(message: "Properties Data is Empty.")
                 return
             }
             
@@ -411,17 +413,14 @@ func determineBasal (properties: Properties) -> Double? {
     //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
     //if enacted exists and has ended, then basal has reverted to profile basal
     //if enacted exists and hasnt ended, last enacted is the current rate
-
     
-    guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted else {
-        return nil
+    
+    guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted
+        else {
+            return nil
     }
     
-    let lastEnactedDuration = lastEnacted.duration
-    let lastEnactedTimeStamp = lastEnacted.timestamp
-    let lastEnactedRate = lastEnacted.rate
-    
-    if lastEnactedDuration == 0 {
+    if lastEnacted.duration == 0 {
         return profileBasalRate
     }
     
@@ -431,19 +430,19 @@ func determineBasal (properties: Properties) -> Double? {
                                .withDashSeparatorInDate,
                                .withColonSeparatorInTime]
     
-    guard let lastEnactedDate = formatter.date(from: lastEnactedTimeStamp)?.timeIntervalSince1970 else {
+    guard let lastEnactedDate = formatter.date(from: lastEnacted.timestamp)?.timeIntervalSince1970 else {
         return nil
     }
     let currentDate = Date()
     
-    if (lastEnactedDate + Double(lastEnactedDuration)) > currentDate.timeIntervalSince1970 {
+    if (lastEnactedDate + Double(lastEnacted.duration)) > currentDate.timeIntervalSince1970 {
         return profileBasalRate
     }
         
     else
         
     {
-        return lastEnactedRate
+        return lastEnacted.rate
     }
     
 }
