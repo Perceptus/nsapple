@@ -406,11 +406,12 @@ class InterfaceController: WKInterfaceController {
 
 
 func determineBasal (properties: Properties) -> Double? {
+    //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties to remove determineBasal use properties.basal.display
     //if last enacted doesnt exist, we dont know the basal rate so return nil
     //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
     //if enacted exists and has ended, then basal has reverted to profile basal
     //if enacted exists and hasnt ended, last enacted is the current rate
-    //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties to remove determineBasal use properties.basal.display
+
     
     guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted else {
         return nil
