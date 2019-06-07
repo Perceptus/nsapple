@@ -35,6 +35,7 @@ class InterfaceController: WKInterfaceController {
     var timeofLastBGUpdate = 0 as TimeInterval
     
     
+    
     @IBAction func hourslidervalue(_ value: Float) {
         let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let sliderValue=Int(round(value*1000)/1000)
@@ -49,6 +50,8 @@ class InterfaceController: WKInterfaceController {
         if consoleLogging == true {print("in awake")}
         self.errorDisplay.setTextColor(UIColor.red)
         setupUserDefaults()
+        readUserDefaults()
+        
     }
     
     override func willActivate() {
@@ -73,7 +76,7 @@ class InterfaceController: WKInterfaceController {
         let bundle = infoBundle("CFBundleIdentifier")
         if let bundle = bundle {
             let unique_id = bundle.components(separatedBy: ".")
-            let appGroup : String = "group.com." + unique_id[0] + ".nsapple"
+            let appGroup = "group.com." + unique_id[0] + ".nsapple"
             defaults = UserDefaults(suiteName: appGroup)
         }
         else
@@ -82,8 +85,8 @@ class InterfaceController: WKInterfaceController {
         }
     }
     
-    func readUserDefaults() {
-        //reread defaults
+    @objc func readUserDefaults() {
+        print("in read user defaults")
         mmol = defaults?.bool(forKey: "mmol") ?? false
         urlUser = defaults?.string(forKey: "name_preference") ?? "No User URL"
         token = defaults?.string(forKey: "token") ?? ""
@@ -216,7 +219,7 @@ class InterfaceController: WKInterfaceController {
                     self.updatePropertiesDisplay(properties: json)
                 }
             }
-            
+                
             catch let jsonError {
                 self.clearPumpLoopDisplay()
                 self.errorMessage(message: "Error Decoding Properties. " + jsonError.localizedDescription)
@@ -245,12 +248,12 @@ class InterfaceController: WKInterfaceController {
         if let lastReservoir = properties.pump?.pump.reservoir, let lastPumpCreatedAt = properties.pump?.createdAt {
             if let lastPumpTime = formatter.date(from: lastPumpCreatedAt)?.timeIntervalSince1970 {
                 labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
-                    pumpStatusString += String(format:"%.0f", lastReservoir)
-                }
-                else
-                {
-                    pumpStatusString += "N/A"
-                }
+                pumpStatusString += String(format:"%.0f", lastReservoir)
+            }
+            else
+            {
+                pumpStatusString += "N/A"
+            }
         }
         
         if let uploaderString = properties.upbat?.display {
@@ -262,9 +265,9 @@ class InterfaceController: WKInterfaceController {
         }
         
         //TODO move to end and put on main queue***************
-                self.pumpDataDisplay.setText(pumpStatusString)
+        self.pumpDataDisplay.setText(pumpStatusString)
         //loop
-
+        
         if let lastLoop = properties.loop?.lastLoop {
             if let lastLoopTime = formatter.date(from: lastLoop.timestamp)?.timeIntervalSince1970  {
                 labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
@@ -275,9 +278,9 @@ class InterfaceController: WKInterfaceController {
                 else
                 {
                     if let lastBasalRate = determineBasal(properties: properties) {
-                            let lastBasalStatus = " Basal " + String(format:"%.1f", lastBasalRate)
-                            self.basalDisplay.setText(lastBasalStatus)
-                            labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
+                        let lastBasalStatus = " Basal " + String(format:"%.1f", lastBasalRate)
+                        self.basalDisplay.setText(lastBasalStatus)
+                        labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
                     }
                     else
                     {
@@ -371,7 +374,7 @@ class InterfaceController: WKInterfaceController {
                 let prediction=velocity*30.0+Double(latestBG)
                 self.deltaBGDisplay.setTextColor(UIColor.white)
                 
-               
+                
                 if deltaBG < 0 {
                     self.deltaBGDisplay.setText(bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
                 }
@@ -398,7 +401,7 @@ class InterfaceController: WKInterfaceController {
     }
     
     
-       
+    
 }
 
 
@@ -416,7 +419,7 @@ func determineBasal (properties: Properties) -> Double? {
     let lastEnactedDuration = lastEnacted.duration
     let lastEnactedTimeStamp = lastEnacted.timestamp
     let lastEnactedRate = lastEnacted.rate
-
+    
     if lastEnactedDuration == 0 {
         return profileBasalRate
     }
