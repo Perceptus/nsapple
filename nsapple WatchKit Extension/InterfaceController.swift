@@ -39,7 +39,7 @@ class InterfaceController: WKInterfaceController {
         let sliderMap:[Int:Int]=[1:24,2:12,3:6,4:3,5:1]
         let sliderValue=Int(round(value*1000)/1000)
         graphHours=sliderMap[sliderValue]!
-        loadBGandDeviceStatus(urlUser:urlUser)
+        loadBGandProperties(urlUser:urlUser)
         
     }
     
@@ -104,7 +104,7 @@ class InterfaceController: WKInterfaceController {
             if consoleLogging == true {print("inside load")}
             if consoleLogging == true {print(deltaTimeFromLastBG)}
             self.errorDisplay.setHidden(true)
-            loadBGandDeviceStatus(urlUser: urlUser)
+            loadBGandProperties(urlUser: urlUser)
         }
         else
         {
@@ -115,13 +115,12 @@ class InterfaceController: WKInterfaceController {
     
     
     
-    func loadBGandDeviceStatus (urlUser: String) {
+    func loadBGandProperties (urlUser: String) {
         if consoleLogging == true {print("in load BG")}
         self.errorDisplay.setText("")
         
         if urlUser == "No User URL" {
-            self.clearBGDisplay()
-            self.clearLoopDisplay()
+            self.clearEntireDisplay()
             errorMessage(message: "Cannot Read User NS URL.  Check Setup Of Defaults in iOS Watch App")
             return
         }
@@ -189,8 +188,7 @@ class InterfaceController: WKInterfaceController {
         let escapedAddress = urlStringDeviceStatus.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
         
         guard let urlDeviceStatus = URL(string: escapedAddress!) else {
-            self.clearLoopDisplay()
-            self.clearPumpDisplay()
+            self.clearPumpLoopDisplay()
             self.errorMessage(message: "URL ERROR.")
             return
         }
@@ -201,14 +199,12 @@ class InterfaceController: WKInterfaceController {
         let deviceStatusTask = URLSession.shared.dataTask(with: requestDeviceStatus) { data, response, error in
             if self.consoleLogging == true {print("in update loop.")}
             guard error == nil else {
-                self.clearLoopDisplay()
-                self.clearPumpDisplay()
+                self.clearPumpLoopDisplay()
                 self.errorMessage(message: error?.localizedDescription ?? "Server Error.")
                 return
             }
             guard let data = data else {
-                self.clearLoopDisplay()
-                self.clearPumpDisplay()
+                self.clearPumpLoopDisplay()
                 self.errorMessage(message: "Device Status Data is Empty.")
                 return
             }
@@ -222,77 +218,14 @@ class InterfaceController: WKInterfaceController {
             }
             
             catch let jsonError {
-                
-                self.clearLoopDisplay()
-                self.clearPumpDisplay()
+                self.clearPumpLoopDisplay()
                 self.errorMessage(message: "Error Decoding Properties. " + jsonError.localizedDescription)
                 return
                 
             }
-            
- //           let json = try? JSONSerialization.jsonObject(with: data) as! [[String:AnyObject]]
-            
-//            if let json = json {
-//                DispatchQueue.main.async {
-//                    self.updateDeviceStatusDisplay(jsonDeviceStatus: json)
-//                }
-//            }
-//            else
-//            {
-//                self.clearLoopDisplay()
-//                self.clearPumpDisplay()
-//                self.errorMessage(message: "Device Status Decoding Error.  Check Nightscout URL.")
-//                return
-//            }
             if self.consoleLogging == true {print("finish pump update")}
         }
         deviceStatusTask.resume()
-    }
-    
-    func determineBasal (properties: Properties) -> Double? {
-        //if last enacted doesnt exist, we dont know the basal rate so return nil
-        //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
-        //if enacted exists and has ended, then basal has reverted to profile basal
-        //if enacted exists and hasnt ended, last enacted is the current rate
-        //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties
-        
-        guard let profileBasalRate = properties.basal?.current.basal else {
-            return nil
-        }
-        guard let lastEnactedRate = properties.loop?.lastEnacted?.rate else {
-            return nil
-        }
-        guard let lastEnactedDuration = properties.loop?.lastEnacted?.duration else {
-            return nil
-        }
-        guard let lastEnactedTimeStamp = properties.loop?.lastEnacted?.timestamp else {
-            return nil
-        }
-        if lastEnactedDuration == 0 {
-            return profileBasalRate
-        }
-        
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withFullDate,
-                                   .withTime,
-                                   .withDashSeparatorInDate,
-                                   .withColonSeparatorInTime]
-        
-        guard let lastEnactedDate = formatter.date(from: lastEnactedTimeStamp)?.timeIntervalSince1970 else {
-            return nil
-        }
-        let currentDate = Date()
-        
-        if (lastEnactedDate + Double(lastEnactedDuration)) > currentDate.timeIntervalSince1970 {
-            return profileBasalRate
-        }
-        
-        else
-            
-        {
-            return lastEnactedRate
-        }
-        
     }
     
     
@@ -309,8 +242,8 @@ class InterfaceController: WKInterfaceController {
                                    .withColonSeparatorInTime]
         var pumpStatusString:String = "Res "
         
-        if let lastReservoir = properties.pump?.pump.reservoir {
-            if let lastPumpTime = formatter.date(from: properties.pump?.createdAt ?? "1970-06-03T01:51:21Z")?.timeIntervalSince1970 {
+        if let lastReservoir = properties.pump?.pump.reservoir, let lastPumpCreatedAt = properties.pump?.createdAt {
+            if let lastPumpTime = formatter.date(from: lastPumpCreatedAt)?.timeIntervalSince1970 {
                 labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
                     pumpStatusString += String(format:"%.0f", lastReservoir)
                 }
@@ -356,17 +289,15 @@ class InterfaceController: WKInterfaceController {
                         loopStatusText +=  String(format:"%.1f", lastIOB)
                     }
                     if let lastCOB = properties.cob?.cob {
-                        loopStatusText += "  COB " + String(format:"%.0f", lastCOB)
+                        loopStatusText += " COB " + String(format:"%.0f", lastCOB)
                     }
                     if let lastEBG = properties.loop?.lastPredicted?.values.last {
                         loopStatusText += " EBG " + bgOutputFormat(bg: Double(lastEBG), mmol: mmol)
                     }
                     self.loopStatusDisplay.setText(loopStatusText)
                     labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
-                    
                 }
             }
-            
         }
         else
         {
@@ -468,6 +399,49 @@ class InterfaceController: WKInterfaceController {
     
     
        
+}
+
+
+func determineBasal (properties: Properties) -> Double? {
+    //if last enacted doesnt exist, we dont know the basal rate so return nil
+    //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
+    //if enacted exists and has ended, then basal has reverted to profile basal
+    //if enacted exists and hasnt ended, last enacted is the current rate
+    //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties to remove determineBasal use properties.basal.display
+    
+    guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted else {
+        return nil
+    }
+    
+    let lastEnactedDuration = lastEnacted.duration
+    let lastEnactedTimeStamp = lastEnacted.timestamp
+    let lastEnactedRate = lastEnacted.rate
+
+    if lastEnactedDuration == 0 {
+        return profileBasalRate
+    }
+    
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withFullDate,
+                               .withTime,
+                               .withDashSeparatorInDate,
+                               .withColonSeparatorInTime]
+    
+    guard let lastEnactedDate = formatter.date(from: lastEnactedTimeStamp)?.timeIntervalSince1970 else {
+        return nil
+    }
+    let currentDate = Date()
+    
+    if (lastEnactedDate + Double(lastEnactedDuration)) > currentDate.timeIntervalSince1970 {
+        return profileBasalRate
+    }
+        
+    else
+        
+    {
+        return lastEnactedRate
+    }
+    
 }
 
 

@@ -28,9 +28,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "449"
-            endingLineNumber = "449"
-            landmarkName = "updateBG(entries:)"
-            landmarkType = "7">
+            endingLineNumber = "449">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -45,7 +43,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "382"
             endingLineNumber = "382"
-            landmarkName = "updatePropertiesDisplay(properties:)"
+            landmarkName = "updateBG(entries:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -61,7 +59,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "383"
             endingLineNumber = "383"
-            landmarkName = "updatePropertiesDisplay(properties:)"
+            landmarkName = "updateBG(entries:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -77,8 +75,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "405"
             endingLineNumber = "405"
-            landmarkName = "updateBG(entries:)"
-            landmarkType = "7">
+            landmarkName = "determineBasal(properties:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -93,8 +91,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "420"
             endingLineNumber = "420"
-            landmarkName = "updateBG(entries:)"
-            landmarkType = "7">
+            landmarkName = "determineBasal(properties:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -109,8 +107,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "407"
             endingLineNumber = "407"
-            landmarkName = "updateBG(entries:)"
-            landmarkType = "7">
+            landmarkName = "determineBasal(properties:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

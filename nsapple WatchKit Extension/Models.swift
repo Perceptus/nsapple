@@ -9,16 +9,12 @@
 import Foundation
 import WatchKit
 
-extension InterfaceController {
-   
-}
-
 struct Properties: Codable {
     let upbat: UpBattery?
     let iob: IOBLevel2?
     let cob: COBLevel2?
     let pump: PumpLevel2?
-    let loop: DeviceStatusLoop?
+    let loop: PropertiesLoop?
     let basal: Basal?
 }
 
@@ -56,7 +52,7 @@ struct IOBLevel2: Codable {
     let iob: Double
 }
 
-struct DeviceStatusLoop: Codable {
+struct PropertiesLoop: Codable {
     let lastLoop: LastLoopClass?
     let lastEnacted: Enacted?
     let lastPredicted: LastPredictedClass?
@@ -74,16 +70,6 @@ struct LastLoopClass: Codable {
     let timestamp: String
     let predicted: LastPredictedClass?
     let failureReason: String?
-}
-
-struct LastLoopCob: Codable {
-    let timestamp: String
-    let cob: Double
-}
-
-struct LastLoopIob: Codable {
-    let timestamp: String
-    let iob: Double
 }
 
 struct LastPredictedClass: Codable {
@@ -105,7 +91,7 @@ struct CurrentCorrectionRange: Codable {
     let maxValue: Int
 }
 
-struct DeviceStatusPump: Codable {
+struct PropertiesPump: Codable {
     let pump: PumpLevel2
     let createdAt: String
     enum CodingKeys: String, CodingKey {
@@ -117,7 +103,6 @@ struct DeviceStatusPump: Codable {
 struct PumpBattery: Codable {
     let percent: Int
 }
-
 
 struct ScaledBGData {
     var xdata: Double

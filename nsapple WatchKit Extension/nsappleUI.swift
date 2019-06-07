@@ -91,6 +91,11 @@ extension InterfaceController {
         clearPumpDisplay()
     }
     
+    func clearPumpLoopDisplay() {
+        clearPumpDisplay()
+        clearLoopDisplay()
+    }
+    
     func clearBGDisplay() {
         self.primaryBGDisplay.setText("")
         self.bgDirectionDisplay.setText("")
