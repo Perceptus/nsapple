@@ -213,4 +213,43 @@ func infoBundle(_ key: String) -> String? {
         .replacingOccurrences(of: "\\", with: "")
 }
 
+func determineBasal (properties: Properties) -> Double? {
+    //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties to remove determineBasal use properties.basal.display
+    //if last enacted doesnt exist, we dont know the basal rate so return nil
+    //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
+    //if enacted exists and has ended, then basal has reverted to profile basal
+    //if enacted exists and hasnt ended, last enacted is the current rate
+    
+    
+    guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted
+        else {
+            return nil
+    }
+    
+    if lastEnacted.duration == 0 {
+        return profileBasalRate
+    }
+    
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withFullDate,
+                               .withTime,
+                               .withDashSeparatorInDate,
+                               .withColonSeparatorInTime]
+    
+    guard let lastEnactedDate = formatter.date(from: lastEnacted.timestamp)?.timeIntervalSince1970 else {
+        return nil
+    }
+    let currentDate = Date()
+    
+    if (lastEnactedDate + Double(lastEnacted.duration)) > currentDate.timeIntervalSince1970 {
+        return profileBasalRate
+    }
+        
+    else
+        
+    {
+        return lastEnacted.rate
+    }
+    
+}
 
