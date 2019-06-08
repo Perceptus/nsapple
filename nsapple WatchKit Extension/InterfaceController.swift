@@ -81,7 +81,7 @@ class InterfaceController: WKInterfaceController {
         }
         else
         {
-            self.errorDisplay.setText("Could Not Read Bundle Idenifier.")
+                self.errorDisplay.setText("Could Not Read Bundle Idenifier.")
         }
     }
     
@@ -111,8 +111,10 @@ class InterfaceController: WKInterfaceController {
         }
         else
         {
-            self.minAgoBGDisplay.setText(String(Int(deltaTimeFromLastBG))+" min ago")
-            labelColor(label: self.minAgoBGDisplay, timeSince: timeofLastBGUpdate)
+            DispatchQueue.main.async {
+                self.minAgoBGDisplay.setText(String(Int(deltaTimeFromLastBG))+" min ago")
+                self.labelColor(label: self.minAgoBGDisplay, timeSince: self.timeofLastBGUpdate)
+            }
         }
     }
     
@@ -120,10 +122,7 @@ class InterfaceController: WKInterfaceController {
     
     func loadBGandProperties (urlUser: String) {
         if consoleLogging == true {print("in load BG")}
-        DispatchQueue.main.async{
-            self.errorDisplay.setText("")
-        }
-        
+        self.errorDisplay.setText("")        
         if urlUser == "No User URL" {
             self.clearEntireDisplay()
             errorMessage(message: "Cannot Read User NS URL.  Check Setup Of Defaults in iOS Watch App")
@@ -169,9 +168,9 @@ class InterfaceController: WKInterfaceController {
             let decoder = JSONDecoder()
             let entriesResponse = try? decoder.decode([sgvData].self, from: data)
             if let entriesResponse = entriesResponse {
-                DispatchQueue.main.async {
+  //              DispatchQueue.main.async {
                     self.updateBG(entries: entriesResponse)
-                }
+  //              }
             }
             else
             {
@@ -238,7 +237,6 @@ class InterfaceController: WKInterfaceController {
     func updatePropertiesDisplay(properties: Properties) {
         
         if consoleLogging == true {print("in updatePump")}
-        
         //pump and uploader
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate,
@@ -351,44 +349,54 @@ class InterfaceController: WKInterfaceController {
             if mmol {
                 userUnit = " mmol/L"
             }
-            self.minAgoBGDisplay.setText(String(Int(deltaTime))+" min ago")
             timeofLastBGUpdate = lastBGTime
+            
+            DispatchQueue.main.async{
+                self.minAgoBGDisplay.setText(String(Int(deltaTime))+" min ago")
+            }
+
             if (latestBG<40) {
-                self.primaryBGDisplay.setTextColor(red)
-                self.primaryBGDisplay.setText(bgErrorCode(latestBG))
-                self.bgDirectionDisplay.setText("")
-                self.deltaBGDisplay.setText("")
+                DispatchQueue.main.async {
+                    self.primaryBGDisplay.setTextColor(red)
+                    self.primaryBGDisplay.setText(bgErrorCode(latestBG))
+                    self.bgDirectionDisplay.setText("")
+                    self.deltaBGDisplay.setText("")
+                }
             }
             else
             {
-                labelColor(label: self.minAgoBGDisplay, timeSince: lastBGTime)
-                self.primaryBGDisplay.setTextColor(bgcolor(latestBG))
-                self.primaryBGDisplay.setText(bgOutputFormat(bg: Double(latestBG), mmol: mmol))
-                if let directionBG = entries[0].direction {
-                    self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
-                    self.bgDirectionDisplay.setTextColor(bgcolor(latestBG))
+                DispatchQueue.main.async {
+                    self.labelColor(label: self.minAgoBGDisplay, timeSince: lastBGTime)
+                    self.primaryBGDisplay.setTextColor(self.bgcolor(latestBG))
+                    self.primaryBGDisplay.setText(self.bgOutputFormat(bg: Double(latestBG), mmol: self.mmol))
+                    if let directionBG = entries[0].direction {
+                        self.bgDirectionDisplay.setText(bgDirectionGraphic(directionBG))
+                        self.bgDirectionDisplay.setTextColor(self.bgcolor(latestBG))
+                    }
+                    else
+                    {
+                        self.bgDirectionDisplay.setText("")
+                    }
+                    let velocity=velocity_cf(entries) as Double
+                    let prediction=velocity*30.0+Double(latestBG)
+                    self.deltaBGDisplay.setTextColor(UIColor.white)
+                    
+                    
+                    if deltaBG < 0 {
+                        self.deltaBGDisplay.setText(self.bgOutputFormat(bg: Double(deltaBG), mmol: self.mmol) + userUnit)
+                    }
+                    else
+                    {
+                        self.deltaBGDisplay.setText("+" + self.bgOutputFormat(bg: Double(deltaBG), mmol: self.mmol) + userUnit)
+                    }
+                    self.velocityDisplay.setText(self.velocityOutputFormat(v: velocity, mmol: self.mmol))
+                    self.predictionDisplay.setText(self.bgOutputFormat(bg: prediction, mmol: self.mmol))
                 }
-                else
-                {
-                    self.bgDirectionDisplay.setText("")
-                }
-                let velocity=velocity_cf(entries) as Double
-                let prediction=velocity*30.0+Double(latestBG)
-                self.deltaBGDisplay.setTextColor(UIColor.white)
-                
-                
-                if deltaBG < 0 {
-                    self.deltaBGDisplay.setText(bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
-                }
-                else
-                {
-                    self.deltaBGDisplay.setText("+" + bgOutputFormat(bg: Double(deltaBG), mmol: mmol) + userUnit)
-                }
-                self.velocityDisplay.setText(velocityOutputFormat(v: velocity, mmol: mmol))
-                self.predictionDisplay.setText(bgOutputFormat(bg: prediction, mmol: mmol))
+
             }
             
         } //end bgs !=nil
+            
         else
         {
             self.errorMessage(message: "Didnt Receive BG Data.")
