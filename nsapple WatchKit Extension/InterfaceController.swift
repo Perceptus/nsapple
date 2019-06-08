@@ -216,9 +216,9 @@ class InterfaceController: WKInterfaceController {
             do {
                 let decoder = JSONDecoder()
                 let json = try decoder.decode(Properties.self, from: data)
-                DispatchQueue.main.async {
+//                DispatchQueue.main.async {
                     self.updatePropertiesDisplay(properties: json)
-                }
+//                }
             }
                 
             catch let jsonError {
@@ -247,7 +247,9 @@ class InterfaceController: WKInterfaceController {
         
         if let lastReservoir = properties.pump?.pump.reservoir, let lastPumpCreatedAt = properties.pump?.createdAt {
             if let lastPumpTime = formatter.date(from: lastPumpCreatedAt)?.timeIntervalSince1970 {
-                labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
+                DispatchQueue.main.async {
+                    self.labelColor(label: self.pumpDataDisplay, timeSince: lastPumpTime)
+                }
                 pumpStatusString += String(format:"%.0f", lastReservoir)
             }
             else
@@ -263,14 +265,16 @@ class InterfaceController: WKInterfaceController {
         {
             pumpStatusString += " UpBat N/A"
         }
-        
-        //TODO move to end and put on main queue***************
-        self.pumpDataDisplay.setText(pumpStatusString)
+        DispatchQueue.main.async {
+            self.pumpDataDisplay.setText(pumpStatusString)
+        }
         //loop
         
         if let lastLoop = properties.loop?.lastLoop {
             if let lastLoopTime = formatter.date(from: lastLoop.timestamp)?.timeIntervalSince1970  {
-                labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
+                DispatchQueue.main.async {
+                    self.labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
+                }
                 if let failure = lastLoop.failureReason {
                     clearLoopDisplay()
                     self.errorMessage(message: failure)
@@ -279,14 +283,17 @@ class InterfaceController: WKInterfaceController {
                 {
                     if let lastBasalRate = determineBasal(properties: properties) {
                         let lastBasalStatus = " Basal " + String(format:"%.1f", lastBasalRate)
-                        self.basalDisplay.setText(lastBasalStatus)
-                        labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
+                        DispatchQueue.main.async {
+                            self.basalDisplay.setText(lastBasalStatus)
+                            self.labelColor(label: self.basalDisplay, timeSince: lastLoopTime)
+                        }
                     }
                     else
                     {
-                        self.basalDisplay.setText("")
+                        DispatchQueue.main.async {
+                            self.basalDisplay.setText("")
+                        }
                     }
-                    
                     var loopStatusText:String = " IOB "
                     if let lastIOB = properties.iob?.iob {
                         loopStatusText +=  String(format:"%.1f", lastIOB)
@@ -297,8 +304,10 @@ class InterfaceController: WKInterfaceController {
                     if let lastEBG = properties.loop?.lastPredicted?.values.last {
                         loopStatusText += " EBG " + bgOutputFormat(bg: Double(lastEBG), mmol: mmol)
                     }
-                    self.loopStatusDisplay.setText(loopStatusText)
-                    labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
+                    DispatchQueue.main.async {
+                        self.loopStatusDisplay.setText(loopStatusText)
+                        self.labelColor(label: self.loopStatusDisplay, timeSince: lastLoopTime)
+                    }
                 }
             }
         }
@@ -312,10 +321,11 @@ class InterfaceController: WKInterfaceController {
         self.statusOverrideDisplay.setHidden(true)
         if let lastOverride = properties.loop?.lastOverride {
             if let lastOverrideTime = formatter.date(from: lastOverride.timestamp)?.timeIntervalSince1970  {
-                labelColor(label: self.statusOverrideDisplay, timeSince: lastOverrideTime)
+                DispatchQueue.main.async {
+                    self.labelColor(label: self.statusOverrideDisplay, timeSince: lastOverrideTime)
+                }
             }
             if lastOverride.active {
-                self.statusOverrideDisplay.setHidden(false)
                 let lastCorrectionRange  = lastOverride.currentCorrectionRange
                 overrideText = "BGTargets("
                 let minValue = Double(lastCorrectionRange?.minValue ?? 0)
@@ -328,7 +338,10 @@ class InterfaceController: WKInterfaceController {
                 {
                     overrideText += String(format:"%.1f", 1.0)
                 }
-                self.statusOverrideDisplay.setText(overrideText)
+                DispatchQueue.main.async {
+                    self.statusOverrideDisplay.setHidden(false)
+                    self.statusOverrideDisplay.setText(overrideText)
+                }
             }
         }
         
