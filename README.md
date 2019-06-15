@@ -25,6 +25,7 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * Update 6/15/19
     * More Accurate Determination of Basal Rate - changes to JoJo and NS bugs caused delays in displaying changes in basal rate.  This version seems to tracl the NS pill but please report issues.
     * Faster Performance on UI Updates (removed extraneous backgrond work from Main Queue)
+    * Tweaks to Fot Sizing on Smaller WatchFaces
     * Behind the Scenes - moved to using the api/v2/properties endpoint to better determine basal rate and to eventually enable OpenAPS users (not completed yet).  Lots of refactoring and some error handling improvements.
 
 # Setup
