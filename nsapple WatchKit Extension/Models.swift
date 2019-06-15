@@ -220,10 +220,10 @@ func determineBasal (properties: Properties) -> Double? {
     //if enacted exists and has ended, then basal has reverted to profile basal
     //if enacted exists and hasnt ended, last enacted is the current rate
     
-    
     guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted
-        else {
-            return nil
+        else
+    {
+        return nil
     }
     
     if lastEnacted.duration == 0 {
@@ -236,9 +236,12 @@ func determineBasal (properties: Properties) -> Double? {
                                .withDashSeparatorInDate,
                                .withColonSeparatorInTime]
     
-    guard let lastEnactedDate = formatter.date(from: lastEnacted.timestamp)?.timeIntervalSince1970 else {
+    guard let lastEnactedDate = formatter.date(from: lastEnacted.timestamp)?.timeIntervalSince1970
+        else
+    {
         return nil
     }
+    
     let currentDate = Date()
     
     if (lastEnactedDate + Double(lastEnacted.duration)) > currentDate.timeIntervalSince1970 {
