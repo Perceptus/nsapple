@@ -22,6 +22,10 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 * Runs on cellular, wi-fi, or connected to your phone. 
 * Code - Some Rebasing, Improved Variable Naming, Better Error Handling.  This was a first step but needs more work.
 * Vastly Improved App Install in Xcode - No More Editing !
+* Update 6/15/19
+* More Accurate Determination of Basal Rate - changes to JoJo and NS bugs caused delays in displaying changes in basal rate.  This version seems to tracl the NS pill but please report issues.
+* Faster Performance on UI Updates (removed extraneous backgrond work from Main Queue)
+* Behind the Scenes - moved to using the api/v2/properties endpoint to better determine basal rate and to eventually enable OpenAPS users (not completed yet).  Lots of refactoring and some error handling improvements.
 
 # Setup
 * Simply click on the blue nsapple project file in the top left corner to show the general tab (see below).
