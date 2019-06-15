@@ -9,8 +9,99 @@
 import Foundation
 import WatchKit
 
-extension InterfaceController {
-   
+struct Properties: Codable {
+    let upbat: UpBattery?
+    let iob: IOBLevel2?
+    let cob: COBLevel2?
+    let pump: PumpLevel2?
+    let loop: PropertiesLoop?
+    let basal: Basal?
+}
+
+struct PumpLevel2: Codable {
+    let createdAt: String
+    let pump: PumpLevel3
+    enum CodingKeys: String, CodingKey {
+        case pump
+        case createdAt = "created_at"
+    }
+}
+
+struct PumpLevel3: Codable {
+    let bolusing: Bool?
+    let reservoir: Double?
+}
+
+struct UpBattery: Codable {
+    let display: String?
+}
+
+struct Basal: Codable {
+    let current: Current
+}
+
+struct Current: Codable {
+    let basal: Double
+}
+
+struct COBLevel2: Codable {
+    let cob: Double
+}
+
+struct IOBLevel2: Codable {
+    let iob: Double
+}
+
+struct PropertiesLoop: Codable {
+    let lastLoop: LastLoopClass?
+    let lastEnacted: Enacted?
+    let lastPredicted: LastPredictedClass?
+    let lastOverride: Override?
+}
+
+struct Enacted: Codable {
+    let duration: Int
+    let received: Bool
+    let rate: Double
+    let timestamp: String
+}
+
+struct LastLoopClass: Codable {
+    let timestamp: String
+    let predicted: LastPredictedClass?
+    let failureReason: String?
+}
+
+struct LastPredictedClass: Codable {
+    let values: [Int]
+    let startDate: String
+}
+
+struct Override: Codable {
+    let active: Bool
+    let timestamp: String
+    let moment: String
+    let currentCorrectionRange: CurrentCorrectionRange?
+    let multiplier: Double?
+    let duration: Int?
+}
+
+struct CurrentCorrectionRange: Codable {
+    let minValue: Int
+    let maxValue: Int
+}
+
+struct PropertiesPump: Codable {
+    let pump: PumpLevel2
+    let createdAt: String
+    enum CodingKeys: String, CodingKey {
+        case pump
+        case createdAt = "created_at"
+    }
+}
+
+struct PumpBattery: Codable {
+    let percent: Int
 }
 
 struct ScaledBGData {
@@ -23,6 +114,7 @@ struct sgvData: Codable {
     var date: TimeInterval
     var direction: String?
 }
+
 
 func bgErrorCode(_ value:Int)->String {
     
@@ -121,4 +213,46 @@ func infoBundle(_ key: String) -> String? {
         .replacingOccurrences(of: "\\", with: "")
 }
 
+func determineBasal (properties: Properties) -> Double? {
+    //TODO fix lagging basal display in cgm-remote-monitor /api/v2/properties to remove determineBasal use properties.basal.display
+    //if last enacted doesnt exist, we dont know the basal rate so return nil
+    //if last enacted was a duration zero, then profile basal applies because loop canceled a temp basal
+    //if enacted exists and has ended, then basal has reverted to profile basal
+    //if enacted exists and hasnt ended, last enacted is the current rate
+    
+    guard let profileBasalRate = properties.basal?.current.basal, let lastEnacted = properties.loop?.lastEnacted
+        else
+    {
+        return nil
+    }
+    
+    if lastEnacted.duration == 0 {
+        return profileBasalRate
+    }
+    
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withFullDate,
+                               .withTime,
+                               .withDashSeparatorInDate,
+                               .withColonSeparatorInTime]
+    
+    guard let lastEnactedDate = formatter.date(from: lastEnacted.timestamp)?.timeIntervalSince1970
+        else
+    {
+        return nil
+    }
+    
+    let currentDate = Date()
+    
+    if (lastEnactedDate + Double(lastEnacted.duration)) > currentDate.timeIntervalSince1970 {
+        return profileBasalRate
+    }
+        
+    else
+        
+    {
+        return lastEnacted.rate
+    }
+    
+}
 

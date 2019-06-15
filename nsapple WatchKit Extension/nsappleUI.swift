@@ -55,14 +55,20 @@ extension InterfaceController {
     func labelColor(label: WKInterfaceLabel, timeSince: TimeInterval) {
         let currentTime=TimeInterval(Date().timeIntervalSince1970)
         let deltaTime=(currentTime-timeSince)/60
-        
-        if deltaTime<7
-        {label.setTextColor(UIColor.green)}
-        else
-            if deltaTime<14
-            {label.setTextColor(UIColor.yellow)}
+        DispatchQueue.main.async {
+            if deltaTime<7 {
+                label.setTextColor(UIColor.green)
+            }
             else
-            {label.setTextColor(UIColor.red)}
+                if deltaTime<14 {
+                    label.setTextColor(UIColor.yellow)
+                }
+                else
+                {
+                    label.setTextColor(UIColor.red)
+            }
+        }
+        
         return
     }
 
@@ -80,9 +86,12 @@ extension InterfaceController {
         self.basalDisplay.setTextColor(color)
     }
     
+    
     func errorMessage(message: String) {
-        self.errorDisplay.setHidden(false)
-        self.errorDisplay.setText(message)
+        DispatchQueue.main.async {
+            self.errorDisplay.setHidden(false)
+            self.errorDisplay.setText(message)
+        }
     }
     
     func clearEntireDisplay() {
@@ -91,21 +100,32 @@ extension InterfaceController {
         clearPumpDisplay()
     }
     
+    func clearPumpLoopDisplay() {
+        clearPumpDisplay()
+        clearLoopDisplay()
+    }
+    
     func clearBGDisplay() {
-        self.primaryBGDisplay.setText("")
-        self.bgDirectionDisplay.setText("")
-        self.velocityDisplay.setText("")
-        self.predictionDisplay.setText("")
-        self.deltaBGDisplay.setText("")
+        DispatchQueue.main.async {
+            self.primaryBGDisplay.setText("")
+            self.bgDirectionDisplay.setText("")
+            self.velocityDisplay.setText("")
+            self.predictionDisplay.setText("")
+            self.deltaBGDisplay.setText("")
+        }
     }
     
     func clearLoopDisplay() {
-        self.basalDisplay.setText("")
-        self.loopStatusDisplay.setText("")
+        DispatchQueue.main.async {
+            self.basalDisplay.setText("")
+            self.loopStatusDisplay.setText("")
+        }
     }
     
     func clearPumpDisplay() {
-        self.pumpDataDisplay.setText("")
+        DispatchQueue.main.async {
+            self.pumpDataDisplay.setText("")
+        }
     }
     
 }
