@@ -9,7 +9,7 @@ nsapple was originally written to follow BG data from Nightscout.  It has morphe
 
 # Requirements
 * ios 11+
-* watchos 4+ (supports series 1-4 watches)
+* watchos 4+ (supports series 1-5 watches)
 
 # Release Notes
 * Faster Performance - graphs are now built in Core Graphics directly on the watch versus using an offline graph creater (required by Watch os1).  
